@@ -3,7 +3,27 @@ window.onload = () => {
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
     moveCamera();
-    launchHeroAnimation(0, 'png', 'assets/characters/hero/run', 1, 8, 1);
+    launchHeroAnimation(0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]);
+};
+const makeId = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return result;
+};
+var ANIMATION_ID;
+(function (ANIMATION_ID) {
+    ANIMATION_ID[ANIMATION_ID["attack"] = 0] = "attack";
+    ANIMATION_ID[ANIMATION_ID["run"] = 1] = "run";
+})(ANIMATION_ID || (ANIMATION_ID = {}));
+const ANIMATION_IDS = {
+    [ANIMATION_ID.attack]: makeId(20),
+    [ANIMATION_ID.run]: makeId(20),
 };
 const createMapBlock = (left) => {
     var _a;
@@ -23,22 +43,36 @@ const moveCamera = () => {
     requestAnimationFrame(moveCamera);
 };
 const heroImage = document.getElementById('heroImg');
-const launchHeroAnimation = (throttleNum, extension, spriteBase, spriteIndex, max, min) => {
+const launchHeroAnimation = (throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, animationHash) => {
     if (throttleNum < 12) {
         throttleNum++;
-        return requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min));
+        return requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min, false, animationId, animationHash));
     }
-    console.log("running");
+    if (ANIMATION_IDS[animationId] !== animationHash) {
+        return;
+    }
     throttleNum = 0;
     if (spriteIndex === max) {
+        if (loop === false) {
+            return;
+        }
+        console.log(loop);
         spriteIndex = min;
     }
     else {
         spriteIndex++;
     }
     heroImage.src = `${spriteBase}/${spriteIndex}.${extension}`;
-    requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min));
+    requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min, true, animationId, animationHash));
 };
+const launchAttack = () => {
+    ANIMATION_IDS[ANIMATION_ID.run] = makeId(20);
+    launchHeroAnimation(0, 'png', 'assets/characters/hero/attack', 1, 4, 1, false, ANIMATION_ID.attack, ANIMATION_IDS[ANIMATION_ID.attack]);
+    setTimeout(() => launchHeroAnimation(0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]), 1000);
+};
+document.addEventListener('keydown', (event) => {
+    launchAttack();
+});
 /*
 
 
