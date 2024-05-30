@@ -3,7 +3,10 @@ window.onload = () => {
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
     moveCamera();
-    launchHeroAnimation(0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]);
+    launchCharacterAnimation(heroImage, 0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]);
+    launchOpponent();
+    moveEnemy();
+    detectCollision();
 };
 const makeId = (length) => {
     let result = '';
@@ -20,10 +23,12 @@ var ANIMATION_ID;
 (function (ANIMATION_ID) {
     ANIMATION_ID[ANIMATION_ID["attack"] = 0] = "attack";
     ANIMATION_ID[ANIMATION_ID["run"] = 1] = "run";
+    ANIMATION_ID[ANIMATION_ID["opponent_run"] = 2] = "opponent_run";
 })(ANIMATION_ID || (ANIMATION_ID = {}));
 const ANIMATION_IDS = {
     [ANIMATION_ID.attack]: makeId(20),
     [ANIMATION_ID.run]: makeId(20),
+    [ANIMATION_ID.opponent_run]: makeId(20)
 };
 const createMapBlock = (left) => {
     var _a;
@@ -42,11 +47,22 @@ const moveCamera = () => {
     gameContainer.style.left = `${gameContainer.offsetLeft - 4}px`;
     requestAnimationFrame(moveCamera);
 };
+const heroContainer = document.getElementById('hero_container');
 const heroImage = document.getElementById('heroImg');
-const launchHeroAnimation = (throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, animationHash) => {
-    if (throttleNum < 12) {
+const enemy = document.getElementById('enemyImg');
+const enemyContainer = document.getElementById('enemy_container');
+const errorScoreContainer = document.getElementById('error_score');
+const successfulKillsScoreContainer = document.getElementById('killed_score');
+let errorScore = 0;
+let successfulKillsScore = 0;
+const updateScores = () => {
+    errorScoreContainer.innerHTML = "Erreurs: " + errorScore.toString();
+    successfulKillsScoreContainer.innerHTML = "Bonnes réponses: " + successfulKillsScore.toString();
+};
+const launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, animationHash) => {
+    if (throttleNum < 5) {
         throttleNum++;
-        return requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min, false, animationId, animationHash));
+        return requestAnimationFrame(() => launchCharacterAnimation(characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, animationHash));
     }
     if (ANIMATION_IDS[animationId] !== animationHash) {
         return;
@@ -56,25 +72,49 @@ const launchHeroAnimation = (throttleNum, extension, spriteBase, spriteIndex, ma
         if (loop === false) {
             return;
         }
-        console.log(loop);
         spriteIndex = min;
     }
     else {
         spriteIndex++;
     }
-    heroImage.src = `${spriteBase}/${spriteIndex}.${extension}`;
-    requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min, true, animationId, animationHash));
+    characterElement.src = `${spriteBase}/${spriteIndex}.${extension}`;
+    requestAnimationFrame(() => launchCharacterAnimation(characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, animationHash));
 };
 const launchAttack = () => {
     ANIMATION_IDS[ANIMATION_ID.run] = makeId(20);
-    launchHeroAnimation(0, 'png', 'assets/characters/hero/attack', 1, 4, 1, false, ANIMATION_ID.attack, ANIMATION_IDS[ANIMATION_ID.attack]);
-    setTimeout(() => launchHeroAnimation(0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]), 1000);
+    launchCharacterAnimation(heroImage, 0, 'png', 'assets/characters/hero/attack', 1, 4, 1, false, ANIMATION_ID.attack, ANIMATION_IDS[ANIMATION_ID.attack]);
+    setTimeout(() => {
+        if (heroContainer.offsetLeft + heroContainer.offsetWidth + (window.innerWidth * 0.05) > enemyContainer.offsetLeft) {
+            enemy.remove();
+            enemyOnScreen = false;
+            successfulKillsScore++;
+            updateScores();
+        }
+    }, 500);
+    setTimeout(() => launchCharacterAnimation(heroImage, 0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]), 1000);
+};
+const launchOpponent = () => {
+    launchCharacterAnimation(enemy, 0, 'png', 'assets/characters/enemies/wolf', 1, 9, 1, true, ANIMATION_ID.opponent_run, ANIMATION_IDS[ANIMATION_ID.opponent_run]);
 };
 document.addEventListener('keydown', (event) => {
     launchAttack();
 });
+let enemyOnScreen = true;
+const moveEnemy = () => {
+    if (!enemyOnScreen)
+        return;
+    enemyContainer.style.left = `${enemyContainer.offsetLeft - 5}px`;
+    requestAnimationFrame(moveEnemy);
+};
+const detectCollision = () => {
+    if (heroContainer.offsetLeft > enemyContainer.offsetLeft) {
+        errorScore++;
+        updateScores();
+        return;
+    }
+    requestAnimationFrame(detectCollision);
+};
 /*
-
 
 const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 

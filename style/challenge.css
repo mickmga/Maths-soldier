@@ -5,10 +5,8 @@ body{
 }
 
 .mapBlock{
-    position: absolute;
     height: 100%;
     width: 100%;
-    top: 0;
 }
 
 .mapBlock img {
@@ -18,14 +16,25 @@ body{
 
 #hero_container{
     position: fixed;
-    top: 50vh;
+    bottom: 25vh;
     left: 40vw;
-    height : 25vh;
-    width: 20vw;
-    z-index: 1000;
+    height : 20vh;
+    z-index: 3;
+
 }
 
-#hero_container img  {
+#enemy_container {
+    position: fixed;
+    bottom: 25vh;
+    left: 70vw;
+    height : 25vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#hero_container img, #enemy_container img  {
     height: 100%;
     width: auto;
 }
@@ -35,4 +44,23 @@ body{
     height: 100%;
     width: 100%;
     top: 0;
+}
+
+
+#error_score {
+    position: absolute;
+    top: 2vh;
+    left: 2vw;
+    z-index: 3;
+    font-size: large;
+    color: white;
+}
+
+#killed_score {
+    position: absolute;
+    top: 2vh;
+    left: 88vw;
+    z-index: 3;
+    font-size: medium;
+    color: red;
 }
