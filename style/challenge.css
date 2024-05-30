@@ -4,20 +4,20 @@ body{
     overflow: hidden;
 }
 
-.background{
+.mapBlock{
     position: absolute;
     height: 100%;
     width: 100%;
     top: 0;
 }
 
-.background img {
+.mapBlock img {
     height: 100%;
     width: 100%;
 }
 
 #hero_container{
-    position: absolute;
+    position: fixed;
     top: 50vh;
     left: 40vw;
     height : 25vh;

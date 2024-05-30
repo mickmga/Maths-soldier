@@ -1,18 +1,145 @@
 window.onload = () => {
-
+    MAPS.push(createMapBlock(0));
+    MAPS.push(createMapBlock(100));
+    moveCamera();
+    launchHeroAnimation(0, 'png', 'assets/characters/hero/run', 1, 8, 1);   
 }
 
-class Background {
-    left:string = '0vw';
+const createMapBlock = (left:number) => {
+    const block = document.createElement('div');
+    block.classList.add('mapBlock');
+    block.style.left = `${left}vw`;
+
+    const backgroundImage = document.createElement('img');
+    backgroundImage.src='assets/maps/challenge_castle.webp';
+
+    block.append(backgroundImage);
+
+    document.getElementById('game_container')?.append(block);
+    
+    return block;
 }
+
+const MAPS: HTMLElement[] = [];
 
 const moveCamera = () => {
-    const gameContainer = document.getElementById('gameContainer')!
-    gameContainer.style.left = `${gameContainer.offsetLeft - 5}px`;
-    alert("update container left")
+    const gameContainer = document.getElementById('game_container')!
+    gameContainer.style.left = `${gameContainer.offsetLeft - 4}px`;
+
+    requestAnimationFrame(moveCamera)
 
 }
 
-document.addEventListener("keydown",
-    (event) => moveCamera()
-)
+const heroImage = document.getElementById('heroImg')! as HTMLImageElement;
+
+
+
+const launchHeroAnimation = (throttleNum: number, extension:string, spriteBase: string, spriteIndex: number, max: number, min: number): any => {
+
+    if(throttleNum < 12){
+        throttleNum++;
+      return requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min))
+
+    }
+
+    console.log("running")
+
+    throttleNum = 0;
+
+    if(spriteIndex === max){
+        spriteIndex = min;
+    } else {
+        spriteIndex++;
+    }
+
+    heroImage.src = `${spriteBase}/${spriteIndex}.${extension}`;
+
+
+    requestAnimationFrame(() => launchHeroAnimation(throttleNum, extension, spriteBase, spriteIndex, max, min))
+
+}
+
+
+/*
+
+
+const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
+
+    if (throttleNum < 10) {
+        throttleNum++;
+        return requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
+    }
+
+    throttleNum = 0;
+
+
+    console.log("running");
+
+
+        //deletion
+
+             //pick first map block
+
+                 const firstMapDomElement = document.getElementById('map_'+reduxContainer.mapBlocksOnScreen[0].id);
+                 
+
+                 if(firstMapDomElement && firstMapDomElement.offsetLeft > (-window.innerWidth)){
+                    alert("removing element");
+                 } else if(firstMapDomElement) {
+                    console.log("first element left>");
+                    console.log(firstMapDomElement.offsetLeft);
+
+                    console.log('window width >');
+                    console.log(window.innerWidth);
+                 } 
+
+        //creation
+
+        const lastMapDomElement = document.getElementById('map_'+reduxContainer.mapBlocksOnScreen[reduxContainer.mapBlocksOnScreen.length - 1].id);
+
+        if(lastMapDomElement && lastMapDomElement.offsetLeft < 0){
+            console.log("creating element");
+
+       }
+
+       requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
+
+ }
+
+
+ 
+ 
+
+const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
+
+    if (throttleNum < 10) {
+        throttleNum++;
+        return requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
+    }
+
+    throttleNum = 0;
+
+        //creation
+
+             //pick first map block
+
+                 const firstMapDomElement = document.getElementById('map_'+reduxContainer.mapBlocksOnScreen[0].id);
+                 
+                 if(firstMapDomElement && firstMapDomElement.offsetLeft < (-window.innerWidth)){
+                    alert("creating element");
+                 } 
+        //deletion
+
+        const lastMapDomElement = document.getElementById('map_'+reduxContainer.mapBlocksOnScreen[reduxContainer.mapBlocksOnScreen.length - 1].id);
+
+        if(lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth){
+            console.log("removing last element from left to right");
+
+       }
+
+       requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
+
+
+
+ }
+*/
