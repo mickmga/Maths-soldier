@@ -1,0 +1,31 @@
+body{
+    margin:0;
+    padding:0;
+    overflow: hidden;
+}
+
+.background{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+}
+
+.background img {
+    height: 100%;
+    width: 100%;
+}
+
+#hero_container{
+    position: absolute;
+    top: 50vh;
+    left: 40vw;
+    height : 25vh;
+    width: 20vw;
+    z-index: 1000;
+}
+
+#hero_container img  {
+    height: 100%;
+    width: auto;
+}
