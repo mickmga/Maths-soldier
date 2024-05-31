@@ -1,12 +1,26 @@
-body{
-    margin:0;
-    padding:0;
-    overflow: hidden;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.mapBlock{
+html, body {
     height: 100%;
     width: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+#game_container {
+    position: fixed;
+    height: 100%;
+    top: 0;
+    display: flex;
+}
+
+
+.mapBlock{
+    height: 100vh;
+    width: 100vw;
 }
 
 .mapBlock img {
@@ -38,14 +52,6 @@ body{
     height: 100%;
     width: auto;
 }
-
-#game_container {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    top: 0;
-}
-
 
 #error_score {
     position: absolute;

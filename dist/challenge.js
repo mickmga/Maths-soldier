@@ -1,12 +1,12 @@
 "use strict";
 window.onload = () => {
-    MAPS.push(createMapBlock(0));
-    MAPS.push(createMapBlock(100));
-    moveCamera();
-    launchCharacterAnimation(heroImage, 0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]);
-    launchOpponent();
-    moveEnemy();
-    detectCollision();
+    MAPS.push(createMapBlock());
+    MAPS.push(createMapBlock());
+    // moveCamera();
+    //launchCharacterAnimation(heroImage, 0, 'png', 'assets/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run, ANIMATION_IDS[ANIMATION_ID.run]);   
+    // launchOpponent();
+    //moveEnemy();
+    //detectCollision();
 };
 const makeId = (length) => {
     let result = '';
@@ -30,11 +30,10 @@ const ANIMATION_IDS = {
     [ANIMATION_ID.run]: makeId(20),
     [ANIMATION_ID.opponent_run]: makeId(20)
 };
-const createMapBlock = (left) => {
+const createMapBlock = () => {
     var _a;
     const block = document.createElement('div');
     block.classList.add('mapBlock');
-    block.style.left = `${left}vw`;
     const backgroundImage = document.createElement('img');
     backgroundImage.src = 'assets/maps/challenge_castle.webp';
     block.append(backgroundImage);
