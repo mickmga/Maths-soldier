@@ -1,0 +1,16 @@
+#hero_container {
+  position: absolute;
+  left: 30vw;
+  top: 60vh;
+  height: 22.25vh;
+  width: 10vw;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hero_container img {
+  height: 100%;
+  width: auto;
+}

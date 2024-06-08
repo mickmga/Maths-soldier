@@ -1,0 +1,62 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+#game_container {
+    position: fixed;
+    height: 100%;
+    top: 0;
+    display: flex;
+}
+
+
+#hero_container{
+    position: fixed;
+    bottom: 25vh;
+    left: 40vw;
+    height : 20vh;
+    z-index: 3;
+
+}
+
+#enemy_container {
+    position: fixed;
+    bottom: 25vh;
+    left: 70vw;
+    height : 25vh;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#hero_container img, #enemy_container img  {
+    height: 100%;
+    width: auto;
+}
+
+#error_score {
+    position: absolute;
+    top: 2vh;
+    left: 2vw;
+    z-index: 3;
+    font-size: large;
+    color: white;
+}
+
+#killed_score {
+    position: absolute;
+    top: 2vh;
+    left: 88vw;
+    z-index: 3;
+    font-size: medium;
+    color: red;
+}
