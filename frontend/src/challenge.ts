@@ -89,6 +89,8 @@ const launchAnimationAndDeclareItLaunched = (characterElement: HTMLImageElement,
 
 const launchCharacterAnimation = (characterElement: HTMLImageElement,  throttleNum: number, extension:string, spriteBase: string, spriteIndex: number, max: number, min: number, loop: boolean, animationId: ANIMATION_ID): any => {
 
+    if(!characterElement) alert("no element no more!")
+
     if(!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
         return;
     }
@@ -113,13 +115,15 @@ const launchCharacterAnimation = (characterElement: HTMLImageElement,  throttleN
         spriteIndex++;
     }
 
-    console.log
-
 
     characterElement.src = `${spriteBase}/${spriteIndex}.${extension}`;
 
     requestAnimationFrame(() => launchCharacterAnimation(characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId));
 
+}
+
+const initAnimation = (animationId: ANIMATION_ID) => {
+    ANIMATION_RUNNING_VALUES[animationId]=0;
 }
 
 const launchAttack = () => {
@@ -131,7 +135,7 @@ const launchAttack = () => {
     setTimeout(
         () => {
             
-       if(heroContainer.offsetLeft+ heroContainer.offsetWidth + (window.innerWidth * 0.05) > enemyContainer.offsetLeft){
+       if(heroContainer.offsetLeft+ heroContainer.offsetWidth + (window.innerWidth * 0.05) > enemyContainer.offsetLeft && enemy){
           enemy.remove();
           enemyOnScreen=false;
           successfulKillsScore++;
@@ -141,8 +145,11 @@ const launchAttack = () => {
 
 
     setTimeout(
-        () =>    launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/challenge/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run), 1000
-    )
+        () => {
+            launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/challenge/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run);
+            initAnimation(ANIMATION_ID.attack);
+        } , 1000
+    );
 
 }
 
@@ -269,9 +276,16 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
  const launchRun = () => {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
     moveCamera();
-    launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/challenge/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.walk);   
+    launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/challenge/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run);   
  }
 
+ document.addEventListener('keydown', (event) => {
+
+    if(event.key === " "){
+        launchAttack();
+    }
+ });
+ 
 
  window.onload = () => {
     MAPS.push(createMapBlock(0));
