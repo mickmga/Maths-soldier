@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const MAPS = [];
 const heroContainer = document.getElementById('hero_container');
 const heroImage = document.getElementById('heroImg');
@@ -173,8 +174,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum) => {
     requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
 };
 //CHALLENGE.TS ENDING
-const initHero = () => {
-};
+const initHero = () => { };
 const launchCharacterMovement = () => {
     moveCamera(ANIMATION_ID.camera_left_to_right);
     launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/palace/hero/old_walk', 1, 6, 1, true, ANIMATION_ID.walk);

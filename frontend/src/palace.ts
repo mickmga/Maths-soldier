@@ -15,6 +15,29 @@ let successfulKillsScore = 0;
 let backgroundSrc = 'assets/palace/maps/castle/castle.gif';
 
 
+const localStorageElements = [
+    [
+        {
+            id: 'yyz',
+            src:''
+        },
+        {
+            id: 'xxz',
+            src:''
+        },
+        {
+
+        },
+        {
+            
+        }
+
+    ]
+
+    
+];
+
+
 const makeId = (length: number) => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -91,7 +114,9 @@ const launchAnimationAndDeclareItLaunched = (characterElement: HTMLImageElement,
 
 const launchCharacterAnimation = (characterElement: HTMLImageElement,  throttleNum: number, extension:string, spriteBase: string, spriteIndex: number, max: number, min: number, loop: boolean, animationId: ANIMATION_ID): any => {
 
-    if(!characterElement) alert("no element no more!")
+    if(!characterElement) {
+        return;
+    }
 
     if(!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
         return;

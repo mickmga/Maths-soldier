@@ -228,12 +228,12 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
     if(ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0){
-        return;
+      return;
     }
 
     if (throttleNum < 10) {
-        throttleNum++;
-        return requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
+       throttleNum++;
+       return requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
     }
 
     throttleNum = 0;
@@ -242,35 +242,28 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
              //pick first map block
 
-                 const firstMapDomElement = MAPS[0];
+         const firstMapDomElement = MAPS[0];
                  
-                 if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))){
-                    MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
-                 }
+         if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))){
+             MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
+          }
 
         //deletion
 
-        const lastMapDomElement = MAPS[MAPS.length - 1];
+    const lastMapDomElement = MAPS[MAPS.length - 1];
 
-        if(lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth){
-            lastMapDomElement.remove();
-            MAPS.pop();
-       }
+    if(lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth){
+        lastMapDomElement.remove();
+        MAPS.pop();
+    }
 
-       requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
-
-
+    requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
 
  }
 
  //CHALLENGE.TS ENDING
 
-
- const initHero = () => {
-
-
- }
-
+ const initHero = () => { }
 
  const launchCharacterMovement = () => {
     moveCamera(ANIMATION_ID.camera_left_to_right);
@@ -291,11 +284,11 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
  document.addEventListener('keydown', (event) => {
 
     if(event.key === " "){
-        launchAttack();
+      launchAttack();
     }
+
  });
  
-
  window.onload = () => {
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));

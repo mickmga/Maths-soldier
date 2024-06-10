@@ -14,3 +14,47 @@
   height: 100%;
   width: auto;
 }
+
+#pointer {
+  position: absolute;
+  top: 20vh;
+  left: 30vw;
+  height: 100px;
+  width: 100px;
+  background: black;
+  z-index: 1000;
+}
+
+.slotGroup {
+  position: absolute;
+  top: 20vh;
+  height: 300px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.slot {
+  width: 10vw;
+  aspect-ratio: 1/1;
+  background: red;
+}
+
+#slotsLeft{
+  left: 0;
+  width: 40vw;
+  background: blue;
+}
+
+#slotsCenter{
+  left: 40vw;
+  width: 28vw;
+  background: purple;
+}
+#slotRight{
+  left: 68vw;
+  width: 32vw;
+  background: green;
+}
+
