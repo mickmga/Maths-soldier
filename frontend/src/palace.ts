@@ -54,7 +54,7 @@ const createMapBlock = (left: number) => {
     backgroundImage.src = backgroundSrc;
     block.append(backgroundImage);
     block.style.position = 'fixed';
-    block.style.left = `${left}vw`;
+    block.style.left = `${left}px`;
 
     document.getElementsByTagName('body')[0].append(block);
     
@@ -67,9 +67,6 @@ const moveCamera = (direction: ANIMATION_ID) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
        return;
     }
-
-    console.log("plus >");
-    console.log((( direction === ANIMATION_ID.camera_left_to_right ? -1 : 1)* 4));
 
     MAPS.forEach(
        map => map.style.left = `${map.offsetLeft + (( direction === ANIMATION_ID.camera_left_to_right ? -1 : 1)* 4)}px`
@@ -192,6 +189,10 @@ const moveEnemy = () => {
 
 
 const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
+    
+    if(ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0){
+        return;
+    }
 
     if (throttleNum < 10) {
         throttleNum++;
@@ -206,7 +207,8 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
                  const firstMapDomElement = MAPS[0];                 
 
-                 if(MAPS[0].offsetLeft < (-window.innerWidth)){
+                 if(firstMapDomElement.offsetLeft < (-window.innerWidth)){
+                    firstMapDomElement.remove();
                     MAPS.shift();
                  }
 
@@ -215,9 +217,7 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
         const lastMapDomElement = MAPS[MAPS.length-1];
 
         if(lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth/10 ){
-
-          MAPS.push(createMapBlock( (MAPS[MAPS.length-1].offsetLeft + MAPS[MAPS.length-1].offsetWidth)/window.innerWidth * 100 ));            
-
+          MAPS.push(createMapBlock( (lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth)));   
        }
 
        requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
@@ -227,6 +227,10 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
 
 const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
+
+    if(ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0){
+        return;
+    }
 
     if (throttleNum < 10) {
         throttleNum++;
@@ -240,17 +244,20 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
              //pick first map block
 
                  const firstMapDomElement = MAPS[0];
+
+                 console.log(firstMapDomElement.offsetLeft);
                  
-                 if(firstMapDomElement && firstMapDomElement.offsetLeft < (-window.innerWidth)){
-                    alert("creating element");
-                 } 
+                 if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))){
+                    MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
+                 }
+
         //deletion
 
         const lastMapDomElement = MAPS[MAPS.length - 1];
 
         if(lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth){
-            console.log("removing last element from left to right");
-
+            lastMapDomElement.remove();
+            MAPS.pop();
        }
 
        requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
@@ -285,11 +292,14 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
      if(event.key === "d" && ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0){
         ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
        launchCharacterMovement();
+       checkForScreenUpdateFromLeftToRight(10);
     }
 
     if(event.key === "q" && ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0){
         ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left]++;
         launchCharacterMovementLeft();
+        checkForScreenUpdateFromRightToLeft(10);
+
     }
 
   }
@@ -306,9 +316,8 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 )
 
  window.onload = () => {
-   MAPS.push(createMapBlock(-100));
+   MAPS.push(createMapBlock(-window.innerWidth));
    MAPS.push(createMapBlock(0));
-   MAPS.push(createMapBlock(100));
-   checkForScreenUpdateFromLeftToRight(10);
+   MAPS.push(createMapBlock(window.innerWidth));
 }
 

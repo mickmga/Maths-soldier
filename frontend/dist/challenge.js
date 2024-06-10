@@ -134,13 +134,14 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum) => {
     //deletion
     //pick first map block
     const firstMapDomElement = MAPS[0];
-    if (MAPS[0].offsetLeft < (-window.innerWidth)) {
+    if (firstMapDomElement.offsetLeft < (-window.innerWidth)) {
+        firstMapDomElement.remove();
         MAPS.shift();
     }
     //creation
     const lastMapDomElement = MAPS[MAPS.length - 1];
     if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10) {
-        MAPS.push(createMapBlock((MAPS[MAPS.length - 1].offsetLeft + MAPS[MAPS.length - 1].offsetWidth) / window.innerWidth * 100));
+        MAPS.push(createMapBlock(lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth));
     }
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
 };
@@ -153,8 +154,14 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum) => {
     //creation
     //pick first map block
     const firstMapDomElement = MAPS[0];
-    if (firstMapDomElement && firstMapDomElement.offsetLeft < (-window.innerWidth)) {
+    if (firstMapDomElement && firstMapDomElement.offsetLeft > (-window.innerWidth)) {
         alert("creating element");
+    }
+    else {
+        console.log(" window >");
+        console.log(window.innerWidth);
+        console.log(", first el left >");
+        console.log(firstMapDomElement.offsetLeft);
     }
     //deletion
     const lastMapDomElement = MAPS[MAPS.length - 1];
