@@ -161,7 +161,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum) => {
     //creation
     //pick first map block
     const firstMapDomElement = MAPS[0];
-    console.log(firstMapDomElement.offsetLeft);
     if (firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))) {
         MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
     }

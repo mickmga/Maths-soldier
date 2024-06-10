@@ -32,6 +32,7 @@ enum ANIMATION_ID {
     walk,
     opponent_run,
     camera_left_to_right,
+    camera_right_to_left,
     character_left_to_right_move
 }
 
@@ -41,6 +42,7 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.walk]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
+  [ANIMATION_ID.camera_right_to_left]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 0
 }
 
@@ -51,7 +53,7 @@ const createMapBlock = (left: number) => {
     backgroundImage.src = backgroundSrc;
     block.append(backgroundImage);
     block.style.position = 'fixed';
-    block.style.left = `${left}vw`;
+    block.style.left = `${left}px`;
 
     document.getElementsByTagName('body')[0].append(block);
     
@@ -59,18 +61,17 @@ const createMapBlock = (left: number) => {
 }
 
 
+const moveCamera = (direction: ANIMATION_ID) => {
 
-const moveCamera = () => {
-
-    if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0 || ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] > 1) {
-        return;
+    if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
+       return;
     }
 
     MAPS.forEach(
-        map => map.style.left = `${map.offsetLeft - 4}px`
+       map => map.style.left = `${map.offsetLeft + (( direction === ANIMATION_ID.camera_left_to_right ? -1 : 1)* 4)}px`
     )
 
-    requestAnimationFrame(moveCamera);
+    requestAnimationFrame(() => moveCamera(direction));
 }
 
 
@@ -186,7 +187,11 @@ const moveEnemy = () => {
  }
 
 
- const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
+const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
+    
+    if(ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0){
+        return;
+    }
 
     if (throttleNum < 10) {
         throttleNum++;
@@ -211,17 +216,20 @@ const moveEnemy = () => {
         const lastMapDomElement = MAPS[MAPS.length-1];
 
         if(lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth/10 ){
-          MAPS.push(createMapBlock(lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth));   
+          MAPS.push(createMapBlock( (lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth)));   
        }
 
        requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
 
  }
 
- 
- 
+
 
 const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
+
+    if(ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0){
+        return;
+    }
 
     if (throttleNum < 10) {
         throttleNum++;
@@ -236,21 +244,17 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
                  const firstMapDomElement = MAPS[0];
                  
-                 if(firstMapDomElement && firstMapDomElement.offsetLeft > (-window.innerWidth)){
-                    alert("creating element");
-                 } else {
-                    console.log(" window >");
-                    console.log(window.innerWidth);
-                    console.log(", first el left >");
-                    console.log(firstMapDomElement.offsetLeft);
-                 } 
+                 if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))){
+                    MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
+                 }
+
         //deletion
 
         const lastMapDomElement = MAPS[MAPS.length - 1];
 
         if(lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth){
-            console.log("removing last element from left to right");
-
+            lastMapDomElement.remove();
+            MAPS.pop();
        }
 
        requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
@@ -269,14 +273,18 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
 
  const launchCharacterMovement = () => {
-    ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
-    moveCamera();
+    moveCamera(ANIMATION_ID.camera_left_to_right);
     launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/palace/hero/old_walk', 1, 6, 1, true, ANIMATION_ID.walk);   
+ }
+
+ const launchCharacterMovementLeft = () => {
+    moveCamera(ANIMATION_ID.camera_right_to_left);
+    launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/palace/hero/walk_left', 1, 6, 1, true, ANIMATION_ID.walk);   
  }
 
  const launchRun = () => {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
-    moveCamera();
+    moveCamera(ANIMATION_ID.camera_left_to_right);
     launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/challenge/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run);   
  }
 
