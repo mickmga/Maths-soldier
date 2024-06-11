@@ -10,6 +10,120 @@ let errorScore = 0;
 let successfulKillsScore = 0;
 //local storage
 let backgroundSrc = 'assets/palace/maps/castle/castle.gif';
+let currentCacheLeftIndex = 1;
+let currentCacheRightIndex = 5;
+const localStorageElements = [
+    [
+        {
+            id: 'yyz',
+            src: ''
+        },
+        {
+            id: 'xxz',
+            src: ''
+        },
+        {
+            id: 'xwz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        }
+    ],
+    [
+        {
+            id: 'yyz',
+            src: ''
+        },
+        {
+            id: 'xxz',
+            src: ''
+        },
+        {
+            id: 'xwz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        }
+    ],
+    [
+        {
+            id: 'yyz',
+            src: ''
+        },
+        {
+            id: 'xxz',
+            src: ''
+        },
+        {
+            id: 'xwz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        }
+    ],
+    [
+        {
+            id: 'yyz',
+            src: ''
+        },
+        {
+            id: 'xxz',
+            src: ''
+        },
+        {
+            id: 'xwz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        }
+    ],
+    [
+        {
+            id: 'yyz',
+            src: ''
+        },
+        {
+            id: 'xxz',
+            src: ''
+        },
+        {
+            id: 'xwz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        },
+        {
+            id: 'xmz',
+            src: ''
+        }
+    ]
+];
 const makeId = (length) => {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -55,6 +169,14 @@ const moveCamera = (direction) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
         return;
     }
+    if (direction === ANIMATION_ID.camera_right_to_left && MAPS[0].offsetLeft >= 0) {
+        ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
+        return;
+    }
+    if (direction === ANIMATION_ID.camera_left_to_right && MAPS[MAPS.length - 1].offsetLeft <= 0) {
+        ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+        return;
+    }
     MAPS.forEach(map => map.style.left = `${map.offsetLeft + ((direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * 4)}px`);
     requestAnimationFrame(() => moveCamera(direction));
 };
@@ -67,8 +189,9 @@ const launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, exte
     launchCharacterAnimation(characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId);
 };
 const launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
-    if (!characterElement)
-        alert("no element no more!");
+    if (!characterElement) {
+        return;
+    }
     if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
         return;
     }
@@ -144,7 +267,8 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum) => {
     }
     //creation
     const lastMapDomElement = MAPS[MAPS.length - 1];
-    if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10) {
+    if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10 && currentCacheRightIndex < (localStorageElements.length - 1)) {
+        currentCacheRightIndex++;
         MAPS.push(createMapBlock((lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth)));
     }
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
@@ -153,6 +277,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum) => {
     if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0) {
         return;
     }
+    //collect data from the cache
     if (throttleNum < 10) {
         throttleNum++;
         return requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
@@ -161,7 +286,9 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum) => {
     //creation
     //pick first map block
     const firstMapDomElement = MAPS[0];
-    if (firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))) {
+    if (firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth)) && currentCacheLeftIndex > 0) {
+        const newMapBlockData = localStorageElements[currentCacheLeftIndex - 1];
+        currentCacheLeftIndex--;
         MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
     }
     //deletion

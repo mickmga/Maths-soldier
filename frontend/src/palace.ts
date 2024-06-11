@@ -14,6 +14,10 @@ let successfulKillsScore = 0;
 
 let backgroundSrc = 'assets/palace/maps/castle/castle.gif';
 
+let currentCacheLeftIndex = 1;
+let currentCacheRightIndex = 5;
+
+
 
 const localStorageElements = [
     [
@@ -26,15 +30,122 @@ const localStorageElements = [
             src:''
         },
         {
+            id: 'xwz',
+            src:''
 
         },
         {
+           id: 'xmz',
+           src:''
             
-        }
+        },
+        {
+          id: 'xmz',
+          src:''
+             
+         }
+    ],
+    [
+        {
+            id: 'yyz',
+            src:''
+        },
+        {
+            id: 'xxz',
+            src:''
+        },
+        {
+            id: 'xwz',
+            src:''
 
+        },
+        {
+           id: 'xmz',
+           src:''
+            
+        },
+        {
+          id: 'xmz',
+          src:''
+             
+         }
+    ],
+    [
+        {
+            id: 'yyz',
+            src:''
+        },
+        {
+            id: 'xxz',
+            src:''
+        },
+        {
+            id: 'xwz',
+            src:''
+
+        },
+        {
+           id: 'xmz',
+           src:''
+            
+        },
+        {
+          id: 'xmz',
+          src:''
+             
+         }
+    ],
+    [
+        {
+            id: 'yyz',
+            src:''
+        },
+        {
+            id: 'xxz',
+            src:''
+        },
+        {
+            id: 'xwz',
+            src:''
+
+        },
+        {
+           id: 'xmz',
+           src:''
+            
+        },
+        {
+          id: 'xmz',
+          src:''
+             
+         }
+    ],
+    [
+        {
+            id: 'yyz',
+            src:''
+        },
+        {
+            id: 'xxz',
+            src:''
+        },
+        {
+            id: 'xwz',
+            src:''
+
+        },
+        {
+           id: 'xmz',
+           src:''
+            
+        },
+        {
+          id: 'xmz',
+          src:''
+             
+         }
     ]
 
-    
 ];
 
 
@@ -89,6 +200,16 @@ const moveCamera = (direction: ANIMATION_ID) => {
 
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
        return;
+    }
+
+    if(direction === ANIMATION_ID.camera_right_to_left && MAPS[0].offsetLeft >= 0 ){   
+        ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
+        return;
+    }
+
+    if(direction === ANIMATION_ID.camera_left_to_right && MAPS[MAPS.length - 1].offsetLeft <= 0 ){   
+        ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+        return;
     }
 
     MAPS.forEach(
@@ -182,9 +303,7 @@ const launchAttack = () => {
 
 
 const launchOpponent =  () => {
-
     launchAnimationAndDeclareItLaunched(enemy, 0, 'png', 'assets/challenge/characters/enemies/wolf', 1, 9, 1, true, ANIMATION_ID.opponent_run);
-
 }
 
 let enemyOnScreen = true;
@@ -241,7 +360,8 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
         const lastMapDomElement = MAPS[MAPS.length-1];
 
-        if(lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth/10 ){
+        if(lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth/10 && currentCacheRightIndex < (localStorageElements.length - 1) ){
+          currentCacheRightIndex++;
           MAPS.push(createMapBlock( (lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth)));   
        }
 
@@ -257,6 +377,9 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
         return;
     }
 
+        //collect data from the cache
+
+
     if (throttleNum < 10) {
         throttleNum++;
         return requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
@@ -270,7 +393,9 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
                  const firstMapDomElement = MAPS[0];
                  
-                 if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth))){
+                 if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth)) && currentCacheLeftIndex > 0){
+                    const newMapBlockData = localStorageElements[currentCacheLeftIndex - 1];
+                    currentCacheLeftIndex--;
                     MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
                  }
 
@@ -302,6 +427,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     moveCamera(ANIMATION_ID.camera_left_to_right);
     launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/palace/hero/old_walk', 1, 6, 1, true, ANIMATION_ID.walk);   
  }
+
 
  const launchCharacterMovementLeft = () => {
     moveCamera(ANIMATION_ID.camera_right_to_left);
