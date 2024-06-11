@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const MAPS = [];
 const heroContainer = document.getElementById('hero_container');
 const heroImage = document.getElementById('heroImg');

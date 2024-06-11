@@ -14,8 +14,8 @@ let successfulKillsScore = 0;
 
 let backgroundSrc = 'assets/palace/maps/castle/castle.gif';
 
-let currentCacheLeftIndex = 1;
-let currentCacheRightIndex = 5;
+let currentCacheLeftIndex = 0;
+let currentCacheRightIndex = 1;
 
 
 
@@ -23,129 +23,120 @@ const localStorageElements = [
     [
         {
             id: 'yyz',
-            src:''
+            src:'assets/palace/items/courage.png'
         },
         {
             id: 'xxz',
-            src:''
+            src:'assets/palace/items/gamepad.png'
         },
         {
             id: 'xwz',
-            src:''
+            src:'assets/palace/items/greece.png'
 
         },
         {
            id: 'xmz',
-           src:''
+           src:'assets/palace/items/papyrus.png'
+            
+        },
+       null
+    ],
+    [
+        {
+            id: 'yyz',
+            src:'assets/palace/items/courage.png'
+        },
+        {
+            id: 'xxz',
+            src:'assets/palace/items/gamepad.png'
+        },
+        {
+            id: 'xwz',
+            src:'assets/palace/items/greece.png'
+
+        },
+        {
+           id: 'xmz',
+           src:'assets/palace/items/papyrus.png'
             
         },
         {
           id: 'xmz',
-          src:''
-             
+          src:'assets/palace/items/parthenon.png'
          }
     ],
     [
         {
             id: 'yyz',
-            src:''
+            src:'assets/palace/items/courage.png'
         },
         {
             id: 'xxz',
-            src:''
+            src:'assets/palace/items/gamepad.png'
         },
         {
             id: 'xwz',
-            src:''
+            src:'assets/palace/items/greece.png'
 
         },
         {
            id: 'xmz',
-           src:''
+           src:'assets/palace/items/papyrus.png'
             
         },
         {
           id: 'xmz',
-          src:''
-             
+          src:'assets/palace/items/parthenon.png'
          }
     ],
     [
         {
             id: 'yyz',
-            src:''
+            src:'assets/palace/items/courage.png'
         },
         {
             id: 'xxz',
-            src:''
+            src:'assets/palace/items/gamepad.png'
         },
         {
             id: 'xwz',
-            src:''
+            src:'assets/palace/items/greece.png'
 
         },
         {
            id: 'xmz',
-           src:''
+           src:'assets/palace/items/papyrus.png'
             
         },
         {
           id: 'xmz',
-          src:''
-             
+          src:'assets/palace/items/parthenon.png'
          }
     ],
     [
         {
             id: 'yyz',
-            src:''
+            src:'assets/palace/items/courage.png'
         },
         {
             id: 'xxz',
-            src:''
+            src:'assets/palace/items/gamepad.png'
         },
         {
             id: 'xwz',
-            src:''
+            src:'assets/palace/items/greece.png'
 
         },
         {
            id: 'xmz',
-           src:''
+           src:'assets/palace/items/papyrus.png'
             
         },
         {
           id: 'xmz',
-          src:''
-             
-         }
-    ],
-    [
-        {
-            id: 'yyz',
-            src:''
-        },
-        {
-            id: 'xxz',
-            src:''
-        },
-        {
-            id: 'xwz',
-            src:''
-
-        },
-        {
-           id: 'xmz',
-           src:''
-            
-        },
-        {
-          id: 'xmz',
-          src:''
-             
+          src:'assets/palace/items/parthenon.png'
          }
     ]
-
 ];
 
 
@@ -181,7 +172,33 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.character_left_to_right_move]: 0
 }
 
-const createMapBlock = (left: number) => {
+const createItemSlots = (slots: Array<{id: string, src: string}  | null>) => {
+    return `
+      <div class='slotGroup slotsLeft'>
+        <div class='slot'>
+           <img class='item' src='${slots[0]?.src ? slots[0].src : "" }'/>
+        </div>
+        <div class='slot'>
+           <img class='item' src='${slots[1]?.src ? slots[1].src : "" }'/>
+        </div>
+      </div>
+      <div class='slotGroup slotsCenter'>
+        <div class='slot'>
+           <img class='item' src='${slots[2]?.src ? slots[2].src : "" }'/>
+        </div>
+      </div>
+      <div class='slotGroup slotRight'>
+        <div class='slot'>
+           <img class='item' src='${slots[3]?.src ? slots[3].src : "" }'/>
+        </div>
+        <div class='slot'>
+            ${slots[4]?.src ? '<img src="' + slots[4].src + '" />' : '' }
+        </div>
+      </div>
+    `;
+  };
+
+const createMapPalaceBlock = (left: number,  map: Array<{id: string, src: string}  | null>) => {
     const block = document.createElement('div');
     block.classList.add('mapBlock');
     const backgroundImage = document.createElement('img');
@@ -190,6 +207,10 @@ const createMapBlock = (left: number) => {
     block.style.position = 'fixed';
     block.style.left = `${left}px`;
 
+   // Convert the string to DOM elements and append
+   const slots = document.createElement('div');
+   slots.innerHTML = createItemSlots(map);
+   block.append(slots);
     document.getElementsByTagName('body')[0].append(block);
     
     return block;
@@ -361,8 +382,9 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
         const lastMapDomElement = MAPS[MAPS.length-1];
 
         if(lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth/10 && currentCacheRightIndex < (localStorageElements.length - 1) ){
+          MAPS.push(createMapPalaceBlock( (lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth), localStorageElements[currentCacheRightIndex] )) ;   
           currentCacheRightIndex++;
-          MAPS.push(createMapBlock( (lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth)));   
+
        }
 
        requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
@@ -395,8 +417,8 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
                  
                  if(firstMapDomElement && (firstMapDomElement.offsetLeft > (-window.innerWidth)) && currentCacheLeftIndex > 0){
                     const newMapBlockData = localStorageElements[currentCacheLeftIndex - 1];
+                    MAPS.unshift(createMapPalaceBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth, newMapBlockData ));
                     currentCacheLeftIndex--;
-                    MAPS.unshift(createMapBlock(firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth));
                  }
 
         //deletion
@@ -465,8 +487,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 )
 
  window.onload = () => {
-   MAPS.push(createMapBlock(-window.innerWidth));
-   MAPS.push(createMapBlock(0));
-   MAPS.push(createMapBlock(window.innerWidth));
+   MAPS.push(createMapPalaceBlock(0, localStorageElements[0]));
+   MAPS.push(createMapPalaceBlock(window.innerWidth, localStorageElements[1]));
 }
 
