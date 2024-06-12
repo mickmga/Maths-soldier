@@ -18,7 +18,6 @@ let currentCacheLeftIndex = 0;
 let currentCacheRightIndex = 1;
 
 
-
 const localStorageElements = [
     [
         {
@@ -176,22 +175,107 @@ const createItemSlots = (slots: Array<{id: string, src: string}  | null>) => {
     return `
       <div class='slotGroup slotsLeft'>
         <div class='slot'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
            <img class='item' src='${slots[0]?.src ? slots[0].src : "" }'/>
         </div>
         <div class='slot'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
            <img class='item' src='${slots[1]?.src ? slots[1].src : "" }'/>
         </div>
       </div>
       <div class='slotGroup slotsCenter'>
         <div class='slot'>
+             <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
            <img class='item' src='${slots[2]?.src ? slots[2].src : "" }'/>
         </div>
       </div>
       <div class='slotGroup slotRight'>
         <div class='slot'>
+            <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
            <img class='item' src='${slots[3]?.src ? slots[3].src : "" }'/>
         </div>
         <div class='slot'>
+             <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
             ${slots[4]?.src ? '<img src="' + slots[4].src + '" />' : '' }
         </div>
       </div>

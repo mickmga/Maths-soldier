@@ -156,22 +156,107 @@ const createItemSlots = (slots) => {
     return `
       <div class='slotGroup slotsLeft'>
         <div class='slot'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
            <img class='item' src='${((_a = slots[0]) === null || _a === void 0 ? void 0 : _a.src) ? slots[0].src : ""}'/>
         </div>
         <div class='slot'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
            <img class='item' src='${((_b = slots[1]) === null || _b === void 0 ? void 0 : _b.src) ? slots[1].src : ""}'/>
         </div>
       </div>
       <div class='slotGroup slotsCenter'>
         <div class='slot'>
+             <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
            <img class='item' src='${((_c = slots[2]) === null || _c === void 0 ? void 0 : _c.src) ? slots[2].src : ""}'/>
         </div>
       </div>
       <div class='slotGroup slotRight'>
         <div class='slot'>
+            <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
            <img class='item' src='${((_d = slots[3]) === null || _d === void 0 ? void 0 : _d.src) ? slots[3].src : ""}'/>
         </div>
         <div class='slot'>
+             <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
             ${((_e = slots[4]) === null || _e === void 0 ? void 0 : _e.src) ? '<img src="' + slots[4].src + '" />' : ''}
         </div>
       </div>
