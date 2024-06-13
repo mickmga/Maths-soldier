@@ -66,10 +66,11 @@ app.get('/slot/update_item', (req, res) => {
 
 });
 
+/*
 app.get('/icons', async (req, res) => {
 
   const getLogos = () => {
-    return fetch('https://api.iconfinder.com/v4/icons/search?query=arrow&count=10', {
+    return https.get('https://api.iconfinder.com/v4/icons/search?query=arrow&count=10', {
        headers: { 
           'Authorization': 'Bearer X0vjEUN6KRlxbp2DoUkyHeM0VOmxY91rA6BbU5j3Xu6wDodwS0McmilLPBWDUcJ1',
           'accept': 'application/json'
@@ -79,8 +80,53 @@ app.get('/icons', async (req, res) => {
  }
 
  const logos = await getLogos();
-  res.send(logos);
+ 
+ console.log(logos)
+
+ // res.send(logos);
 });
+
+*/
+
+app.get('/icons', (req, res) => {
+  const options = {
+      hostname: 'http://api.iconfinder.com', // Example API
+      path: '/v4/icons',
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer X0vjEUN6KRlxbp2DoUkyHeM0VOmxY91rA6BbU5j3Xu6wDodwS0McmilLPBWDUcJ1',
+        'accept': 'application/json'
+       }
+  };
+
+  const httpsRequest = https.request(options, (httpsResponse) => {
+      let data = '';
+
+      // A chunk of data has been received.
+      httpsResponse.on('data', (chunk) => {
+          data += chunk;
+      });
+
+      // The whole response has been received.
+      httpsResponse.on('end', () => {
+          try {
+              const jsonData = JSON.parse(data);
+              res.status(200).json(jsonData);
+          } catch (e) {
+              res.status(500).send('Error parsing response from external API');
+          }
+      });
+  });
+
+  httpsRequest.on('error', (e) => {
+      console.error(`Problem with request: ${e.message}`);
+      res.status(500).send('Error with HTTPS request');
+  });
+
+  httpsRequest.end();
+});
+
+
 
 app.get("/slotData", async (req, res) => {
 

@@ -22,14 +22,14 @@
   height: 100px;
   width: 100px;
   background: black;
-  z-index: 1000;
+  z-index: 3;
 }
 
 .slotGroup {
   position: absolute;
   top: 20vh;
   height: 300px;
-  z-index: 1000;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -39,6 +39,7 @@
   width: 10vw;
   aspect-ratio: 1/1;
   position: relative;
+  cursor: pointer;
 }
 
 .slotsLeft{
@@ -60,3 +61,71 @@
   height: 100%;
   width: auto;
 }
+
+
+#menu {
+  position: absolute;
+  top: 25vh;
+  left: 30vw;
+  background: brown;
+  opacity: 0.95;
+  z-index: 4;
+  height: 60vh;
+  aspect-ratio: 4/3;
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#menuA{
+  height: 20%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#menuA input {
+  height: 80%;
+  width: 90%;
+  border: none;
+  background: none;
+  color: white;
+  font-size: large;
+  outline: none;
+}
+
+
+#menuB {
+  height: 70%;
+  width: 95%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.menu_item_container{
+  width: 25%;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.menu_item {
+  width: 80%;
+  aspect-ratio: 1/1;
+  border: solid 1px;
+  background: rgb(136, 59, 59);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu_item img{
+   width: 80%; 
+   height: auto;
+   cursor: pointer;
+  }

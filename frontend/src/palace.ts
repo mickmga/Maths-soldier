@@ -7,8 +7,11 @@ const enemy = document.getElementById('enemyImg')! as HTMLImageElement;
 const enemyContainer =  document.getElementById('enemy_container')!;
 const errorScoreContainer = document.getElementById('error_score')!;
 const successfulKillsScoreContainer  = document.getElementById('killed_score')!;
+const menu = document.getElementById("menu")!;
+const searchInput = document.getElementById("searchInput")!;
 let errorScore = 0;
 let successfulKillsScore = 0;
+
 
 //local storage
 
@@ -527,6 +530,11 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
 
  }
+ 
+
+ const openMenu = () => {
+  menu.style.display = 'flex';
+ }
 
 
  const launchCharacterMovement = () => {
@@ -557,10 +565,20 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
     }
 
+    if(event.key === " "){
+      openMenu();
+    }
+
   }
 
  );
 
+
+ searchInput.addEventListener('keyup', () => {
+
+  alert('searching')
+
+ })
 
  document.addEventListener('keyup', () => {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.character_left_to_right_move] = 0;

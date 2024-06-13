@@ -6,6 +6,8 @@ const enemy = document.getElementById('enemyImg');
 const enemyContainer = document.getElementById('enemy_container');
 const errorScoreContainer = document.getElementById('error_score');
 const successfulKillsScoreContainer = document.getElementById('killed_score');
+const menu = document.getElementById("menu");
+const searchInput = document.getElementById("searchInput");
 let errorScore = 0;
 let successfulKillsScore = 0;
 //local storage
@@ -414,6 +416,9 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum) => {
 //CHALLENGE.TS ENDING
 const initHero = () => {
 };
+const openMenu = () => {
+    menu.style.display = 'flex';
+};
 const launchCharacterMovement = () => {
     moveCamera(ANIMATION_ID.camera_left_to_right);
     launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/palace/hero/old_walk', 1, 6, 1, true, ANIMATION_ID.walk);
@@ -433,6 +438,12 @@ document.addEventListener('keydown', (event) => {
         launchCharacterMovementLeft();
         checkForScreenUpdateFromRightToLeft(10);
     }
+    if (event.key === " ") {
+        openMenu();
+    }
+});
+searchInput.addEventListener('keyup', () => {
+    alert('searching');
 });
 document.addEventListener('keyup', () => {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.character_left_to_right_move] = 0;
