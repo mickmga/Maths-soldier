@@ -7,7 +7,6 @@
   "description": "Typescript/NodeJS videogame, allowing users to work on their memory",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc -w"

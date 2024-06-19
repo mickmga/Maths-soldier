@@ -42,26 +42,24 @@
   cursor: pointer;
 }
 
-.slotsLeft{
+.slotsLeft {
   left: 0;
   width: 40vw;
 }
 
-.slotsCenter{
+.slotsCenter {
   left: 40vw;
   width: 28vw;
 }
-.slotRight{
+.slotRight {
   left: 68vw;
   width: 32vw;
 }
-
 
 .item {
   height: 100%;
   width: auto;
 }
-
 
 #menu {
   position: absolute;
@@ -78,7 +76,7 @@
   align-items: center;
 }
 
-#menuA{
+#menuA {
   height: 20%;
   width: 100%;
   display: flex;
@@ -96,7 +94,6 @@
   outline: none;
 }
 
-
 #menuB {
   height: 70%;
   width: 95%;
@@ -107,7 +104,15 @@
   overflow: scroll;
   overflow-x: hidden;
 }
-.menu_item_container{
+.menu_item_container {
+  width: 25%;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-result-item {
   width: 25%;
   aspect-ratio: 1/1;
   display: flex;
@@ -124,8 +129,8 @@
   align-items: center;
 }
 
-.menu_item img{
-   width: 80%; 
-   height: auto;
-   cursor: pointer;
-  }
+.menu_item img {
+  width: 80%;
+  height: auto;
+  cursor: pointer;
+}
