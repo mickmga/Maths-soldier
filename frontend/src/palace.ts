@@ -548,6 +548,7 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
   if (firstMapDomElement.offsetLeft < -window.innerWidth) {
     firstMapDomElement.remove();
     MAPS.shift();
+    currentCacheLeftIndex++;
   }
 
   //creation
@@ -728,7 +729,6 @@ const fetchIcons = (query: string): void => {
   fetch(`http://localhost:3000/iconfinder?query=${query}`)
     .then((response) => response.json())
     .then((data: { icons: Icon[] }) => {
-      console.log(data);
       displaySearchResults(data.icons);
     })
     .catch((error) => {
