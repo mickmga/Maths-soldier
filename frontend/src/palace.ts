@@ -1,4 +1,15 @@
-export {};
+import store, { RootState, updateItem } from "./store.js";
+import { Store } from "redux";
+
+// Declare global variables
+declare global {
+  interface Window {
+    store: Store<RootState>;
+  }
+}
+
+// Attach the store to the window object for global access
+window.store = store;
 
 const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
@@ -14,122 +25,10 @@ const menuB = document.getElementById("menuB") as HTMLDivElement;
 let errorScore = 0;
 let successfulKillsScore = 0;
 
-//local storage
-
 let backgroundSrc = "assets/palace/maps/castle/castle.gif";
 
 let currentCacheLeftIndex = 0;
 let currentCacheRightIndex = 1;
-
-const localStorageElements = [
-  [
-    {
-      id: "yyz",
-      src: "assets/palace/items/courage.png",
-    },
-    {
-      id: "xxz",
-      src: "assets/palace/items/gamepad.png",
-    },
-    {
-      id: "xwz",
-      src: "assets/palace/items/greece.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/papyrus.png",
-    },
-    null,
-  ],
-  [
-    {
-      id: "yyz",
-      src: "assets/palace/items/courage.png",
-    },
-    {
-      id: "xxz",
-      src: "assets/palace/items/gamepad.png",
-    },
-    {
-      id: "xwz",
-      src: "assets/palace/items/greece.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/papyrus.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/parthenon.png",
-    },
-  ],
-  [
-    {
-      id: "yyz",
-      src: "assets/palace/items/courage.png",
-    },
-    {
-      id: "xxz",
-      src: "assets/palace/items/gamepad.png",
-    },
-    {
-      id: "xwz",
-      src: "assets/palace/items/greece.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/papyrus.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/parthenon.png",
-    },
-  ],
-  [
-    {
-      id: "yyz",
-      src: "assets/palace/items/courage.png",
-    },
-    {
-      id: "xxz",
-      src: "assets/palace/items/gamepad.png",
-    },
-    {
-      id: "xwz",
-      src: "assets/palace/items/greece.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/papyrus.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/parthenon.png",
-    },
-  ],
-  [
-    {
-      id: "yyz",
-      src: "assets/palace/items/courage.png",
-    },
-    {
-      id: "xxz",
-      src: "assets/palace/items/gamepad.png",
-    },
-    {
-      id: "xwz",
-      src: "assets/palace/items/greece.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/papyrus.png",
-    },
-    {
-      id: "xmz",
-      src: "assets/palace/items/parthenon.png",
-    },
-  ],
-];
 
 const makeId = (length: number) => {
   let result = "";
@@ -558,12 +457,12 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
   if (
     lastMapDomElement &&
     lastMapDomElement.offsetLeft <= window.innerWidth / 10 &&
-    currentCacheRightIndex < localStorageElements.length - 1
+    currentCacheRightIndex < window.store.getState().localStorage.length - 1
   ) {
     MAPS.push(
       createMapPalaceBlock(
         lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth,
-        localStorageElements[currentCacheRightIndex]
+        window.store.getState().localStorage[currentCacheRightIndex]
       )
     );
     currentCacheRightIndex++;
@@ -599,7 +498,8 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     firstMapDomElement.offsetLeft > -window.innerWidth &&
     currentCacheLeftIndex > 0
   ) {
-    const newMapBlockData = localStorageElements[currentCacheLeftIndex - 1];
+    const newMapBlockData =
+      window.store.getState().localStorage[currentCacheLeftIndex - 1];
     MAPS.unshift(
       createMapPalaceBlock(
         firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth,
@@ -695,8 +595,13 @@ document.addEventListener("keyup", () => {
 });
 
 window.onload = () => {
-  MAPS.push(createMapPalaceBlock(0, localStorageElements[0]));
-  MAPS.push(createMapPalaceBlock(window.innerWidth, localStorageElements[1]));
+  MAPS.push(createMapPalaceBlock(0, window.store.getState().localStorage[0]));
+  MAPS.push(
+    createMapPalaceBlock(
+      window.innerWidth,
+      window.store.getState().localStorage[1]
+    )
+  );
 };
 
 interface IconFormat {
@@ -742,8 +647,12 @@ const changeSlotItem = (src: string) => {
 
   if (!itemImg) return;
   itemImg.src = src;
-  //update storage
-  //update html
+
+  // Parse pickedSlotId to get blockIndex and itemIndex
+  const [blockIndex, itemIndex] = pickedSlotId.split("_").map(Number);
+  window.store.dispatch(
+    updateItem({ blockIndex, itemIndex, item: { id: makeId(3), src } })
+  );
 };
 
 const displaySearchResults = (icons: Icon[]): void => {
