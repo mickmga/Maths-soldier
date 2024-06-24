@@ -4,7 +4,7 @@ import path from "path";
 build({
   entryPoints: [path.join("src", "palace.ts")],
   bundle: true,
-  minify: true,
+  minify: false,
   sourcemap: true,
   outfile: path.join("public", "dist", "palace.js"),
   target: ["es6"],

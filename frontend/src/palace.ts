@@ -1,10 +1,11 @@
-import store, { RootState, updateItem } from "./store.js";
+import store, { RootState, Slot, updateItem } from "./store.js";
 import { Store } from "redux";
 
 // Declare global variables
 declare global {
   interface Window {
     store: Store<RootState>;
+    selectItem: (event: Event) => void;
   }
 }
 
@@ -70,123 +71,124 @@ const selectItem = (event: Event): void => {
   const slotId = target.id;
   alert(`picked slot : ${slotId}`);
   pickedSlotId = slotId;
+  openMenu();
 };
 
-const createItemSlots = (slots: Array<{ id: string; src: string } | null>) => {
+// Make selectItem globally accessible
+window.selectItem = selectItem;
+
+const createItemSlots = (slots: Array<Slot | null>) => {
   return `
-      <div class='slotGroup slotsLeft'>
-        <div class='slot' onclick='selectItem(event)' id='slot_1'>
-              <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-              </div>
-           <img class='item' src='${slots[0]?.src ? slots[0].src : ""}'/>
+    <div class='slotGroup slotsLeft'>
+      <div class='slot' onclick='selectItem(event)' id='slot_1'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
         </div>
-        <div class='slot' onclick='selectItem(event)' id='slot_2'>
-              <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-              </div>
-           <img class='item' src='${slots[1]?.src ? slots[1].src : ""}'/>
-        </div>
+        <img class='item' src='${slots[0]?.item?.src || ""}'/>
       </div>
-      <div class='slotGroup slotsCenter'>
+      <div class='slot' onclick='selectItem(event)' id='slot_2'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
+        </div>
+        <img class='item' src='${slots[1]?.item?.src || ""}'/>
+      </div>
+    </div>
+    <div class='slotGroup slotsCenter'>
       <div class='slot' onclick='selectItem(event)' id='slot_3'>
-      <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-             </div>
-           <img class='item' src='${slots[2]?.src ? slots[2].src : ""}'/>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
         </div>
+        <img class='item' src='${slots[2]?.item?.src || ""}'/>
       </div>
-      <div class='slotGroup slotRight'>
-        <div class='slot'>
-            <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-              </div>
-           <img class='item' src='${slots[3]?.src ? slots[3].src : ""}'/>
+    </div>
+    <div class='slotGroup slotRight'>
+      <div class='slot' onclick='selectItem(event)' id='slot_4'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
         </div>
-        <div class='slot' onclick='selectItem(event)' id='slot_4'>
-             <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-             </div>
-            ${slots[4]?.src ? '<img src="' + slots[4].src + '" />' : ""}
-        </div>
+        <img class='item' src='${slots[3]?.item?.src || ""}'/>
       </div>
-    `;
+      <div class='slot' onclick='selectItem(event)' id='slot_5'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
+        </div>
+        <img class='item' src='${slots[4]?.item?.src || ""}'/>
+      </div>
+    </div>
+  `;
 };
 
-const createMapPalaceBlock = (
-  left: number,
-  map: Array<{ id: string; src: string } | null>
-) => {
+const createMapPalaceBlock = (left: number, map: Array<Slot | null>) => {
   const block = document.createElement("div");
   block.classList.add("mapBlock");
   const backgroundImage = document.createElement("img");
@@ -529,6 +531,10 @@ const openMenu = () => {
   menu.style.display = "flex";
 };
 
+const closeMenu = () => {
+  menu.style.display = "none";
+};
+
 const launchCharacterMovement = () => {
   moveCamera(ANIMATION_ID.camera_left_to_right);
   launchAnimationAndDeclareItLaunched(
@@ -648,11 +654,9 @@ const changeSlotItem = (src: string) => {
   if (!itemImg) return;
   itemImg.src = src;
 
-  // Parse pickedSlotId to get blockIndex and itemIndex
-  const [blockIndex, itemIndex] = pickedSlotId.split("_").map(Number);
-  window.store.dispatch(
-    updateItem({ blockIndex, itemIndex, item: { id: makeId(3), src } })
-  );
+  // Parse pickedSlotId to get slotId
+  const slotId = pickedSlotId;
+  window.store.dispatch(updateItem({ slotId, item: { id: makeId(3), src } }));
 };
 
 const displaySearchResults = (icons: Icon[]): void => {

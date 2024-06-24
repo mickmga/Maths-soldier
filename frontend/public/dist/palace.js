@@ -1,109 +1,3081 @@
-"use strict";(()=>{var kt=Object.defineProperty,Mt=Object.defineProperties;var At=Object.getOwnPropertyDescriptors;var K=Object.getOwnPropertySymbols;var Pe=Object.prototype.hasOwnProperty,Re=Object.prototype.propertyIsEnumerable;var le=(e,t,r)=>t in e?kt(e,t,{enumerable:!0,configurable:!0,writable:!0,value:r}):e[t]=r,b=(e,t)=>{for(var r in t||(t={}))Pe.call(t,r)&&le(e,r,t[r]);if(K)for(var r of K(t))Re.call(t,r)&&le(e,r,t[r]);return e},V=(e,t)=>Mt(e,At(t));var ze=(e,t)=>{var r={};for(var n in e)Pe.call(e,n)&&t.indexOf(n)<0&&(r[n]=e[n]);if(e!=null&&K)for(var n of K(e))t.indexOf(n)<0&&Re.call(e,n)&&(r[n]=e[n]);return r};var H=(e,t,r)=>le(e,typeof t!="symbol"?t+"":t,r);var je=(e,t,r)=>new Promise((n,i)=>{var o=c=>{try{a(r.next(c))}catch(l){i(l)}},s=c=>{try{a(r.throw(c))}catch(l){i(l)}},a=c=>c.done?n(c.value):Promise.resolve(c.value).then(o,s);a((r=r.apply(e,t)).next())});function k(e){return`Minified Redux error #${e}; visit https://redux.js.org/Errors?code=${e} for the full message or use the non-minified dev environment for full errors. `}var It=typeof Symbol=="function"&&Symbol.observable||"@@observable",Ve=It,fe=()=>Math.random().toString(36).substring(7).split("").join("."),Dt={INIT:`@@redux/INIT${fe()}`,REPLACE:`@@redux/REPLACE${fe()}`,PROBE_UNKNOWN_ACTION:()=>`@@redux/PROBE_UNKNOWN_ACTION${fe()}`},G=Dt;function X(e){if(typeof e!="object"||e===null)return!1;let t=e;for(;Object.getPrototypeOf(t)!==null;)t=Object.getPrototypeOf(t);return Object.getPrototypeOf(e)===t||Object.getPrototypeOf(e)===null}function de(e,t,r){if(typeof e!="function")throw new Error(k(2));if(typeof t=="function"&&typeof r=="function"||typeof r=="function"&&typeof arguments[3]=="function")throw new Error(k(0));if(typeof t=="function"&&typeof r=="undefined"&&(r=t,t=void 0),typeof r!="undefined"){if(typeof r!="function")throw new Error(k(1));return r(de)(e,t)}let n=e,i=t,o=new Map,s=o,a=0,c=!1;function l(){s===o&&(s=new Map,o.forEach((p,_)=>{s.set(_,p)}))}function u(){if(c)throw new Error(k(3));return i}function f(p){if(typeof p!="function")throw new Error(k(4));if(c)throw new Error(k(5));let _=!0;l();let w=a++;return s.set(w,p),function(){if(_){if(c)throw new Error(k(6));_=!1,l(),s.delete(w),o=null}}}function d(p){if(!X(p))throw new Error(k(7));if(typeof p.type=="undefined")throw new Error(k(8));if(typeof p.type!="string")throw new Error(k(17));if(c)throw new Error(k(9));try{c=!0,i=n(i,p)}finally{c=!1}return(o=s).forEach(w=>{w()}),p}function g(p){if(typeof p!="function")throw new Error(k(10));n=p,d({type:G.REPLACE})}function v(){let p=f;return{subscribe(_){if(typeof _!="object"||_===null)throw new Error(k(11));function w(){let y=_;y.next&&y.next(u())}return w(),{unsubscribe:p(w)}},[Ve](){return this}}}return d({type:G.INIT}),{dispatch:d,subscribe:f,getState:u,replaceReducer:g,[Ve]:v}}function Ct(e){Object.keys(e).forEach(t=>{let r=e[t];if(typeof r(void 0,{type:G.INIT})=="undefined")throw new Error(k(12));if(typeof r(void 0,{type:G.PROBE_UNKNOWN_ACTION()})=="undefined")throw new Error(k(13))})}function $e(e){let t=Object.keys(e),r={};for(let s=0;s<t.length;s++){let a=t[s];typeof e[a]=="function"&&(r[a]=e[a])}let n=Object.keys(r),i,o;try{Ct(r)}catch(s){o=s}return function(a={},c){if(o)throw o;let l=!1,u={};for(let f=0;f<n.length;f++){let d=n[f],g=r[d],v=a[d],O=g(v,c);if(typeof O=="undefined"){let p=c&&c.type;throw new Error(k(14))}u[d]=O,l=l||O!==v}return l=l||n.length!==Object.keys(a).length,l?u:a}}function F(...e){return e.length===0?t=>t:e.length===1?e[0]:e.reduce((t,r)=>(...n)=>t(r(...n)))}function Le(...e){return t=>(r,n)=>{let i=t(r,n),o=()=>{throw new Error(k(15))},s={getState:i.getState,dispatch:(c,...l)=>o(c,...l)},a=e.map(c=>c(s));return o=F(...a)(i.dispatch),V(b({},i),{dispatch:o})}}function Fe(e){return X(e)&&"type"in e&&typeof e.type=="string"}var He=Symbol.for("immer-nothing"),We=Symbol.for("immer-draftable"),D=Symbol.for("immer-state");function T(e,...t){throw new Error(`[Immer] minified error nr: ${e}. Full error at: https://bit.ly/3cXEKWf`)}var W=Object.getPrototypeOf;function P(e){return!!e&&!!e[D]}function x(e){var t;return e?Ge(e)||Array.isArray(e)||!!e[We]||!!((t=e.constructor)!=null&&t[We])||ee(e)||te(e):!1}var Tt=Object.prototype.constructor.toString();function Ge(e){if(!e||typeof e!="object")return!1;let t=W(e);if(t===null)return!0;let r=Object.hasOwnProperty.call(t,"constructor")&&t.constructor;return r===Object?!0:typeof r=="function"&&Function.toString.call(r)===Tt}function Y(e,t){Z(e)===0?Reflect.ownKeys(e).forEach(r=>{t(r,e[r],e)}):e.forEach((r,n)=>t(n,r,e))}function Z(e){let t=e[D];return t?t.type_:Array.isArray(e)?1:ee(e)?2:te(e)?3:0}function ye(e,t){return Z(e)===2?e.has(t):Object.prototype.hasOwnProperty.call(e,t)}function Xe(e,t,r){let n=Z(e);n===2?e.set(t,r):n===3?e.add(r):e[t]=r}function xt(e,t){return e===t?e!==0||1/e===1/t:e!==e&&t!==t}function ee(e){return e instanceof Map}function te(e){return e instanceof Set}function $(e){return e.copy_||e.base_}function me(e,t){if(ee(e))return new Map(e);if(te(e))return new Set(e);if(Array.isArray(e))return Array.prototype.slice.call(e);let r=Ge(e);if(t===!0||t==="class_only"&&!r){let n=Object.getOwnPropertyDescriptors(e);delete n[D];let i=Reflect.ownKeys(n);for(let o=0;o<i.length;o++){let s=i[o],a=n[s];a.writable===!1&&(a.writable=!0,a.configurable=!0),(a.get||a.set)&&(n[s]={configurable:!0,writable:!0,enumerable:a.enumerable,value:e[s]})}return Object.create(W(e),n)}else{let n=W(e);if(n!==null&&r)return b({},e);let i=Object.create(n);return Object.assign(i,e)}}function be(e,t=!1){return re(e)||P(e)||!x(e)||(Z(e)>1&&(e.set=e.add=e.clear=e.delete=Pt),Object.freeze(e),t&&Object.entries(e).forEach(([r,n])=>be(n,!0))),e}function Pt(){T(2)}function re(e){return Object.isFrozen(e)}var Rt={};function L(e){let t=Rt[e];return t||T(0,e),t}var B;function Ye(){return B}function zt(e,t){return{drafts_:[],parent_:e,immer_:t,canAutoFreeze_:!0,unfinalizedDrafts_:0}}function Be(e,t){t&&(L("Patches"),e.patches_=[],e.inversePatches_=[],e.patchListener_=t)}function ge(e){ve(e),e.drafts_.forEach(jt),e.drafts_=null}function ve(e){e===B&&(B=e.parent_)}function qe(e){return B=zt(B,e)}function jt(e){let t=e[D];t.type_===0||t.type_===1?t.revoke_():t.revoked_=!0}function Ue(e,t){t.unfinalizedDrafts_=t.drafts_.length;let r=t.drafts_[0];return e!==void 0&&e!==r?(r[D].modified_&&(ge(t),T(4)),x(e)&&(e=J(t,e),t.parent_||Q(t,e)),t.patches_&&L("Patches").generateReplacementPatches_(r[D].base_,e,t.patches_,t.inversePatches_)):e=J(t,r,[]),ge(t),t.patches_&&t.patchListener_(t.patches_,t.inversePatches_),e!==He?e:void 0}function J(e,t,r){if(re(t))return t;let n=t[D];if(!n)return Y(t,(i,o)=>Ke(e,n,t,i,o,r)),t;if(n.scope_!==e)return t;if(!n.modified_)return Q(e,n.base_,!0),n.base_;if(!n.finalized_){n.finalized_=!0,n.scope_.unfinalizedDrafts_--;let i=n.copy_,o=i,s=!1;n.type_===3&&(o=new Set(i),i.clear(),s=!0),Y(o,(a,c)=>Ke(e,n,i,a,c,r,s)),Q(e,i,!1),r&&e.patches_&&L("Patches").generatePatches_(n,r,e.patches_,e.inversePatches_)}return n.copy_}function Ke(e,t,r,n,i,o,s){if(P(i)){let a=o&&t&&t.type_!==3&&!ye(t.assigned_,n)?o.concat(n):void 0,c=J(e,i,a);if(Xe(r,n,c),P(c))e.canAutoFreeze_=!1;else return}else s&&r.add(i);if(x(i)&&!re(i)){if(!e.immer_.autoFreeze_&&e.unfinalizedDrafts_<1)return;J(e,i),(!t||!t.scope_.parent_)&&typeof n!="symbol"&&Object.prototype.propertyIsEnumerable.call(r,n)&&Q(e,i)}}function Q(e,t,r=!1){!e.parent_&&e.immer_.autoFreeze_&&e.canAutoFreeze_&&be(t,r)}function Vt(e,t){let r=Array.isArray(e),n={type_:r?1:0,scope_:t?t.scope_:Ye(),modified_:!1,finalized_:!1,assigned_:{},parent_:t,base_:e,draft_:null,copy_:null,revoke_:null,isManual_:!1},i=n,o=Ee;r&&(i=[n],o=q);let{revoke:s,proxy:a}=Proxy.revocable(i,o);return n.draft_=a,n.revoke_=s,a}var Ee={get(e,t){if(t===D)return e;let r=$(e);if(!ye(r,t))return $t(e,r,t);let n=r[t];return e.finalized_||!x(n)?n:n===pe(e.base_,t)?(he(e),e.copy_[t]=we(n,e)):n},has(e,t){return t in $(e)},ownKeys(e){return Reflect.ownKeys($(e))},set(e,t,r){let n=Je($(e),t);if(n!=null&&n.set)return n.set.call(e.draft_,r),!0;if(!e.modified_){let i=pe($(e),t),o=i==null?void 0:i[D];if(o&&o.base_===r)return e.copy_[t]=r,e.assigned_[t]=!1,!0;if(xt(r,i)&&(r!==void 0||ye(e.base_,t)))return!0;he(e),_e(e)}return e.copy_[t]===r&&(r!==void 0||t in e.copy_)||Number.isNaN(r)&&Number.isNaN(e.copy_[t])||(e.copy_[t]=r,e.assigned_[t]=!0),!0},deleteProperty(e,t){return pe(e.base_,t)!==void 0||t in e.base_?(e.assigned_[t]=!1,he(e),_e(e)):delete e.assigned_[t],e.copy_&&delete e.copy_[t],!0},getOwnPropertyDescriptor(e,t){let r=$(e),n=Reflect.getOwnPropertyDescriptor(r,t);return n&&{writable:!0,configurable:e.type_!==1||t!=="length",enumerable:n.enumerable,value:r[t]}},defineProperty(){T(11)},getPrototypeOf(e){return W(e.base_)},setPrototypeOf(){T(12)}},q={};Y(Ee,(e,t)=>{q[e]=function(){return arguments[0]=arguments[0][0],t.apply(this,arguments)}});q.deleteProperty=function(e,t){return q.set.call(this,e,t,void 0)};q.set=function(e,t,r){return Ee.set.call(this,e[0],t,r,e[0])};function pe(e,t){let r=e[D];return(r?$(r):e)[t]}function $t(e,t,r){var i;let n=Je(t,r);return n?"value"in n?n.value:(i=n.get)==null?void 0:i.call(e.draft_):void 0}function Je(e,t){if(!(t in e))return;let r=W(e);for(;r;){let n=Object.getOwnPropertyDescriptor(r,t);if(n)return n;r=W(r)}}function _e(e){e.modified_||(e.modified_=!0,e.parent_&&_e(e.parent_))}function he(e){e.copy_||(e.copy_=me(e.base_,e.scope_.immer_.useStrictShallowCopy_))}var Lt=class{constructor(e){this.autoFreeze_=!0,this.useStrictShallowCopy_=!1,this.produce=(t,r,n)=>{if(typeof t=="function"&&typeof r!="function"){let o=r;r=t;let s=this;return function(c=o,...l){return s.produce(c,u=>r.call(this,u,...l))}}typeof r!="function"&&T(6),n!==void 0&&typeof n!="function"&&T(7);let i;if(x(t)){let o=qe(this),s=we(t,void 0),a=!0;try{i=r(s),a=!1}finally{a?ge(o):ve(o)}return Be(o,n),Ue(i,o)}else if(!t||typeof t!="object"){if(i=r(t),i===void 0&&(i=t),i===He&&(i=void 0),this.autoFreeze_&&be(i,!0),n){let o=[],s=[];L("Patches").generateReplacementPatches_(t,i,o,s),n(o,s)}return i}else T(1,t)},this.produceWithPatches=(t,r)=>{if(typeof t=="function")return(s,...a)=>this.produceWithPatches(s,c=>t(c,...a));let n,i;return[this.produce(t,r,(s,a)=>{n=s,i=a}),n,i]},typeof(e==null?void 0:e.autoFreeze)=="boolean"&&this.setAutoFreeze(e.autoFreeze),typeof(e==null?void 0:e.useStrictShallowCopy)=="boolean"&&this.setUseStrictShallowCopy(e.useStrictShallowCopy)}createDraft(e){x(e)||T(8),P(e)&&(e=Oe(e));let t=qe(this),r=we(e,void 0);return r[D].isManual_=!0,ve(t),r}finishDraft(e,t){let r=e&&e[D];(!r||!r.isManual_)&&T(9);let{scope_:n}=r;return Be(n,t),Ue(void 0,n)}setAutoFreeze(e){this.autoFreeze_=e}setUseStrictShallowCopy(e){this.useStrictShallowCopy_=e}applyPatches(e,t){let r;for(r=t.length-1;r>=0;r--){let i=t[r];if(i.path.length===0&&i.op==="replace"){e=i.value;break}}r>-1&&(t=t.slice(r+1));let n=L("Patches").applyPatches_;return P(e)?n(e,t):this.produce(e,i=>n(i,t))}};function we(e,t){let r=ee(e)?L("MapSet").proxyMap_(e,t):te(e)?L("MapSet").proxySet_(e,t):Vt(e,t);return(t?t.scope_:Ye()).drafts_.push(r),r}function Oe(e){return P(e)||T(10,e),Qe(e)}function Qe(e){if(!x(e)||re(e))return e;let t=e[D],r;if(t){if(!t.modified_)return t.base_;t.finalized_=!0,r=me(e,t.scope_.immer_.useStrictShallowCopy_)}else r=me(e,!0);return Y(r,(n,i)=>{Xe(r,n,Qe(i))}),t&&(t.finalized_=!1),r}var C=new Lt,ne=C.produce,Ur=C.produceWithPatches.bind(C),Kr=C.setAutoFreeze.bind(C),Hr=C.setUseStrictShallowCopy.bind(C),Gr=C.applyPatches.bind(C),Xr=C.createDraft.bind(C),Yr=C.finishDraft.bind(C);function Ft(e,t=`expected a function, instead received ${typeof e}`){if(typeof e!="function")throw new TypeError(t)}function Wt(e,t=`expected an object, instead received ${typeof e}`){if(typeof e!="object")throw new TypeError(t)}function Bt(e,t="expected all items to be functions, instead received the following types: "){if(!e.every(r=>typeof r=="function")){let r=e.map(n=>typeof n=="function"?`function ${n.name||"unnamed"}()`:typeof n).join(", ");throw new TypeError(`${t}[${r}]`)}}var Ze=e=>Array.isArray(e)?e:[e];function qt(e){let t=Array.isArray(e[0])?e[0]:e;return Bt(t,"createSelector expects all input-selectors to be functions, but received the following types: "),t}function Ut(e,t){let r=[],{length:n}=e;for(let i=0;i<n;i++)r.push(e[i].apply(null,t));return r}var en=Symbol();var tn=Object.getPrototypeOf({});var Kt=class{constructor(e){this.value=e}deref(){return this.value}},Ht=typeof WeakRef!="undefined"?WeakRef:Kt,Gt=0,et=1;function ie(){return{s:Gt,v:void 0,o:null,p:null}}function oe(e,t={}){let r=ie(),{resultEqualityCheck:n}=t,i,o=0;function s(){var f,d;let a=r,{length:c}=arguments;for(let g=0,v=c;g<v;g++){let O=arguments[g];if(typeof O=="function"||typeof O=="object"&&O!==null){let p=a.o;p===null&&(a.o=p=new WeakMap);let _=p.get(O);_===void 0?(a=ie(),p.set(O,a)):a=_}else{let p=a.p;p===null&&(a.p=p=new Map);let _=p.get(O);_===void 0?(a=ie(),p.set(O,a)):a=_}}let l=a,u;if(a.s===et)u=a.v;else if(u=e.apply(null,arguments),o++,n){let g=(d=(f=i==null?void 0:i.deref)==null?void 0:f.call(i))!=null?d:i;g!=null&&n(g,u)&&(u=g,o!==0&&o--),i=typeof u=="object"&&u!==null||typeof u=="function"?new Ht(u):u}return l.s=et,l.v=u,u}return s.clearCache=()=>{r=ie(),s.resetResultsCount()},s.resultsCount=()=>o,s.resetResultsCount=()=>{o=0},s}function Se(e,...t){let r=typeof e=="function"?{memoize:e,memoizeOptions:t}:e,n=(...i)=>{let o=0,s=0,a,c={},l=i.pop();typeof l=="object"&&(c=l,l=i.pop()),Ft(l,`createSelector expects an output function after the inputs, but received: [${typeof l}]`);let u=b(b({},r),c),{memoize:f,memoizeOptions:d=[],argsMemoize:g=oe,argsMemoizeOptions:v=[],devModeChecks:O={}}=u,p=Ze(d),_=Ze(v),w=qt(i),h=f(function(){return o++,l.apply(null,arguments)},...p),y=!0,S=g(function(){s++;let A=Ut(w,arguments);return a=h.apply(null,A),a},..._);return Object.assign(S,{resultFunc:l,memoizedResultFunc:h,dependencies:w,dependencyRecomputations:()=>s,resetDependencyRecomputations:()=>{s=0},lastResult:()=>a,recomputations:()=>o,resetRecomputations:()=>{o=0},memoize:f,argsMemoize:g})};return Object.assign(n,{withTypes:()=>n}),n}var Xt=Se(oe),Yt=Object.assign((e,t=Xt)=>{Wt(e,`createStructuredSelector expects first argument to be an object where each property is a selector, instead received a ${typeof e}`);let r=Object.keys(e),n=r.map(o=>e[o]);return t(n,(...o)=>o.reduce((s,a,c)=>(s[r[c]]=a,s),{}))},{withTypes:()=>Yt});function tt(e){return({dispatch:r,getState:n})=>i=>o=>typeof o=="function"?o(r,n,e):i(o)}var rt=tt(),nt=tt;var Jt=(...e)=>{let t=Se(...e),r=Object.assign((...n)=>{let i=t(...n),o=(s,...a)=>i(P(s)?Oe(s):s,...a);return Object.assign(o,i),o},{withTypes:()=>r});return r},un=Jt(oe),Qt=typeof window!="undefined"&&window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__?window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__:function(){if(arguments.length!==0)return typeof arguments[0]=="object"?F:F.apply(null,arguments)},dn=typeof window!="undefined"&&window.__REDUX_DEVTOOLS_EXTENSION__?window.__REDUX_DEVTOOLS_EXTENSION__:function(){return function(e){return e}},Zt=e=>e&&typeof e.match=="function";function z(e,t){function r(...n){if(t){let i=t(...n);if(!i)throw new Error(E(0));return b(b({type:e,payload:i.payload},"meta"in i&&{meta:i.meta}),"error"in i&&{error:i.error})}return{type:e,payload:n[0]}}return r.toString=()=>`${e}`,r.type=e,r.match=n=>Fe(n)&&n.type===e,r}var at=class U extends Array{constructor(...t){super(...t),Object.setPrototypeOf(this,U.prototype)}static get[Symbol.species](){return U}concat(...t){return super.concat.apply(this,t)}prepend(...t){return t.length===1&&Array.isArray(t[0])?new U(...t[0].concat(this)):new U(...t.concat(this))}};function it(e){return x(e)?ne(e,()=>{}):e}function ot(e,t,r){if(e.has(t)){let i=e.get(t);return r.update&&(i=r.update(i,t,e),e.set(t,i)),i}if(!r.insert)throw new Error(E(10));let n=r.insert(t,e);return e.set(t,n),n}function er(e){return typeof e=="boolean"}var tr=()=>function(t){let{thunk:r=!0,immutableCheck:n=!0,serializableCheck:i=!0,actionCreatorCheck:o=!0}=t!=null?t:{},s=new at;return r&&(er(r)?s.push(rt):s.push(nt(r.extraArgument))),s},rr="RTK_autoBatch";var ct=e=>t=>{setTimeout(t,e)},nr=typeof window!="undefined"&&window.requestAnimationFrame?window.requestAnimationFrame:ct(10),ir=(e={type:"raf"})=>t=>(...r)=>{let n=t(...r),i=!0,o=!1,s=!1,a=new Set,c=e.type==="tick"?queueMicrotask:e.type==="raf"?nr:e.type==="callback"?e.queueNotification:ct(e.timeout),l=()=>{s=!1,o&&(o=!1,a.forEach(u=>u()))};return Object.assign({},n,{subscribe(u){let f=()=>i&&u(),d=n.subscribe(f);return a.add(u),()=>{d(),a.delete(u)}},dispatch(u){var f;try{return i=!((f=u==null?void 0:u.meta)!=null&&f[rr]),o=!i,o&&(s||(s=!0,c(l))),n.dispatch(u)}finally{i=!0}}})},or=e=>function(r){let{autoBatch:n=!0}=r!=null?r:{},i=new at(e);return n&&i.push(ir(typeof n=="object"?n:void 0)),i},j=!0;function ut(e){let t=tr(),{reducer:r=void 0,middleware:n,devTools:i=!0,preloadedState:o=void 0,enhancers:s=void 0}=e||{},a;if(typeof r=="function")a=r;else if(X(r))a=$e(r);else throw new Error(E(1));if(!j&&n&&typeof n!="function")throw new Error(E(2));let c;if(typeof n=="function"){if(c=n(t),!j&&!Array.isArray(c))throw new Error(E(3))}else c=t();if(!j&&c.some(v=>typeof v!="function"))throw new Error(E(4));let l=F;i&&(l=Qt(b({trace:!j},typeof i=="object"&&i)));let u=Le(...c),f=or(u);if(!j&&s&&typeof s!="function")throw new Error(E(5));let d=typeof s=="function"?s(f):f();if(!j&&!Array.isArray(d))throw new Error(E(6));if(!j&&d.some(v=>typeof v!="function"))throw new Error(E(7));!j&&c.length&&!d.includes(u)&&console.error("middlewares were provided, but middleware enhancer was not included in final enhancers - make sure to call `getDefaultEnhancers`");let g=l(...d);return de(a,o,g)}function lt(e){let t={},r=[],n,i={addCase(o,s){let a=typeof o=="string"?o:o.type;if(!a)throw new Error(E(28));if(a in t)throw new Error(E(29));return t[a]=s,i},addMatcher(o,s){return r.push({matcher:o,reducer:s}),i},addDefaultCase(o){return n=o,i}};return e(i),[t,r,n]}function sr(e){return typeof e=="function"}function ar(e,t){let[r,n,i]=lt(t),o;if(sr(e))o=()=>it(e());else{let a=it(e);o=()=>a}function s(a=o(),c){let l=[r[c.type],...n.filter(({matcher:u})=>u(c)).map(({reducer:u})=>u)];return l.filter(u=>!!u).length===0&&(l=[i]),l.reduce((u,f)=>{if(f)if(P(u)){let g=f(u,c);return g===void 0?u:g}else{if(x(u))return ne(u,d=>f(d,c));{let d=f(u,c);if(d===void 0){if(u===null)return u;throw new Error(E(9))}return d}}return u},a)}return s.getInitialState=o,s}var cr="ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW",ft=(e=21)=>{let t="",r=e;for(;r--;)t+=cr[Math.random()*64|0];return t},ur=(e,t)=>Zt(e)?e.match(t):e(t);function lr(...e){return t=>e.some(r=>ur(r,t))}var fr=["name","message","stack","code"],Ne=class{constructor(e,t){H(this,"_type");this.payload=e,this.meta=t}},st=class{constructor(e,t){H(this,"_type");this.payload=e,this.meta=t}},dr=e=>{if(typeof e=="object"&&e!==null){let t={};for(let r of fr)typeof e[r]=="string"&&(t[r]=e[r]);return t}return{message:String(e)}},pr=(()=>{function e(t,r,n){let i=z(t+"/fulfilled",(c,l,u,f)=>({payload:c,meta:V(b({},f||{}),{arg:u,requestId:l,requestStatus:"fulfilled"})})),o=z(t+"/pending",(c,l,u)=>({payload:void 0,meta:V(b({},u||{}),{arg:l,requestId:c,requestStatus:"pending"})})),s=z(t+"/rejected",(c,l,u,f,d)=>({payload:f,error:(n&&n.serializeError||dr)(c||"Rejected"),meta:V(b({},d||{}),{arg:u,requestId:l,rejectedWithValue:!!f,requestStatus:"rejected",aborted:(c==null?void 0:c.name)==="AbortError",condition:(c==null?void 0:c.name)==="ConditionError"})}));function a(c){return(l,u,f)=>{let d=n!=null&&n.idGenerator?n.idGenerator(c):ft(),g=new AbortController,v,O;function p(w){O=w,g.abort()}let _=function(){return je(this,null,function*(){var y,S;let w;try{let N=(y=n==null?void 0:n.condition)==null?void 0:y.call(n,c,{getState:u,extra:f});if(yr(N)&&(N=yield N),N===!1||g.signal.aborted)throw{name:"ConditionError",message:"Aborted due to condition callback returning false."};let A=new Promise((m,R)=>{v=()=>{R({name:"AbortError",message:O||"Aborted"})},g.signal.addEventListener("abort",v)});l(o(d,c,(S=n==null?void 0:n.getPendingMeta)==null?void 0:S.call(n,{requestId:d,arg:c},{getState:u,extra:f}))),w=yield Promise.race([A,Promise.resolve(r(c,{dispatch:l,getState:u,extra:f,requestId:d,signal:g.signal,abort:p,rejectWithValue:(m,R)=>new Ne(m,R),fulfillWithValue:(m,R)=>new st(m,R)})).then(m=>{if(m instanceof Ne)throw m;return m instanceof st?i(m.payload,d,c,m.meta):i(m,d,c)})])}catch(N){w=N instanceof Ne?s(null,d,c,N.payload,N.meta):s(N,d,c)}finally{v&&g.signal.removeEventListener("abort",v)}return n&&!n.dispatchConditionRejection&&s.match(w)&&w.meta.condition||l(w),w})}();return Object.assign(_,{abort:p,requestId:d,arg:c,unwrap(){return _.then(hr)}})}}return Object.assign(a,{pending:o,rejected:s,fulfilled:i,settled:lr(s,i),typePrefix:t})}return e.withTypes=()=>e,e})();function hr(e){if(e.meta&&e.meta.rejectedWithValue)throw e.payload;if(e.error)throw e.error;return e.payload}function yr(e){return e!==null&&typeof e=="object"&&typeof e.then=="function"}var dt=Symbol.for("rtk-slice-createasyncthunk"),gn={[dt]:pr};function mr(e,t){return`${e}/${t}`}function gr({creators:e}={}){var r;let t=(r=e==null?void 0:e.asyncThunk)==null?void 0:r[dt];return function(i){let{name:o,reducerPath:s=o}=i;if(!o)throw new Error(E(11));let a=(typeof i.reducers=="function"?i.reducers(_r()):i.reducers)||{},c=Object.keys(a),l={sliceCaseReducersByName:{},sliceCaseReducersByType:{},actionCreators:{},sliceMatchers:[]},u={addCase(h,y){let S=typeof h=="string"?h:h.type;if(!S)throw new Error(E(12));if(S in l.sliceCaseReducersByType)throw new Error(E(13));return l.sliceCaseReducersByType[S]=y,u},addMatcher(h,y){return l.sliceMatchers.push({matcher:h,reducer:y}),u},exposeAction(h,y){return l.actionCreators[h]=y,u},exposeCaseReducer(h,y){return l.sliceCaseReducersByName[h]=y,u}};c.forEach(h=>{let y=a[h],S={reducerName:h,type:mr(o,h),createNotation:typeof i.reducers=="function"};br(y)?Or(S,y,u,t):wr(S,y,u)});function f(){let[h={},y=[],S=void 0]=typeof i.extraReducers=="function"?lt(i.extraReducers):[i.extraReducers],N=b(b({},h),l.sliceCaseReducersByType);return ar(i.initialState,A=>{for(let m in N)A.addCase(m,N[m]);for(let m of l.sliceMatchers)A.addMatcher(m.matcher,m.reducer);for(let m of y)A.addMatcher(m.matcher,m.reducer);S&&A.addDefaultCase(S)})}let d=h=>h,g=new Map,v;function O(h,y){return v||(v=f()),v(h,y)}function p(){return v||(v=f()),v.getInitialState()}function _(h,y=!1){function S(A){let m=A[h];return typeof m=="undefined"&&y&&(m=p()),m}function N(A=d){let m=ot(g,y,{insert:()=>new WeakMap});return ot(m,A,{insert:()=>{var ue;let R={};for(let[St,Nt]of Object.entries((ue=i.selectors)!=null?ue:{}))R[St]=vr(Nt,A,p,y);return R}})}return{reducerPath:h,getSelectors:N,get selectors(){return N(S)},selectSlice:S}}let w=V(b({name:o,reducer:O,actions:l.actionCreators,caseReducers:l.sliceCaseReducersByName,getInitialState:p},_(s)),{injectInto(h,N={}){var A=N,{reducerPath:y}=A,S=ze(A,["reducerPath"]);let m=y!=null?y:s;return h.inject({reducerPath:m,reducer:O},S),b(b({},w),_(m,!0))}});return w}}function vr(e,t,r,n){function i(o,...s){let a=t(o);return typeof a=="undefined"&&n&&(a=r()),e(a,...s)}return i.unwrapped=e,i}var pt=gr();function _r(){function e(t,r){return b({_reducerDefinitionType:"asyncThunk",payloadCreator:t},r)}return e.withTypes=()=>e,{reducer(t){return Object.assign({[t.name](...r){return t(...r)}}[t.name],{_reducerDefinitionType:"reducer"})},preparedReducer(t,r){return{_reducerDefinitionType:"reducerWithPrepare",prepare:t,reducer:r}},asyncThunk:e}}function wr({type:e,reducerName:t,createNotation:r},n,i){let o,s;if("reducer"in n){if(r&&!Er(n))throw new Error(E(17));o=n.reducer,s=n.prepare}else o=n;i.addCase(e,o).exposeCaseReducer(t,o).exposeAction(t,s?z(e,s):z(e))}function br(e){return e._reducerDefinitionType==="asyncThunk"}function Er(e){return e._reducerDefinitionType==="reducerWithPrepare"}function Or({type:e,reducerName:t},r,n,i){if(!i)throw new Error(E(18));let{payloadCreator:o,fulfilled:s,pending:a,rejected:c,settled:l,options:u}=r,f=i(e,o,u);n.exposeAction(t,f),s&&n.addCase(f.fulfilled,s),a&&n.addCase(f.pending,a),c&&n.addCase(f.rejected,c),l&&n.addMatcher(f.settled,l),n.exposeCaseReducer(t,{fulfilled:s||se,pending:a||se,rejected:c||se,settled:l||se})}function se(){}var ht="listener",yt="completed",mt="cancelled",vn=`task-${mt}`,_n=`task-${yt}`,wn=`${ht}-${mt}`,bn=`${ht}-${yt}`;var Sr=(e,t)=>{if(typeof e!="function")throw new Error(E(32))};var{assign:En}=Object;var ke="listenerMiddleware";var Nr=e=>{let{type:t,actionCreator:r,matcher:n,predicate:i,effect:o}=e;if(t)i=z(t).match;else if(r)t=r.type,i=r.match;else if(n)i=n;else if(!i)throw new Error(E(21));return Sr(o,"options.listener"),{predicate:i,type:t,effect:o}},kr=Object.assign(e=>{let{type:t,predicate:r,effect:n}=Nr(e);return{id:ft(),effect:n,type:t,predicate:r,pending:new Set,unsubscribe:()=>{throw new Error(E(22))}}},{withTypes:()=>kr});var Mr=Object.assign(z(`${ke}/add`),{withTypes:()=>Mr}),On=z(`${ke}/removeAll`),Ar=Object.assign(z(`${ke}/remove`),{withTypes:()=>Ar});var Sn=Symbol.for("rtk-state-proxy-original");function E(e){return`Minified Redux Toolkit error #${e}; visit https://redux-toolkit.js.org/Errors?code=${e} for the full message or use the non-minified dev environment for full errors. `}var Ir=[[{id:"yyz",src:"assets/palace/items/courage.png"},{id:"xxz",src:"assets/palace/items/gamepad.png"},{id:"xwz",src:"assets/palace/items/greece.png"},{id:"xmz",src:"assets/palace/items/papyrus.png"},null],[{id:"yyz",src:"assets/palace/items/courage.png"},{id:"xxz",src:"assets/palace/items/gamepad.png"},{id:"xwz",src:"assets/palace/items/greece.png"},{id:"xmz",src:"assets/palace/items/papyrus.png"},{id:"xmz",src:"assets/palace/items/parthenon.png"}]],gt=pt({name:"localStorage",initialState:Ir,reducers:{updateItem:(e,t)=>{let{blockIndex:r,itemIndex:n,item:i}=t.payload;e[r]&&(e[r][n]=i)}}}),{updateItem:vt}=gt.actions,Dr=ut({reducer:{localStorage:gt.reducer}}),_t=Dr;window.store=_t;var I=[],Rn=document.getElementById("hero_container"),Et=document.getElementById("heroImg"),zn=document.getElementById("enemyImg"),jn=document.getElementById("enemy_container"),Vn=document.getElementById("error_score"),$n=document.getElementById("killed_score"),Cr=document.getElementById("menu"),wt=document.getElementById("searchInput"),Ie=document.getElementById("menuB");var Tr="assets/palace/maps/castle/castle.gif",ae=0,Me=1,xr=e=>{let t="",r="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",n=r.length,i=0;for(;i<e;)t+=r.charAt(Math.floor(Math.random()*n)),i+=1;return t};var M={0:0,1:0,2:0,3:0,4:0,5:0,6:0},Ae=null;var Pr=e=>{var t,r,n,i,o;return`
-      <div class='slotGroup slotsLeft'>
-        <div class='slot' onclick='selectItem(event)' id='slot_1'>
-              <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-              </div>
-           <img class='item' src='${(t=e[0])!=null&&t.src?e[0].src:""}'/>
+"use strict";
+(() => {
+  var __defProp = Object.defineProperty;
+  var __defProps = Object.defineProperties;
+  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __propIsEnum = Object.prototype.propertyIsEnumerable;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __spreadValues = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    if (__getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(b)) {
+        if (__propIsEnum.call(b, prop))
+          __defNormalProp(a, prop, b[prop]);
+      }
+    return a;
+  };
+  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __objRest = (source, exclude) => {
+    var target = {};
+    for (var prop in source)
+      if (__hasOwnProp.call(source, prop) && exclude.indexOf(prop) < 0)
+        target[prop] = source[prop];
+    if (source != null && __getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(source)) {
+        if (exclude.indexOf(prop) < 0 && __propIsEnum.call(source, prop))
+          target[prop] = source[prop];
+      }
+    return target;
+  };
+  var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  var __async = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step(generator.throw(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+      step((generator = generator.apply(__this, __arguments)).next());
+    });
+  };
+
+  // node_modules/redux/dist/redux.mjs
+  var $$observable = /* @__PURE__ */ (() => typeof Symbol === "function" && Symbol.observable || "@@observable")();
+  var symbol_observable_default = $$observable;
+  var randomString = () => Math.random().toString(36).substring(7).split("").join(".");
+  var ActionTypes = {
+    INIT: `@@redux/INIT${/* @__PURE__ */ randomString()}`,
+    REPLACE: `@@redux/REPLACE${/* @__PURE__ */ randomString()}`,
+    PROBE_UNKNOWN_ACTION: () => `@@redux/PROBE_UNKNOWN_ACTION${randomString()}`
+  };
+  var actionTypes_default = ActionTypes;
+  function isPlainObject(obj) {
+    if (typeof obj !== "object" || obj === null)
+      return false;
+    let proto2 = obj;
+    while (Object.getPrototypeOf(proto2) !== null) {
+      proto2 = Object.getPrototypeOf(proto2);
+    }
+    return Object.getPrototypeOf(obj) === proto2 || Object.getPrototypeOf(obj) === null;
+  }
+  function miniKindOf(val) {
+    if (val === void 0)
+      return "undefined";
+    if (val === null)
+      return "null";
+    const type = typeof val;
+    switch (type) {
+      case "boolean":
+      case "string":
+      case "number":
+      case "symbol":
+      case "function": {
+        return type;
+      }
+    }
+    if (Array.isArray(val))
+      return "array";
+    if (isDate(val))
+      return "date";
+    if (isError(val))
+      return "error";
+    const constructorName = ctorName(val);
+    switch (constructorName) {
+      case "Symbol":
+      case "Promise":
+      case "WeakMap":
+      case "WeakSet":
+      case "Map":
+      case "Set":
+        return constructorName;
+    }
+    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase().replace(/\s/g, "");
+  }
+  function ctorName(val) {
+    return typeof val.constructor === "function" ? val.constructor.name : null;
+  }
+  function isError(val) {
+    return val instanceof Error || typeof val.message === "string" && val.constructor && typeof val.constructor.stackTraceLimit === "number";
+  }
+  function isDate(val) {
+    if (val instanceof Date)
+      return true;
+    return typeof val.toDateString === "function" && typeof val.getDate === "function" && typeof val.setDate === "function";
+  }
+  function kindOf(val) {
+    let typeOfVal = typeof val;
+    if (true) {
+      typeOfVal = miniKindOf(val);
+    }
+    return typeOfVal;
+  }
+  function createStore(reducer, preloadedState, enhancer) {
+    if (typeof reducer !== "function") {
+      throw new Error(false ? formatProdErrorMessage(2) : `Expected the root reducer to be a function. Instead, received: '${kindOf(reducer)}'`);
+    }
+    if (typeof preloadedState === "function" && typeof enhancer === "function" || typeof enhancer === "function" && typeof arguments[3] === "function") {
+      throw new Error(false ? formatProdErrorMessage(0) : "It looks like you are passing several store enhancers to createStore(). This is not supported. Instead, compose them together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example.");
+    }
+    if (typeof preloadedState === "function" && typeof enhancer === "undefined") {
+      enhancer = preloadedState;
+      preloadedState = void 0;
+    }
+    if (typeof enhancer !== "undefined") {
+      if (typeof enhancer !== "function") {
+        throw new Error(false ? formatProdErrorMessage(1) : `Expected the enhancer to be a function. Instead, received: '${kindOf(enhancer)}'`);
+      }
+      return enhancer(createStore)(reducer, preloadedState);
+    }
+    let currentReducer = reducer;
+    let currentState = preloadedState;
+    let currentListeners = /* @__PURE__ */ new Map();
+    let nextListeners = currentListeners;
+    let listenerIdCounter = 0;
+    let isDispatching = false;
+    function ensureCanMutateNextListeners() {
+      if (nextListeners === currentListeners) {
+        nextListeners = /* @__PURE__ */ new Map();
+        currentListeners.forEach((listener2, key) => {
+          nextListeners.set(key, listener2);
+        });
+      }
+    }
+    function getState() {
+      if (isDispatching) {
+        throw new Error(false ? formatProdErrorMessage(3) : "You may not call store.getState() while the reducer is executing. The reducer has already received the state as an argument. Pass it down from the top reducer instead of reading it from the store.");
+      }
+      return currentState;
+    }
+    function subscribe(listener2) {
+      if (typeof listener2 !== "function") {
+        throw new Error(false ? formatProdErrorMessage(4) : `Expected the listener to be a function. Instead, received: '${kindOf(listener2)}'`);
+      }
+      if (isDispatching) {
+        throw new Error(false ? formatProdErrorMessage(5) : "You may not call store.subscribe() while the reducer is executing. If you would like to be notified after the store has been updated, subscribe from a component and invoke store.getState() in the callback to access the latest state. See https://redux.js.org/api/store#subscribelistener for more details.");
+      }
+      let isSubscribed = true;
+      ensureCanMutateNextListeners();
+      const listenerId = listenerIdCounter++;
+      nextListeners.set(listenerId, listener2);
+      return function unsubscribe() {
+        if (!isSubscribed) {
+          return;
+        }
+        if (isDispatching) {
+          throw new Error(false ? formatProdErrorMessage(6) : "You may not unsubscribe from a store listener while the reducer is executing. See https://redux.js.org/api/store#subscribelistener for more details.");
+        }
+        isSubscribed = false;
+        ensureCanMutateNextListeners();
+        nextListeners.delete(listenerId);
+        currentListeners = null;
+      };
+    }
+    function dispatch(action) {
+      if (!isPlainObject(action)) {
+        throw new Error(false ? formatProdErrorMessage(7) : `Actions must be plain objects. Instead, the actual type was: '${kindOf(action)}'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.`);
+      }
+      if (typeof action.type === "undefined") {
+        throw new Error(false ? formatProdErrorMessage(8) : 'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.');
+      }
+      if (typeof action.type !== "string") {
+        throw new Error(false ? formatProdErrorMessage(17) : `Action "type" property must be a string. Instead, the actual type was: '${kindOf(action.type)}'. Value was: '${action.type}' (stringified)`);
+      }
+      if (isDispatching) {
+        throw new Error(false ? formatProdErrorMessage(9) : "Reducers may not dispatch actions.");
+      }
+      try {
+        isDispatching = true;
+        currentState = currentReducer(currentState, action);
+      } finally {
+        isDispatching = false;
+      }
+      const listeners = currentListeners = nextListeners;
+      listeners.forEach((listener2) => {
+        listener2();
+      });
+      return action;
+    }
+    function replaceReducer(nextReducer) {
+      if (typeof nextReducer !== "function") {
+        throw new Error(false ? formatProdErrorMessage(10) : `Expected the nextReducer to be a function. Instead, received: '${kindOf(nextReducer)}`);
+      }
+      currentReducer = nextReducer;
+      dispatch({
+        type: actionTypes_default.REPLACE
+      });
+    }
+    function observable() {
+      const outerSubscribe = subscribe;
+      return {
+        /**
+         * The minimal observable subscription method.
+         * @param observer Any object that can be used as an observer.
+         * The observer object should have a `next` method.
+         * @returns An object with an `unsubscribe` method that can
+         * be used to unsubscribe the observable from the store, and prevent further
+         * emission of values from the observable.
+         */
+        subscribe(observer) {
+          if (typeof observer !== "object" || observer === null) {
+            throw new Error(false ? formatProdErrorMessage(11) : `Expected the observer to be an object. Instead, received: '${kindOf(observer)}'`);
+          }
+          function observeState() {
+            const observerAsObserver = observer;
+            if (observerAsObserver.next) {
+              observerAsObserver.next(getState());
+            }
+          }
+          observeState();
+          const unsubscribe = outerSubscribe(observeState);
+          return {
+            unsubscribe
+          };
+        },
+        [symbol_observable_default]() {
+          return this;
+        }
+      };
+    }
+    dispatch({
+      type: actionTypes_default.INIT
+    });
+    const store2 = {
+      dispatch,
+      subscribe,
+      getState,
+      replaceReducer,
+      [symbol_observable_default]: observable
+    };
+    return store2;
+  }
+  function warning(message) {
+    if (typeof console !== "undefined" && typeof console.error === "function") {
+      console.error(message);
+    }
+    try {
+      throw new Error(message);
+    } catch (e) {
+    }
+  }
+  function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+    const reducerKeys = Object.keys(reducers);
+    const argumentName = action && action.type === actionTypes_default.INIT ? "preloadedState argument passed to createStore" : "previous state received by the reducer";
+    if (reducerKeys.length === 0) {
+      return "Store does not have a valid reducer. Make sure the argument passed to combineReducers is an object whose values are reducers.";
+    }
+    if (!isPlainObject(inputState)) {
+      return `The ${argumentName} has unexpected type of "${kindOf(inputState)}". Expected argument to be an object with the following keys: "${reducerKeys.join('", "')}"`;
+    }
+    const unexpectedKeys = Object.keys(inputState).filter((key) => !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key]);
+    unexpectedKeys.forEach((key) => {
+      unexpectedKeyCache[key] = true;
+    });
+    if (action && action.type === actionTypes_default.REPLACE)
+      return;
+    if (unexpectedKeys.length > 0) {
+      return `Unexpected ${unexpectedKeys.length > 1 ? "keys" : "key"} "${unexpectedKeys.join('", "')}" found in ${argumentName}. Expected to find one of the known reducer keys instead: "${reducerKeys.join('", "')}". Unexpected keys will be ignored.`;
+    }
+  }
+  function assertReducerShape(reducers) {
+    Object.keys(reducers).forEach((key) => {
+      const reducer = reducers[key];
+      const initialState2 = reducer(void 0, {
+        type: actionTypes_default.INIT
+      });
+      if (typeof initialState2 === "undefined") {
+        throw new Error(false ? formatProdErrorMessage(12) : `The slice reducer for key "${key}" returned undefined during initialization. If the state passed to the reducer is undefined, you must explicitly return the initial state. The initial state may not be undefined. If you don't want to set a value for this reducer, you can use null instead of undefined.`);
+      }
+      if (typeof reducer(void 0, {
+        type: actionTypes_default.PROBE_UNKNOWN_ACTION()
+      }) === "undefined") {
+        throw new Error(false ? formatProdErrorMessage(13) : `The slice reducer for key "${key}" returned undefined when probed with a random type. Don't try to handle '${actionTypes_default.INIT}' or other actions in "redux/*" namespace. They are considered private. Instead, you must return the current state for any unknown actions, unless it is undefined, in which case you must return the initial state, regardless of the action type. The initial state may not be undefined, but can be null.`);
+      }
+    });
+  }
+  function combineReducers(reducers) {
+    const reducerKeys = Object.keys(reducers);
+    const finalReducers = {};
+    for (let i = 0; i < reducerKeys.length; i++) {
+      const key = reducerKeys[i];
+      if (true) {
+        if (typeof reducers[key] === "undefined") {
+          warning(`No reducer provided for key "${key}"`);
+        }
+      }
+      if (typeof reducers[key] === "function") {
+        finalReducers[key] = reducers[key];
+      }
+    }
+    const finalReducerKeys = Object.keys(finalReducers);
+    let unexpectedKeyCache;
+    if (true) {
+      unexpectedKeyCache = {};
+    }
+    let shapeAssertionError;
+    try {
+      assertReducerShape(finalReducers);
+    } catch (e) {
+      shapeAssertionError = e;
+    }
+    return function combination(state = {}, action) {
+      if (shapeAssertionError) {
+        throw shapeAssertionError;
+      }
+      if (true) {
+        const warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+        if (warningMessage) {
+          warning(warningMessage);
+        }
+      }
+      let hasChanged = false;
+      const nextState = {};
+      for (let i = 0; i < finalReducerKeys.length; i++) {
+        const key = finalReducerKeys[i];
+        const reducer = finalReducers[key];
+        const previousStateForKey = state[key];
+        const nextStateForKey = reducer(previousStateForKey, action);
+        if (typeof nextStateForKey === "undefined") {
+          const actionType = action && action.type;
+          throw new Error(false ? formatProdErrorMessage(14) : `When called with an action of type ${actionType ? `"${String(actionType)}"` : "(unknown type)"}, the slice reducer for key "${key}" returned undefined. To ignore an action, you must explicitly return the previous state. If you want this reducer to hold no value, you can return null instead of undefined.`);
+        }
+        nextState[key] = nextStateForKey;
+        hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+      }
+      hasChanged = hasChanged || finalReducerKeys.length !== Object.keys(state).length;
+      return hasChanged ? nextState : state;
+    };
+  }
+  function compose(...funcs) {
+    if (funcs.length === 0) {
+      return (arg) => arg;
+    }
+    if (funcs.length === 1) {
+      return funcs[0];
+    }
+    return funcs.reduce((a, b) => (...args) => a(b(...args)));
+  }
+  function applyMiddleware(...middlewares) {
+    return (createStore2) => (reducer, preloadedState) => {
+      const store2 = createStore2(reducer, preloadedState);
+      let dispatch = () => {
+        throw new Error(false ? formatProdErrorMessage(15) : "Dispatching while constructing your middleware is not allowed. Other middleware would not be applied to this dispatch.");
+      };
+      const middlewareAPI = {
+        getState: store2.getState,
+        dispatch: (action, ...args) => dispatch(action, ...args)
+      };
+      const chain = middlewares.map((middleware) => middleware(middlewareAPI));
+      dispatch = compose(...chain)(store2.dispatch);
+      return __spreadProps(__spreadValues({}, store2), {
+        dispatch
+      });
+    };
+  }
+  function isAction(action) {
+    return isPlainObject(action) && "type" in action && typeof action.type === "string";
+  }
+
+  // node_modules/immer/dist/immer.mjs
+  var NOTHING = Symbol.for("immer-nothing");
+  var DRAFTABLE = Symbol.for("immer-draftable");
+  var DRAFT_STATE = Symbol.for("immer-state");
+  var errors = true ? [
+    // All error codes, starting by 0:
+    function(plugin) {
+      return `The plugin for '${plugin}' has not been loaded into Immer. To enable the plugin, import and call \`enable${plugin}()\` when initializing your application.`;
+    },
+    function(thing) {
+      return `produce can only be called on things that are draftable: plain objects, arrays, Map, Set or classes that are marked with '[immerable]: true'. Got '${thing}'`;
+    },
+    "This object has been frozen and should not be mutated",
+    function(data) {
+      return "Cannot use a proxy that has been revoked. Did you pass an object from inside an immer function to an async process? " + data;
+    },
+    "An immer producer returned a new value *and* modified its draft. Either return a new value *or* modify the draft.",
+    "Immer forbids circular references",
+    "The first or second argument to `produce` must be a function",
+    "The third argument to `produce` must be a function or undefined",
+    "First argument to `createDraft` must be a plain object, an array, or an immerable object",
+    "First argument to `finishDraft` must be a draft returned by `createDraft`",
+    function(thing) {
+      return `'current' expects a draft, got: ${thing}`;
+    },
+    "Object.defineProperty() cannot be used on an Immer draft",
+    "Object.setPrototypeOf() cannot be used on an Immer draft",
+    "Immer only supports deleting array indices",
+    "Immer only supports setting array indices and the 'length' property",
+    function(thing) {
+      return `'original' expects a draft, got: ${thing}`;
+    }
+    // Note: if more errors are added, the errorOffset in Patches.ts should be increased
+    // See Patches.ts for additional errors
+  ] : [];
+  function die(error, ...args) {
+    if (true) {
+      const e = errors[error];
+      const msg = typeof e === "function" ? e.apply(null, args) : e;
+      throw new Error(`[Immer] ${msg}`);
+    }
+    throw new Error(
+      `[Immer] minified error nr: ${error}. Full error at: https://bit.ly/3cXEKWf`
+    );
+  }
+  var getPrototypeOf = Object.getPrototypeOf;
+  function isDraft(value) {
+    return !!value && !!value[DRAFT_STATE];
+  }
+  function isDraftable(value) {
+    var _a;
+    if (!value)
+      return false;
+    return isPlainObject2(value) || Array.isArray(value) || !!value[DRAFTABLE] || !!((_a = value.constructor) == null ? void 0 : _a[DRAFTABLE]) || isMap(value) || isSet(value);
+  }
+  var objectCtorString = Object.prototype.constructor.toString();
+  function isPlainObject2(value) {
+    if (!value || typeof value !== "object")
+      return false;
+    const proto2 = getPrototypeOf(value);
+    if (proto2 === null) {
+      return true;
+    }
+    const Ctor = Object.hasOwnProperty.call(proto2, "constructor") && proto2.constructor;
+    if (Ctor === Object)
+      return true;
+    return typeof Ctor == "function" && Function.toString.call(Ctor) === objectCtorString;
+  }
+  function each(obj, iter) {
+    if (getArchtype(obj) === 0) {
+      Reflect.ownKeys(obj).forEach((key) => {
+        iter(key, obj[key], obj);
+      });
+    } else {
+      obj.forEach((entry, index) => iter(index, entry, obj));
+    }
+  }
+  function getArchtype(thing) {
+    const state = thing[DRAFT_STATE];
+    return state ? state.type_ : Array.isArray(thing) ? 1 : isMap(thing) ? 2 : isSet(thing) ? 3 : 0;
+  }
+  function has(thing, prop) {
+    return getArchtype(thing) === 2 ? thing.has(prop) : Object.prototype.hasOwnProperty.call(thing, prop);
+  }
+  function set(thing, propOrOldValue, value) {
+    const t = getArchtype(thing);
+    if (t === 2)
+      thing.set(propOrOldValue, value);
+    else if (t === 3) {
+      thing.add(value);
+    } else
+      thing[propOrOldValue] = value;
+  }
+  function is(x, y) {
+    if (x === y) {
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      return x !== x && y !== y;
+    }
+  }
+  function isMap(target) {
+    return target instanceof Map;
+  }
+  function isSet(target) {
+    return target instanceof Set;
+  }
+  function latest(state) {
+    return state.copy_ || state.base_;
+  }
+  function shallowCopy(base, strict) {
+    if (isMap(base)) {
+      return new Map(base);
+    }
+    if (isSet(base)) {
+      return new Set(base);
+    }
+    if (Array.isArray(base))
+      return Array.prototype.slice.call(base);
+    const isPlain2 = isPlainObject2(base);
+    if (strict === true || strict === "class_only" && !isPlain2) {
+      const descriptors = Object.getOwnPropertyDescriptors(base);
+      delete descriptors[DRAFT_STATE];
+      let keys = Reflect.ownKeys(descriptors);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const desc = descriptors[key];
+        if (desc.writable === false) {
+          desc.writable = true;
+          desc.configurable = true;
+        }
+        if (desc.get || desc.set)
+          descriptors[key] = {
+            configurable: true,
+            writable: true,
+            // could live with !!desc.set as well here...
+            enumerable: desc.enumerable,
+            value: base[key]
+          };
+      }
+      return Object.create(getPrototypeOf(base), descriptors);
+    } else {
+      const proto2 = getPrototypeOf(base);
+      if (proto2 !== null && isPlain2) {
+        return __spreadValues({}, base);
+      }
+      const obj = Object.create(proto2);
+      return Object.assign(obj, base);
+    }
+  }
+  function freeze(obj, deep = false) {
+    if (isFrozen(obj) || isDraft(obj) || !isDraftable(obj))
+      return obj;
+    if (getArchtype(obj) > 1) {
+      obj.set = obj.add = obj.clear = obj.delete = dontMutateFrozenCollections;
+    }
+    Object.freeze(obj);
+    if (deep)
+      Object.entries(obj).forEach(([key, value]) => freeze(value, true));
+    return obj;
+  }
+  function dontMutateFrozenCollections() {
+    die(2);
+  }
+  function isFrozen(obj) {
+    return Object.isFrozen(obj);
+  }
+  var plugins = {};
+  function getPlugin(pluginKey) {
+    const plugin = plugins[pluginKey];
+    if (!plugin) {
+      die(0, pluginKey);
+    }
+    return plugin;
+  }
+  var currentScope;
+  function getCurrentScope() {
+    return currentScope;
+  }
+  function createScope(parent_, immer_) {
+    return {
+      drafts_: [],
+      parent_,
+      immer_,
+      // Whenever the modified draft contains a draft from another scope, we
+      // need to prevent auto-freezing so the unowned draft can be finalized.
+      canAutoFreeze_: true,
+      unfinalizedDrafts_: 0
+    };
+  }
+  function usePatchesInScope(scope, patchListener) {
+    if (patchListener) {
+      getPlugin("Patches");
+      scope.patches_ = [];
+      scope.inversePatches_ = [];
+      scope.patchListener_ = patchListener;
+    }
+  }
+  function revokeScope(scope) {
+    leaveScope(scope);
+    scope.drafts_.forEach(revokeDraft);
+    scope.drafts_ = null;
+  }
+  function leaveScope(scope) {
+    if (scope === currentScope) {
+      currentScope = scope.parent_;
+    }
+  }
+  function enterScope(immer2) {
+    return currentScope = createScope(currentScope, immer2);
+  }
+  function revokeDraft(draft) {
+    const state = draft[DRAFT_STATE];
+    if (state.type_ === 0 || state.type_ === 1)
+      state.revoke_();
+    else
+      state.revoked_ = true;
+  }
+  function processResult(result, scope) {
+    scope.unfinalizedDrafts_ = scope.drafts_.length;
+    const baseDraft = scope.drafts_[0];
+    const isReplaced = result !== void 0 && result !== baseDraft;
+    if (isReplaced) {
+      if (baseDraft[DRAFT_STATE].modified_) {
+        revokeScope(scope);
+        die(4);
+      }
+      if (isDraftable(result)) {
+        result = finalize(scope, result);
+        if (!scope.parent_)
+          maybeFreeze(scope, result);
+      }
+      if (scope.patches_) {
+        getPlugin("Patches").generateReplacementPatches_(
+          baseDraft[DRAFT_STATE].base_,
+          result,
+          scope.patches_,
+          scope.inversePatches_
+        );
+      }
+    } else {
+      result = finalize(scope, baseDraft, []);
+    }
+    revokeScope(scope);
+    if (scope.patches_) {
+      scope.patchListener_(scope.patches_, scope.inversePatches_);
+    }
+    return result !== NOTHING ? result : void 0;
+  }
+  function finalize(rootScope, value, path) {
+    if (isFrozen(value))
+      return value;
+    const state = value[DRAFT_STATE];
+    if (!state) {
+      each(
+        value,
+        (key, childValue) => finalizeProperty(rootScope, state, value, key, childValue, path)
+      );
+      return value;
+    }
+    if (state.scope_ !== rootScope)
+      return value;
+    if (!state.modified_) {
+      maybeFreeze(rootScope, state.base_, true);
+      return state.base_;
+    }
+    if (!state.finalized_) {
+      state.finalized_ = true;
+      state.scope_.unfinalizedDrafts_--;
+      const result = state.copy_;
+      let resultEach = result;
+      let isSet2 = false;
+      if (state.type_ === 3) {
+        resultEach = new Set(result);
+        result.clear();
+        isSet2 = true;
+      }
+      each(
+        resultEach,
+        (key, childValue) => finalizeProperty(rootScope, state, result, key, childValue, path, isSet2)
+      );
+      maybeFreeze(rootScope, result, false);
+      if (path && rootScope.patches_) {
+        getPlugin("Patches").generatePatches_(
+          state,
+          path,
+          rootScope.patches_,
+          rootScope.inversePatches_
+        );
+      }
+    }
+    return state.copy_;
+  }
+  function finalizeProperty(rootScope, parentState, targetObject, prop, childValue, rootPath, targetIsSet) {
+    if (childValue === targetObject)
+      die(5);
+    if (isDraft(childValue)) {
+      const path = rootPath && parentState && parentState.type_ !== 3 && // Set objects are atomic since they have no keys.
+      !has(parentState.assigned_, prop) ? rootPath.concat(prop) : void 0;
+      const res = finalize(rootScope, childValue, path);
+      set(targetObject, prop, res);
+      if (isDraft(res)) {
+        rootScope.canAutoFreeze_ = false;
+      } else
+        return;
+    } else if (targetIsSet) {
+      targetObject.add(childValue);
+    }
+    if (isDraftable(childValue) && !isFrozen(childValue)) {
+      if (!rootScope.immer_.autoFreeze_ && rootScope.unfinalizedDrafts_ < 1) {
+        return;
+      }
+      finalize(rootScope, childValue);
+      if ((!parentState || !parentState.scope_.parent_) && typeof prop !== "symbol" && Object.prototype.propertyIsEnumerable.call(targetObject, prop))
+        maybeFreeze(rootScope, childValue);
+    }
+  }
+  function maybeFreeze(scope, value, deep = false) {
+    if (!scope.parent_ && scope.immer_.autoFreeze_ && scope.canAutoFreeze_) {
+      freeze(value, deep);
+    }
+  }
+  function createProxyProxy(base, parent) {
+    const isArray = Array.isArray(base);
+    const state = {
+      type_: isArray ? 1 : 0,
+      // Track which produce call this is associated with.
+      scope_: parent ? parent.scope_ : getCurrentScope(),
+      // True for both shallow and deep changes.
+      modified_: false,
+      // Used during finalization.
+      finalized_: false,
+      // Track which properties have been assigned (true) or deleted (false).
+      assigned_: {},
+      // The parent draft state.
+      parent_: parent,
+      // The base state.
+      base_: base,
+      // The base proxy.
+      draft_: null,
+      // set below
+      // The base copy with any updated values.
+      copy_: null,
+      // Called by the `produce` function.
+      revoke_: null,
+      isManual_: false
+    };
+    let target = state;
+    let traps = objectTraps;
+    if (isArray) {
+      target = [state];
+      traps = arrayTraps;
+    }
+    const { revoke, proxy } = Proxy.revocable(target, traps);
+    state.draft_ = proxy;
+    state.revoke_ = revoke;
+    return proxy;
+  }
+  var objectTraps = {
+    get(state, prop) {
+      if (prop === DRAFT_STATE)
+        return state;
+      const source = latest(state);
+      if (!has(source, prop)) {
+        return readPropFromProto(state, source, prop);
+      }
+      const value = source[prop];
+      if (state.finalized_ || !isDraftable(value)) {
+        return value;
+      }
+      if (value === peek(state.base_, prop)) {
+        prepareCopy(state);
+        return state.copy_[prop] = createProxy(value, state);
+      }
+      return value;
+    },
+    has(state, prop) {
+      return prop in latest(state);
+    },
+    ownKeys(state) {
+      return Reflect.ownKeys(latest(state));
+    },
+    set(state, prop, value) {
+      const desc = getDescriptorFromProto(latest(state), prop);
+      if (desc == null ? void 0 : desc.set) {
+        desc.set.call(state.draft_, value);
+        return true;
+      }
+      if (!state.modified_) {
+        const current2 = peek(latest(state), prop);
+        const currentState = current2 == null ? void 0 : current2[DRAFT_STATE];
+        if (currentState && currentState.base_ === value) {
+          state.copy_[prop] = value;
+          state.assigned_[prop] = false;
+          return true;
+        }
+        if (is(value, current2) && (value !== void 0 || has(state.base_, prop)))
+          return true;
+        prepareCopy(state);
+        markChanged(state);
+      }
+      if (state.copy_[prop] === value && // special case: handle new props with value 'undefined'
+      (value !== void 0 || prop in state.copy_) || // special case: NaN
+      Number.isNaN(value) && Number.isNaN(state.copy_[prop]))
+        return true;
+      state.copy_[prop] = value;
+      state.assigned_[prop] = true;
+      return true;
+    },
+    deleteProperty(state, prop) {
+      if (peek(state.base_, prop) !== void 0 || prop in state.base_) {
+        state.assigned_[prop] = false;
+        prepareCopy(state);
+        markChanged(state);
+      } else {
+        delete state.assigned_[prop];
+      }
+      if (state.copy_) {
+        delete state.copy_[prop];
+      }
+      return true;
+    },
+    // Note: We never coerce `desc.value` into an Immer draft, because we can't make
+    // the same guarantee in ES5 mode.
+    getOwnPropertyDescriptor(state, prop) {
+      const owner = latest(state);
+      const desc = Reflect.getOwnPropertyDescriptor(owner, prop);
+      if (!desc)
+        return desc;
+      return {
+        writable: true,
+        configurable: state.type_ !== 1 || prop !== "length",
+        enumerable: desc.enumerable,
+        value: owner[prop]
+      };
+    },
+    defineProperty() {
+      die(11);
+    },
+    getPrototypeOf(state) {
+      return getPrototypeOf(state.base_);
+    },
+    setPrototypeOf() {
+      die(12);
+    }
+  };
+  var arrayTraps = {};
+  each(objectTraps, (key, fn) => {
+    arrayTraps[key] = function() {
+      arguments[0] = arguments[0][0];
+      return fn.apply(this, arguments);
+    };
+  });
+  arrayTraps.deleteProperty = function(state, prop) {
+    if (isNaN(parseInt(prop)))
+      die(13);
+    return arrayTraps.set.call(this, state, prop, void 0);
+  };
+  arrayTraps.set = function(state, prop, value) {
+    if (prop !== "length" && isNaN(parseInt(prop)))
+      die(14);
+    return objectTraps.set.call(this, state[0], prop, value, state[0]);
+  };
+  function peek(draft, prop) {
+    const state = draft[DRAFT_STATE];
+    const source = state ? latest(state) : draft;
+    return source[prop];
+  }
+  function readPropFromProto(state, source, prop) {
+    var _a;
+    const desc = getDescriptorFromProto(source, prop);
+    return desc ? `value` in desc ? desc.value : (
+      // This is a very special case, if the prop is a getter defined by the
+      // prototype, we should invoke it with the draft as context!
+      (_a = desc.get) == null ? void 0 : _a.call(state.draft_)
+    ) : void 0;
+  }
+  function getDescriptorFromProto(source, prop) {
+    if (!(prop in source))
+      return void 0;
+    let proto2 = getPrototypeOf(source);
+    while (proto2) {
+      const desc = Object.getOwnPropertyDescriptor(proto2, prop);
+      if (desc)
+        return desc;
+      proto2 = getPrototypeOf(proto2);
+    }
+    return void 0;
+  }
+  function markChanged(state) {
+    if (!state.modified_) {
+      state.modified_ = true;
+      if (state.parent_) {
+        markChanged(state.parent_);
+      }
+    }
+  }
+  function prepareCopy(state) {
+    if (!state.copy_) {
+      state.copy_ = shallowCopy(
+        state.base_,
+        state.scope_.immer_.useStrictShallowCopy_
+      );
+    }
+  }
+  var Immer2 = class {
+    constructor(config) {
+      this.autoFreeze_ = true;
+      this.useStrictShallowCopy_ = false;
+      this.produce = (base, recipe, patchListener) => {
+        if (typeof base === "function" && typeof recipe !== "function") {
+          const defaultBase = recipe;
+          recipe = base;
+          const self = this;
+          return function curriedProduce(base2 = defaultBase, ...args) {
+            return self.produce(base2, (draft) => recipe.call(this, draft, ...args));
+          };
+        }
+        if (typeof recipe !== "function")
+          die(6);
+        if (patchListener !== void 0 && typeof patchListener !== "function")
+          die(7);
+        let result;
+        if (isDraftable(base)) {
+          const scope = enterScope(this);
+          const proxy = createProxy(base, void 0);
+          let hasError = true;
+          try {
+            result = recipe(proxy);
+            hasError = false;
+          } finally {
+            if (hasError)
+              revokeScope(scope);
+            else
+              leaveScope(scope);
+          }
+          usePatchesInScope(scope, patchListener);
+          return processResult(result, scope);
+        } else if (!base || typeof base !== "object") {
+          result = recipe(base);
+          if (result === void 0)
+            result = base;
+          if (result === NOTHING)
+            result = void 0;
+          if (this.autoFreeze_)
+            freeze(result, true);
+          if (patchListener) {
+            const p = [];
+            const ip = [];
+            getPlugin("Patches").generateReplacementPatches_(base, result, p, ip);
+            patchListener(p, ip);
+          }
+          return result;
+        } else
+          die(1, base);
+      };
+      this.produceWithPatches = (base, recipe) => {
+        if (typeof base === "function") {
+          return (state, ...args) => this.produceWithPatches(state, (draft) => base(draft, ...args));
+        }
+        let patches, inversePatches;
+        const result = this.produce(base, recipe, (p, ip) => {
+          patches = p;
+          inversePatches = ip;
+        });
+        return [result, patches, inversePatches];
+      };
+      if (typeof (config == null ? void 0 : config.autoFreeze) === "boolean")
+        this.setAutoFreeze(config.autoFreeze);
+      if (typeof (config == null ? void 0 : config.useStrictShallowCopy) === "boolean")
+        this.setUseStrictShallowCopy(config.useStrictShallowCopy);
+    }
+    createDraft(base) {
+      if (!isDraftable(base))
+        die(8);
+      if (isDraft(base))
+        base = current(base);
+      const scope = enterScope(this);
+      const proxy = createProxy(base, void 0);
+      proxy[DRAFT_STATE].isManual_ = true;
+      leaveScope(scope);
+      return proxy;
+    }
+    finishDraft(draft, patchListener) {
+      const state = draft && draft[DRAFT_STATE];
+      if (!state || !state.isManual_)
+        die(9);
+      const { scope_: scope } = state;
+      usePatchesInScope(scope, patchListener);
+      return processResult(void 0, scope);
+    }
+    /**
+     * Pass true to automatically freeze all copies created by Immer.
+     *
+     * By default, auto-freezing is enabled.
+     */
+    setAutoFreeze(value) {
+      this.autoFreeze_ = value;
+    }
+    /**
+     * Pass true to enable strict shallow copy.
+     *
+     * By default, immer does not copy the object descriptors such as getter, setter and non-enumrable properties.
+     */
+    setUseStrictShallowCopy(value) {
+      this.useStrictShallowCopy_ = value;
+    }
+    applyPatches(base, patches) {
+      let i;
+      for (i = patches.length - 1; i >= 0; i--) {
+        const patch = patches[i];
+        if (patch.path.length === 0 && patch.op === "replace") {
+          base = patch.value;
+          break;
+        }
+      }
+      if (i > -1) {
+        patches = patches.slice(i + 1);
+      }
+      const applyPatchesImpl = getPlugin("Patches").applyPatches_;
+      if (isDraft(base)) {
+        return applyPatchesImpl(base, patches);
+      }
+      return this.produce(
+        base,
+        (draft) => applyPatchesImpl(draft, patches)
+      );
+    }
+  };
+  function createProxy(value, parent) {
+    const draft = isMap(value) ? getPlugin("MapSet").proxyMap_(value, parent) : isSet(value) ? getPlugin("MapSet").proxySet_(value, parent) : createProxyProxy(value, parent);
+    const scope = parent ? parent.scope_ : getCurrentScope();
+    scope.drafts_.push(draft);
+    return draft;
+  }
+  function current(value) {
+    if (!isDraft(value))
+      die(10, value);
+    return currentImpl(value);
+  }
+  function currentImpl(value) {
+    if (!isDraftable(value) || isFrozen(value))
+      return value;
+    const state = value[DRAFT_STATE];
+    let copy;
+    if (state) {
+      if (!state.modified_)
+        return state.base_;
+      state.finalized_ = true;
+      copy = shallowCopy(value, state.scope_.immer_.useStrictShallowCopy_);
+    } else {
+      copy = shallowCopy(value, true);
+    }
+    each(copy, (key, childValue) => {
+      set(copy, key, currentImpl(childValue));
+    });
+    if (state) {
+      state.finalized_ = false;
+    }
+    return copy;
+  }
+  var immer = new Immer2();
+  var produce = immer.produce;
+  var produceWithPatches = immer.produceWithPatches.bind(
+    immer
+  );
+  var setAutoFreeze = immer.setAutoFreeze.bind(immer);
+  var setUseStrictShallowCopy = immer.setUseStrictShallowCopy.bind(immer);
+  var applyPatches = immer.applyPatches.bind(immer);
+  var createDraft = immer.createDraft.bind(immer);
+  var finishDraft = immer.finishDraft.bind(immer);
+
+  // node_modules/reselect/dist/reselect.mjs
+  var runIdentityFunctionCheck = (resultFunc, inputSelectorsResults, outputSelectorResult) => {
+    if (inputSelectorsResults.length === 1 && inputSelectorsResults[0] === outputSelectorResult) {
+      let isInputSameAsOutput = false;
+      try {
+        const emptyObject = {};
+        if (resultFunc(emptyObject) === emptyObject)
+          isInputSameAsOutput = true;
+      } catch (e) {
+      }
+      if (isInputSameAsOutput) {
+        let stack = void 0;
+        try {
+          throw new Error();
+        } catch (e) {
+          ;
+          ({ stack } = e);
+        }
+        console.warn(
+          "The result function returned its own inputs without modification. e.g\n`createSelector([state => state.todos], todos => todos)`\nThis could lead to inefficient memoization and unnecessary re-renders.\nEnsure transformation logic is in the result function, and extraction logic is in the input selectors.",
+          { stack }
+        );
+      }
+    }
+  };
+  var runInputStabilityCheck = (inputSelectorResultsObject, options, inputSelectorArgs) => {
+    const { memoize, memoizeOptions } = options;
+    const { inputSelectorResults, inputSelectorResultsCopy } = inputSelectorResultsObject;
+    const createAnEmptyObject = memoize(() => ({}), ...memoizeOptions);
+    const areInputSelectorResultsEqual = createAnEmptyObject.apply(null, inputSelectorResults) === createAnEmptyObject.apply(null, inputSelectorResultsCopy);
+    if (!areInputSelectorResultsEqual) {
+      let stack = void 0;
+      try {
+        throw new Error();
+      } catch (e) {
+        ;
+        ({ stack } = e);
+      }
+      console.warn(
+        "An input selector returned a different result when passed same arguments.\nThis means your output selector will likely run more frequently than intended.\nAvoid returning a new reference inside your input selector, e.g.\n`createSelector([state => state.todos.map(todo => todo.id)], todoIds => todoIds.length)`",
+        {
+          arguments: inputSelectorArgs,
+          firstInputs: inputSelectorResults,
+          secondInputs: inputSelectorResultsCopy,
+          stack
+        }
+      );
+    }
+  };
+  var globalDevModeChecks = {
+    inputStabilityCheck: "once",
+    identityFunctionCheck: "once"
+  };
+  function assertIsFunction(func, errorMessage = `expected a function, instead received ${typeof func}`) {
+    if (typeof func !== "function") {
+      throw new TypeError(errorMessage);
+    }
+  }
+  function assertIsObject(object, errorMessage = `expected an object, instead received ${typeof object}`) {
+    if (typeof object !== "object") {
+      throw new TypeError(errorMessage);
+    }
+  }
+  function assertIsArrayOfFunctions(array, errorMessage = `expected all items to be functions, instead received the following types: `) {
+    if (!array.every((item) => typeof item === "function")) {
+      const itemTypes = array.map(
+        (item) => typeof item === "function" ? `function ${item.name || "unnamed"}()` : typeof item
+      ).join(", ");
+      throw new TypeError(`${errorMessage}[${itemTypes}]`);
+    }
+  }
+  var ensureIsArray = (item) => {
+    return Array.isArray(item) ? item : [item];
+  };
+  function getDependencies(createSelectorArgs) {
+    const dependencies = Array.isArray(createSelectorArgs[0]) ? createSelectorArgs[0] : createSelectorArgs;
+    assertIsArrayOfFunctions(
+      dependencies,
+      `createSelector expects all input-selectors to be functions, but received the following types: `
+    );
+    return dependencies;
+  }
+  function collectInputSelectorResults(dependencies, inputSelectorArgs) {
+    const inputSelectorResults = [];
+    const { length } = dependencies;
+    for (let i = 0; i < length; i++) {
+      inputSelectorResults.push(dependencies[i].apply(null, inputSelectorArgs));
+    }
+    return inputSelectorResults;
+  }
+  var getDevModeChecksExecutionInfo = (firstRun, devModeChecks) => {
+    const { identityFunctionCheck, inputStabilityCheck } = __spreadValues(__spreadValues({}, globalDevModeChecks), devModeChecks);
+    return {
+      identityFunctionCheck: {
+        shouldRun: identityFunctionCheck === "always" || identityFunctionCheck === "once" && firstRun,
+        run: runIdentityFunctionCheck
+      },
+      inputStabilityCheck: {
+        shouldRun: inputStabilityCheck === "always" || inputStabilityCheck === "once" && firstRun,
+        run: runInputStabilityCheck
+      }
+    };
+  };
+  var REDUX_PROXY_LABEL = Symbol();
+  var proto = Object.getPrototypeOf({});
+  var StrongRef = class {
+    constructor(value) {
+      this.value = value;
+    }
+    deref() {
+      return this.value;
+    }
+  };
+  var Ref = typeof WeakRef !== "undefined" ? WeakRef : StrongRef;
+  var UNTERMINATED = 0;
+  var TERMINATED = 1;
+  function createCacheNode() {
+    return {
+      s: UNTERMINATED,
+      v: void 0,
+      o: null,
+      p: null
+    };
+  }
+  function weakMapMemoize(func, options = {}) {
+    let fnNode = createCacheNode();
+    const { resultEqualityCheck } = options;
+    let lastResult;
+    let resultsCount = 0;
+    function memoized() {
+      var _a, _b;
+      let cacheNode = fnNode;
+      const { length } = arguments;
+      for (let i = 0, l = length; i < l; i++) {
+        const arg = arguments[i];
+        if (typeof arg === "function" || typeof arg === "object" && arg !== null) {
+          let objectCache = cacheNode.o;
+          if (objectCache === null) {
+            cacheNode.o = objectCache = /* @__PURE__ */ new WeakMap();
+          }
+          const objectNode = objectCache.get(arg);
+          if (objectNode === void 0) {
+            cacheNode = createCacheNode();
+            objectCache.set(arg, cacheNode);
+          } else {
+            cacheNode = objectNode;
+          }
+        } else {
+          let primitiveCache = cacheNode.p;
+          if (primitiveCache === null) {
+            cacheNode.p = primitiveCache = /* @__PURE__ */ new Map();
+          }
+          const primitiveNode = primitiveCache.get(arg);
+          if (primitiveNode === void 0) {
+            cacheNode = createCacheNode();
+            primitiveCache.set(arg, cacheNode);
+          } else {
+            cacheNode = primitiveNode;
+          }
+        }
+      }
+      const terminatedNode = cacheNode;
+      let result;
+      if (cacheNode.s === TERMINATED) {
+        result = cacheNode.v;
+      } else {
+        result = func.apply(null, arguments);
+        resultsCount++;
+        if (resultEqualityCheck) {
+          const lastResultValue = (_b = (_a = lastResult == null ? void 0 : lastResult.deref) == null ? void 0 : _a.call(lastResult)) != null ? _b : lastResult;
+          if (lastResultValue != null && resultEqualityCheck(lastResultValue, result)) {
+            result = lastResultValue;
+            resultsCount !== 0 && resultsCount--;
+          }
+          const needsWeakRef = typeof result === "object" && result !== null || typeof result === "function";
+          lastResult = needsWeakRef ? new Ref(result) : result;
+        }
+      }
+      terminatedNode.s = TERMINATED;
+      terminatedNode.v = result;
+      return result;
+    }
+    memoized.clearCache = () => {
+      fnNode = createCacheNode();
+      memoized.resetResultsCount();
+    };
+    memoized.resultsCount = () => resultsCount;
+    memoized.resetResultsCount = () => {
+      resultsCount = 0;
+    };
+    return memoized;
+  }
+  function createSelectorCreator(memoizeOrOptions, ...memoizeOptionsFromArgs) {
+    const createSelectorCreatorOptions = typeof memoizeOrOptions === "function" ? {
+      memoize: memoizeOrOptions,
+      memoizeOptions: memoizeOptionsFromArgs
+    } : memoizeOrOptions;
+    const createSelector2 = (...createSelectorArgs) => {
+      let recomputations = 0;
+      let dependencyRecomputations = 0;
+      let lastResult;
+      let directlyPassedOptions = {};
+      let resultFunc = createSelectorArgs.pop();
+      if (typeof resultFunc === "object") {
+        directlyPassedOptions = resultFunc;
+        resultFunc = createSelectorArgs.pop();
+      }
+      assertIsFunction(
+        resultFunc,
+        `createSelector expects an output function after the inputs, but received: [${typeof resultFunc}]`
+      );
+      const combinedOptions = __spreadValues(__spreadValues({}, createSelectorCreatorOptions), directlyPassedOptions);
+      const {
+        memoize,
+        memoizeOptions = [],
+        argsMemoize = weakMapMemoize,
+        argsMemoizeOptions = [],
+        devModeChecks = {}
+      } = combinedOptions;
+      const finalMemoizeOptions = ensureIsArray(memoizeOptions);
+      const finalArgsMemoizeOptions = ensureIsArray(argsMemoizeOptions);
+      const dependencies = getDependencies(createSelectorArgs);
+      const memoizedResultFunc = memoize(function recomputationWrapper() {
+        recomputations++;
+        return resultFunc.apply(
+          null,
+          arguments
+        );
+      }, ...finalMemoizeOptions);
+      let firstRun = true;
+      const selector = argsMemoize(function dependenciesChecker() {
+        dependencyRecomputations++;
+        const inputSelectorResults = collectInputSelectorResults(
+          dependencies,
+          arguments
+        );
+        lastResult = memoizedResultFunc.apply(null, inputSelectorResults);
+        if (true) {
+          const { identityFunctionCheck, inputStabilityCheck } = getDevModeChecksExecutionInfo(firstRun, devModeChecks);
+          if (identityFunctionCheck.shouldRun) {
+            identityFunctionCheck.run(
+              resultFunc,
+              inputSelectorResults,
+              lastResult
+            );
+          }
+          if (inputStabilityCheck.shouldRun) {
+            const inputSelectorResultsCopy = collectInputSelectorResults(
+              dependencies,
+              arguments
+            );
+            inputStabilityCheck.run(
+              { inputSelectorResults, inputSelectorResultsCopy },
+              { memoize, memoizeOptions: finalMemoizeOptions },
+              arguments
+            );
+          }
+          if (firstRun)
+            firstRun = false;
+        }
+        return lastResult;
+      }, ...finalArgsMemoizeOptions);
+      return Object.assign(selector, {
+        resultFunc,
+        memoizedResultFunc,
+        dependencies,
+        dependencyRecomputations: () => dependencyRecomputations,
+        resetDependencyRecomputations: () => {
+          dependencyRecomputations = 0;
+        },
+        lastResult: () => lastResult,
+        recomputations: () => recomputations,
+        resetRecomputations: () => {
+          recomputations = 0;
+        },
+        memoize,
+        argsMemoize
+      });
+    };
+    Object.assign(createSelector2, {
+      withTypes: () => createSelector2
+    });
+    return createSelector2;
+  }
+  var createSelector = /* @__PURE__ */ createSelectorCreator(weakMapMemoize);
+  var createStructuredSelector = Object.assign(
+    (inputSelectorsObject, selectorCreator = createSelector) => {
+      assertIsObject(
+        inputSelectorsObject,
+        `createStructuredSelector expects first argument to be an object where each property is a selector, instead received a ${typeof inputSelectorsObject}`
+      );
+      const inputSelectorKeys = Object.keys(inputSelectorsObject);
+      const dependencies = inputSelectorKeys.map(
+        (key) => inputSelectorsObject[key]
+      );
+      const structuredSelector = selectorCreator(
+        dependencies,
+        (...inputSelectorResults) => {
+          return inputSelectorResults.reduce((composition, value, index) => {
+            composition[inputSelectorKeys[index]] = value;
+            return composition;
+          }, {});
+        }
+      );
+      return structuredSelector;
+    },
+    { withTypes: () => createStructuredSelector }
+  );
+
+  // node_modules/redux-thunk/dist/redux-thunk.mjs
+  function createThunkMiddleware(extraArgument) {
+    const middleware = ({ dispatch, getState }) => (next) => (action) => {
+      if (typeof action === "function") {
+        return action(dispatch, getState, extraArgument);
+      }
+      return next(action);
+    };
+    return middleware;
+  }
+  var thunk = createThunkMiddleware();
+  var withExtraArgument = createThunkMiddleware;
+
+  // node_modules/@reduxjs/toolkit/dist/redux-toolkit.modern.mjs
+  var createDraftSafeSelectorCreator = (...args) => {
+    const createSelector2 = createSelectorCreator(...args);
+    const createDraftSafeSelector2 = Object.assign((...args2) => {
+      const selector = createSelector2(...args2);
+      const wrappedSelector = (value, ...rest) => selector(isDraft(value) ? current(value) : value, ...rest);
+      Object.assign(wrappedSelector, selector);
+      return wrappedSelector;
+    }, {
+      withTypes: () => createDraftSafeSelector2
+    });
+    return createDraftSafeSelector2;
+  };
+  var createDraftSafeSelector = createDraftSafeSelectorCreator(weakMapMemoize);
+  var composeWithDevTools = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function() {
+    if (arguments.length === 0)
+      return void 0;
+    if (typeof arguments[0] === "object")
+      return compose;
+    return compose.apply(null, arguments);
+  };
+  var devToolsEnhancer = typeof window !== "undefined" && window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__ : function() {
+    return function(noop3) {
+      return noop3;
+    };
+  };
+  var hasMatchFunction = (v) => {
+    return v && typeof v.match === "function";
+  };
+  function createAction(type, prepareAction) {
+    function actionCreator(...args) {
+      if (prepareAction) {
+        let prepared = prepareAction(...args);
+        if (!prepared) {
+          throw new Error(false ? formatProdErrorMessage(0) : "prepareAction did not return an object");
+        }
+        return __spreadValues(__spreadValues({
+          type,
+          payload: prepared.payload
+        }, "meta" in prepared && {
+          meta: prepared.meta
+        }), "error" in prepared && {
+          error: prepared.error
+        });
+      }
+      return {
+        type,
+        payload: args[0]
+      };
+    }
+    actionCreator.toString = () => `${type}`;
+    actionCreator.type = type;
+    actionCreator.match = (action) => isAction(action) && action.type === type;
+    return actionCreator;
+  }
+  function isActionCreator(action) {
+    return typeof action === "function" && "type" in action && // hasMatchFunction only wants Matchers but I don't see the point in rewriting it
+    hasMatchFunction(action);
+  }
+  function getMessage(type) {
+    const splitType = type ? `${type}`.split("/") : [];
+    const actionName = splitType[splitType.length - 1] || "actionCreator";
+    return `Detected an action creator with type "${type || "unknown"}" being dispatched. 
+Make sure you're calling the action creator before dispatching, i.e. \`dispatch(${actionName}())\` instead of \`dispatch(${actionName})\`. This is necessary even if the action has no payload.`;
+  }
+  function createActionCreatorInvariantMiddleware(options = {}) {
+    if (false) {
+      return () => (next) => (action) => next(action);
+    }
+    const {
+      isActionCreator: isActionCreator2 = isActionCreator
+    } = options;
+    return () => (next) => (action) => {
+      if (isActionCreator2(action)) {
+        console.warn(getMessage(action.type));
+      }
+      return next(action);
+    };
+  }
+  function getTimeMeasureUtils(maxDelay, fnName) {
+    let elapsed = 0;
+    return {
+      measureTime(fn) {
+        const started = Date.now();
+        try {
+          return fn();
+        } finally {
+          const finished = Date.now();
+          elapsed += finished - started;
+        }
+      },
+      warnIfExceeded() {
+        if (elapsed > maxDelay) {
+          console.warn(`${fnName} took ${elapsed}ms, which is more than the warning threshold of ${maxDelay}ms. 
+If your state or actions are very large, you may want to disable the middleware as it might cause too much of a slowdown in development mode. See https://redux-toolkit.js.org/api/getDefaultMiddleware for instructions.
+It is disabled in production builds, so you don't need to worry about that.`);
+        }
+      }
+    };
+  }
+  var Tuple = class _Tuple extends Array {
+    constructor(...items) {
+      super(...items);
+      Object.setPrototypeOf(this, _Tuple.prototype);
+    }
+    static get [Symbol.species]() {
+      return _Tuple;
+    }
+    concat(...arr) {
+      return super.concat.apply(this, arr);
+    }
+    prepend(...arr) {
+      if (arr.length === 1 && Array.isArray(arr[0])) {
+        return new _Tuple(...arr[0].concat(this));
+      }
+      return new _Tuple(...arr.concat(this));
+    }
+  };
+  function freezeDraftable(val) {
+    return isDraftable(val) ? produce(val, () => {
+    }) : val;
+  }
+  function emplace(map, key, handler) {
+    if (map.has(key)) {
+      let value = map.get(key);
+      if (handler.update) {
+        value = handler.update(value, key, map);
+        map.set(key, value);
+      }
+      return value;
+    }
+    if (!handler.insert)
+      throw new Error(false ? formatProdErrorMessage(10) : "No insert provided for key not already in map");
+    const inserted = handler.insert(key, map);
+    map.set(key, inserted);
+    return inserted;
+  }
+  function isImmutableDefault(value) {
+    return typeof value !== "object" || value == null || Object.isFrozen(value);
+  }
+  function trackForMutations(isImmutable, ignorePaths, obj) {
+    const trackedProperties = trackProperties(isImmutable, ignorePaths, obj);
+    return {
+      detectMutations() {
+        return detectMutations(isImmutable, ignorePaths, trackedProperties, obj);
+      }
+    };
+  }
+  function trackProperties(isImmutable, ignorePaths = [], obj, path = "", checkedObjects = /* @__PURE__ */ new Set()) {
+    const tracked = {
+      value: obj
+    };
+    if (!isImmutable(obj) && !checkedObjects.has(obj)) {
+      checkedObjects.add(obj);
+      tracked.children = {};
+      for (const key in obj) {
+        const childPath = path ? path + "." + key : key;
+        if (ignorePaths.length && ignorePaths.indexOf(childPath) !== -1) {
+          continue;
+        }
+        tracked.children[key] = trackProperties(isImmutable, ignorePaths, obj[key], childPath);
+      }
+    }
+    return tracked;
+  }
+  function detectMutations(isImmutable, ignoredPaths = [], trackedProperty, obj, sameParentRef = false, path = "") {
+    const prevObj = trackedProperty ? trackedProperty.value : void 0;
+    const sameRef = prevObj === obj;
+    if (sameParentRef && !sameRef && !Number.isNaN(obj)) {
+      return {
+        wasMutated: true,
+        path
+      };
+    }
+    if (isImmutable(prevObj) || isImmutable(obj)) {
+      return {
+        wasMutated: false
+      };
+    }
+    const keysToDetect = {};
+    for (let key in trackedProperty.children) {
+      keysToDetect[key] = true;
+    }
+    for (let key in obj) {
+      keysToDetect[key] = true;
+    }
+    const hasIgnoredPaths = ignoredPaths.length > 0;
+    for (let key in keysToDetect) {
+      const nestedPath = path ? path + "." + key : key;
+      if (hasIgnoredPaths) {
+        const hasMatches = ignoredPaths.some((ignored) => {
+          if (ignored instanceof RegExp) {
+            return ignored.test(nestedPath);
+          }
+          return nestedPath === ignored;
+        });
+        if (hasMatches) {
+          continue;
+        }
+      }
+      const result = detectMutations(isImmutable, ignoredPaths, trackedProperty.children[key], obj[key], sameRef, nestedPath);
+      if (result.wasMutated) {
+        return result;
+      }
+    }
+    return {
+      wasMutated: false
+    };
+  }
+  function createImmutableStateInvariantMiddleware(options = {}) {
+    if (false) {
+      return () => (next) => (action) => next(action);
+    } else {
+      let stringify2 = function(obj, serializer, indent, decycler) {
+        return JSON.stringify(obj, getSerialize2(serializer, decycler), indent);
+      }, getSerialize2 = function(serializer, decycler) {
+        let stack = [], keys = [];
+        if (!decycler)
+          decycler = function(_, value) {
+            if (stack[0] === value)
+              return "[Circular ~]";
+            return "[Circular ~." + keys.slice(0, stack.indexOf(value)).join(".") + "]";
+          };
+        return function(key, value) {
+          if (stack.length > 0) {
+            var thisPos = stack.indexOf(this);
+            ~thisPos ? stack.splice(thisPos + 1) : stack.push(this);
+            ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key);
+            if (~stack.indexOf(value))
+              value = decycler.call(this, key, value);
+          } else
+            stack.push(value);
+          return serializer == null ? value : serializer.call(this, key, value);
+        };
+      };
+      var stringify = stringify2, getSerialize = getSerialize2;
+      let {
+        isImmutable = isImmutableDefault,
+        ignoredPaths,
+        warnAfter = 32
+      } = options;
+      const track = trackForMutations.bind(null, isImmutable, ignoredPaths);
+      return ({
+        getState
+      }) => {
+        let state = getState();
+        let tracker = track(state);
+        let result;
+        return (next) => (action) => {
+          const measureUtils = getTimeMeasureUtils(warnAfter, "ImmutableStateInvariantMiddleware");
+          measureUtils.measureTime(() => {
+            state = getState();
+            result = tracker.detectMutations();
+            tracker = track(state);
+            if (result.wasMutated) {
+              throw new Error(false ? formatProdErrorMessage(19) : `A state mutation was detected between dispatches, in the path '${result.path || ""}'.  This may cause incorrect behavior. (https://redux.js.org/style-guide/style-guide#do-not-mutate-state)`);
+            }
+          });
+          const dispatchedAction = next(action);
+          measureUtils.measureTime(() => {
+            state = getState();
+            result = tracker.detectMutations();
+            tracker = track(state);
+            if (result.wasMutated) {
+              throw new Error(false ? formatProdErrorMessage(20) : `A state mutation was detected inside a dispatch, in the path: ${result.path || ""}. Take a look at the reducer(s) handling the action ${stringify2(action)}. (https://redux.js.org/style-guide/style-guide#do-not-mutate-state)`);
+            }
+          });
+          measureUtils.warnIfExceeded();
+          return dispatchedAction;
+        };
+      };
+    }
+  }
+  function isPlain(val) {
+    const type = typeof val;
+    return val == null || type === "string" || type === "boolean" || type === "number" || Array.isArray(val) || isPlainObject(val);
+  }
+  function findNonSerializableValue(value, path = "", isSerializable = isPlain, getEntries, ignoredPaths = [], cache) {
+    let foundNestedSerializable;
+    if (!isSerializable(value)) {
+      return {
+        keyPath: path || "<root>",
+        value
+      };
+    }
+    if (typeof value !== "object" || value === null) {
+      return false;
+    }
+    if (cache == null ? void 0 : cache.has(value))
+      return false;
+    const entries = getEntries != null ? getEntries(value) : Object.entries(value);
+    const hasIgnoredPaths = ignoredPaths.length > 0;
+    for (const [key, nestedValue] of entries) {
+      const nestedPath = path ? path + "." + key : key;
+      if (hasIgnoredPaths) {
+        const hasMatches = ignoredPaths.some((ignored) => {
+          if (ignored instanceof RegExp) {
+            return ignored.test(nestedPath);
+          }
+          return nestedPath === ignored;
+        });
+        if (hasMatches) {
+          continue;
+        }
+      }
+      if (!isSerializable(nestedValue)) {
+        return {
+          keyPath: nestedPath,
+          value: nestedValue
+        };
+      }
+      if (typeof nestedValue === "object") {
+        foundNestedSerializable = findNonSerializableValue(nestedValue, nestedPath, isSerializable, getEntries, ignoredPaths, cache);
+        if (foundNestedSerializable) {
+          return foundNestedSerializable;
+        }
+      }
+    }
+    if (cache && isNestedFrozen(value))
+      cache.add(value);
+    return false;
+  }
+  function isNestedFrozen(value) {
+    if (!Object.isFrozen(value))
+      return false;
+    for (const nestedValue of Object.values(value)) {
+      if (typeof nestedValue !== "object" || nestedValue === null)
+        continue;
+      if (!isNestedFrozen(nestedValue))
+        return false;
+    }
+    return true;
+  }
+  function createSerializableStateInvariantMiddleware(options = {}) {
+    if (false) {
+      return () => (next) => (action) => next(action);
+    } else {
+      const {
+        isSerializable = isPlain,
+        getEntries,
+        ignoredActions = [],
+        ignoredActionPaths = ["meta.arg", "meta.baseQueryMeta"],
+        ignoredPaths = [],
+        warnAfter = 32,
+        ignoreState = false,
+        ignoreActions = false,
+        disableCache = false
+      } = options;
+      const cache = !disableCache && WeakSet ? /* @__PURE__ */ new WeakSet() : void 0;
+      return (storeAPI) => (next) => (action) => {
+        if (!isAction(action)) {
+          return next(action);
+        }
+        const result = next(action);
+        const measureUtils = getTimeMeasureUtils(warnAfter, "SerializableStateInvariantMiddleware");
+        if (!ignoreActions && !(ignoredActions.length && ignoredActions.indexOf(action.type) !== -1)) {
+          measureUtils.measureTime(() => {
+            const foundActionNonSerializableValue = findNonSerializableValue(action, "", isSerializable, getEntries, ignoredActionPaths, cache);
+            if (foundActionNonSerializableValue) {
+              const {
+                keyPath,
+                value
+              } = foundActionNonSerializableValue;
+              console.error(`A non-serializable value was detected in an action, in the path: \`${keyPath}\`. Value:`, value, "\nTake a look at the logic that dispatched this action: ", action, "\n(See https://redux.js.org/faq/actions#why-should-type-be-a-string-or-at-least-serializable-why-should-my-action-types-be-constants)", "\n(To allow non-serializable values see: https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data)");
+            }
+          });
+        }
+        if (!ignoreState) {
+          measureUtils.measureTime(() => {
+            const state = storeAPI.getState();
+            const foundStateNonSerializableValue = findNonSerializableValue(state, "", isSerializable, getEntries, ignoredPaths, cache);
+            if (foundStateNonSerializableValue) {
+              const {
+                keyPath,
+                value
+              } = foundStateNonSerializableValue;
+              console.error(`A non-serializable value was detected in the state, in the path: \`${keyPath}\`. Value:`, value, `
+Take a look at the reducer(s) handling this action type: ${action.type}.
+(See https://redux.js.org/faq/organizing-state#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state)`);
+            }
+          });
+          measureUtils.warnIfExceeded();
+        }
+        return result;
+      };
+    }
+  }
+  function isBoolean(x) {
+    return typeof x === "boolean";
+  }
+  var buildGetDefaultMiddleware = () => function getDefaultMiddleware(options) {
+    const {
+      thunk: thunk2 = true,
+      immutableCheck = true,
+      serializableCheck = true,
+      actionCreatorCheck = true
+    } = options != null ? options : {};
+    let middlewareArray = new Tuple();
+    if (thunk2) {
+      if (isBoolean(thunk2)) {
+        middlewareArray.push(thunk);
+      } else {
+        middlewareArray.push(withExtraArgument(thunk2.extraArgument));
+      }
+    }
+    if (true) {
+      if (immutableCheck) {
+        let immutableOptions = {};
+        if (!isBoolean(immutableCheck)) {
+          immutableOptions = immutableCheck;
+        }
+        middlewareArray.unshift(createImmutableStateInvariantMiddleware(immutableOptions));
+      }
+      if (serializableCheck) {
+        let serializableOptions = {};
+        if (!isBoolean(serializableCheck)) {
+          serializableOptions = serializableCheck;
+        }
+        middlewareArray.push(createSerializableStateInvariantMiddleware(serializableOptions));
+      }
+      if (actionCreatorCheck) {
+        let actionCreatorOptions = {};
+        if (!isBoolean(actionCreatorCheck)) {
+          actionCreatorOptions = actionCreatorCheck;
+        }
+        middlewareArray.unshift(createActionCreatorInvariantMiddleware(actionCreatorOptions));
+      }
+    }
+    return middlewareArray;
+  };
+  var SHOULD_AUTOBATCH = "RTK_autoBatch";
+  var createQueueWithTimer = (timeout) => {
+    return (notify) => {
+      setTimeout(notify, timeout);
+    };
+  };
+  var rAF = typeof window !== "undefined" && window.requestAnimationFrame ? window.requestAnimationFrame : createQueueWithTimer(10);
+  var autoBatchEnhancer = (options = {
+    type: "raf"
+  }) => (next) => (...args) => {
+    const store2 = next(...args);
+    let notifying = true;
+    let shouldNotifyAtEndOfTick = false;
+    let notificationQueued = false;
+    const listeners = /* @__PURE__ */ new Set();
+    const queueCallback = options.type === "tick" ? queueMicrotask : options.type === "raf" ? rAF : options.type === "callback" ? options.queueNotification : createQueueWithTimer(options.timeout);
+    const notifyListeners = () => {
+      notificationQueued = false;
+      if (shouldNotifyAtEndOfTick) {
+        shouldNotifyAtEndOfTick = false;
+        listeners.forEach((l) => l());
+      }
+    };
+    return Object.assign({}, store2, {
+      // Override the base `store.subscribe` method to keep original listeners
+      // from running if we're delaying notifications
+      subscribe(listener2) {
+        const wrappedListener = () => notifying && listener2();
+        const unsubscribe = store2.subscribe(wrappedListener);
+        listeners.add(listener2);
+        return () => {
+          unsubscribe();
+          listeners.delete(listener2);
+        };
+      },
+      // Override the base `store.dispatch` method so that we can check actions
+      // for the `shouldAutoBatch` flag and determine if batching is active
+      dispatch(action) {
+        var _a;
+        try {
+          notifying = !((_a = action == null ? void 0 : action.meta) == null ? void 0 : _a[SHOULD_AUTOBATCH]);
+          shouldNotifyAtEndOfTick = !notifying;
+          if (shouldNotifyAtEndOfTick) {
+            if (!notificationQueued) {
+              notificationQueued = true;
+              queueCallback(notifyListeners);
+            }
+          }
+          return store2.dispatch(action);
+        } finally {
+          notifying = true;
+        }
+      }
+    });
+  };
+  var buildGetDefaultEnhancers = (middlewareEnhancer) => function getDefaultEnhancers(options) {
+    const {
+      autoBatch = true
+    } = options != null ? options : {};
+    let enhancerArray = new Tuple(middlewareEnhancer);
+    if (autoBatch) {
+      enhancerArray.push(autoBatchEnhancer(typeof autoBatch === "object" ? autoBatch : void 0));
+    }
+    return enhancerArray;
+  };
+  var IS_PRODUCTION = false;
+  function configureStore(options) {
+    const getDefaultMiddleware = buildGetDefaultMiddleware();
+    const {
+      reducer = void 0,
+      middleware,
+      devTools = true,
+      preloadedState = void 0,
+      enhancers = void 0
+    } = options || {};
+    let rootReducer;
+    if (typeof reducer === "function") {
+      rootReducer = reducer;
+    } else if (isPlainObject(reducer)) {
+      rootReducer = combineReducers(reducer);
+    } else {
+      throw new Error(false ? formatProdErrorMessage(1) : "`reducer` is a required argument, and must be a function or an object of functions that can be passed to combineReducers");
+    }
+    if (!IS_PRODUCTION && middleware && typeof middleware !== "function") {
+      throw new Error(false ? formatProdErrorMessage(2) : "`middleware` field must be a callback");
+    }
+    let finalMiddleware;
+    if (typeof middleware === "function") {
+      finalMiddleware = middleware(getDefaultMiddleware);
+      if (!IS_PRODUCTION && !Array.isArray(finalMiddleware)) {
+        throw new Error(false ? formatProdErrorMessage(3) : "when using a middleware builder function, an array of middleware must be returned");
+      }
+    } else {
+      finalMiddleware = getDefaultMiddleware();
+    }
+    if (!IS_PRODUCTION && finalMiddleware.some((item) => typeof item !== "function")) {
+      throw new Error(false ? formatProdErrorMessage(4) : "each middleware provided to configureStore must be a function");
+    }
+    let finalCompose = compose;
+    if (devTools) {
+      finalCompose = composeWithDevTools(__spreadValues({
+        // Enable capture of stack traces for dispatched Redux actions
+        trace: !IS_PRODUCTION
+      }, typeof devTools === "object" && devTools));
+    }
+    const middlewareEnhancer = applyMiddleware(...finalMiddleware);
+    const getDefaultEnhancers = buildGetDefaultEnhancers(middlewareEnhancer);
+    if (!IS_PRODUCTION && enhancers && typeof enhancers !== "function") {
+      throw new Error(false ? formatProdErrorMessage(5) : "`enhancers` field must be a callback");
+    }
+    let storeEnhancers = typeof enhancers === "function" ? enhancers(getDefaultEnhancers) : getDefaultEnhancers();
+    if (!IS_PRODUCTION && !Array.isArray(storeEnhancers)) {
+      throw new Error(false ? formatProdErrorMessage(6) : "`enhancers` callback must return an array");
+    }
+    if (!IS_PRODUCTION && storeEnhancers.some((item) => typeof item !== "function")) {
+      throw new Error(false ? formatProdErrorMessage(7) : "each enhancer provided to configureStore must be a function");
+    }
+    if (!IS_PRODUCTION && finalMiddleware.length && !storeEnhancers.includes(middlewareEnhancer)) {
+      console.error("middlewares were provided, but middleware enhancer was not included in final enhancers - make sure to call `getDefaultEnhancers`");
+    }
+    const composedEnhancer = finalCompose(...storeEnhancers);
+    return createStore(rootReducer, preloadedState, composedEnhancer);
+  }
+  function executeReducerBuilderCallback(builderCallback) {
+    const actionsMap = {};
+    const actionMatchers = [];
+    let defaultCaseReducer;
+    const builder = {
+      addCase(typeOrActionCreator, reducer) {
+        if (true) {
+          if (actionMatchers.length > 0) {
+            throw new Error(false ? formatProdErrorMessage(26) : "`builder.addCase` should only be called before calling `builder.addMatcher`");
+          }
+          if (defaultCaseReducer) {
+            throw new Error(false ? formatProdErrorMessage(27) : "`builder.addCase` should only be called before calling `builder.addDefaultCase`");
+          }
+        }
+        const type = typeof typeOrActionCreator === "string" ? typeOrActionCreator : typeOrActionCreator.type;
+        if (!type) {
+          throw new Error(false ? formatProdErrorMessage(28) : "`builder.addCase` cannot be called with an empty action type");
+        }
+        if (type in actionsMap) {
+          throw new Error(false ? formatProdErrorMessage(29) : `\`builder.addCase\` cannot be called with two reducers for the same action type '${type}'`);
+        }
+        actionsMap[type] = reducer;
+        return builder;
+      },
+      addMatcher(matcher, reducer) {
+        if (true) {
+          if (defaultCaseReducer) {
+            throw new Error(false ? formatProdErrorMessage(30) : "`builder.addMatcher` should only be called before calling `builder.addDefaultCase`");
+          }
+        }
+        actionMatchers.push({
+          matcher,
+          reducer
+        });
+        return builder;
+      },
+      addDefaultCase(reducer) {
+        if (true) {
+          if (defaultCaseReducer) {
+            throw new Error(false ? formatProdErrorMessage(31) : "`builder.addDefaultCase` can only be called once");
+          }
+        }
+        defaultCaseReducer = reducer;
+        return builder;
+      }
+    };
+    builderCallback(builder);
+    return [actionsMap, actionMatchers, defaultCaseReducer];
+  }
+  function isStateFunction(x) {
+    return typeof x === "function";
+  }
+  function createReducer(initialState2, mapOrBuilderCallback) {
+    if (true) {
+      if (typeof mapOrBuilderCallback === "object") {
+        throw new Error(false ? formatProdErrorMessage(8) : "The object notation for `createReducer` has been removed. Please use the 'builder callback' notation instead: https://redux-toolkit.js.org/api/createReducer");
+      }
+    }
+    let [actionsMap, finalActionMatchers, finalDefaultCaseReducer] = executeReducerBuilderCallback(mapOrBuilderCallback);
+    let getInitialState;
+    if (isStateFunction(initialState2)) {
+      getInitialState = () => freezeDraftable(initialState2());
+    } else {
+      const frozenInitialState = freezeDraftable(initialState2);
+      getInitialState = () => frozenInitialState;
+    }
+    function reducer(state = getInitialState(), action) {
+      let caseReducers = [actionsMap[action.type], ...finalActionMatchers.filter(({
+        matcher
+      }) => matcher(action)).map(({
+        reducer: reducer2
+      }) => reducer2)];
+      if (caseReducers.filter((cr) => !!cr).length === 0) {
+        caseReducers = [finalDefaultCaseReducer];
+      }
+      return caseReducers.reduce((previousState, caseReducer) => {
+        if (caseReducer) {
+          if (isDraft(previousState)) {
+            const draft = previousState;
+            const result = caseReducer(draft, action);
+            if (result === void 0) {
+              return previousState;
+            }
+            return result;
+          } else if (!isDraftable(previousState)) {
+            const result = caseReducer(previousState, action);
+            if (result === void 0) {
+              if (previousState === null) {
+                return previousState;
+              }
+              throw new Error(false ? formatProdErrorMessage(9) : "A case reducer on a non-draftable value must not return undefined");
+            }
+            return result;
+          } else {
+            return produce(previousState, (draft) => {
+              return caseReducer(draft, action);
+            });
+          }
+        }
+        return previousState;
+      }, state);
+    }
+    reducer.getInitialState = getInitialState;
+    return reducer;
+  }
+  var urlAlphabet = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW";
+  var nanoid = (size = 21) => {
+    let id = "";
+    let i = size;
+    while (i--) {
+      id += urlAlphabet[Math.random() * 64 | 0];
+    }
+    return id;
+  };
+  var matches = (matcher, action) => {
+    if (hasMatchFunction(matcher)) {
+      return matcher.match(action);
+    } else {
+      return matcher(action);
+    }
+  };
+  function isAnyOf(...matchers) {
+    return (action) => {
+      return matchers.some((matcher) => matches(matcher, action));
+    };
+  }
+  var commonProperties = ["name", "message", "stack", "code"];
+  var RejectWithValue = class {
+    constructor(payload, meta) {
+      /*
+      type-only property to distinguish between RejectWithValue and FulfillWithMeta
+      does not exist at runtime
+      */
+      __publicField(this, "_type");
+      this.payload = payload;
+      this.meta = meta;
+    }
+  };
+  var FulfillWithMeta = class {
+    constructor(payload, meta) {
+      /*
+      type-only property to distinguish between RejectWithValue and FulfillWithMeta
+      does not exist at runtime
+      */
+      __publicField(this, "_type");
+      this.payload = payload;
+      this.meta = meta;
+    }
+  };
+  var miniSerializeError = (value) => {
+    if (typeof value === "object" && value !== null) {
+      const simpleError = {};
+      for (const property of commonProperties) {
+        if (typeof value[property] === "string") {
+          simpleError[property] = value[property];
+        }
+      }
+      return simpleError;
+    }
+    return {
+      message: String(value)
+    };
+  };
+  var createAsyncThunk = /* @__PURE__ */ (() => {
+    function createAsyncThunk2(typePrefix, payloadCreator, options) {
+      const fulfilled = createAction(typePrefix + "/fulfilled", (payload, requestId, arg, meta) => ({
+        payload,
+        meta: __spreadProps(__spreadValues({}, meta || {}), {
+          arg,
+          requestId,
+          requestStatus: "fulfilled"
+        })
+      }));
+      const pending = createAction(typePrefix + "/pending", (requestId, arg, meta) => ({
+        payload: void 0,
+        meta: __spreadProps(__spreadValues({}, meta || {}), {
+          arg,
+          requestId,
+          requestStatus: "pending"
+        })
+      }));
+      const rejected = createAction(typePrefix + "/rejected", (error, requestId, arg, payload, meta) => ({
+        payload,
+        error: (options && options.serializeError || miniSerializeError)(error || "Rejected"),
+        meta: __spreadProps(__spreadValues({}, meta || {}), {
+          arg,
+          requestId,
+          rejectedWithValue: !!payload,
+          requestStatus: "rejected",
+          aborted: (error == null ? void 0 : error.name) === "AbortError",
+          condition: (error == null ? void 0 : error.name) === "ConditionError"
+        })
+      }));
+      function actionCreator(arg) {
+        return (dispatch, getState, extra) => {
+          const requestId = (options == null ? void 0 : options.idGenerator) ? options.idGenerator(arg) : nanoid();
+          const abortController = new AbortController();
+          let abortHandler;
+          let abortReason;
+          function abort(reason) {
+            abortReason = reason;
+            abortController.abort();
+          }
+          const promise = function() {
+            return __async(this, null, function* () {
+              var _a, _b;
+              let finalAction;
+              try {
+                let conditionResult = (_a = options == null ? void 0 : options.condition) == null ? void 0 : _a.call(options, arg, {
+                  getState,
+                  extra
+                });
+                if (isThenable(conditionResult)) {
+                  conditionResult = yield conditionResult;
+                }
+                if (conditionResult === false || abortController.signal.aborted) {
+                  throw {
+                    name: "ConditionError",
+                    message: "Aborted due to condition callback returning false."
+                  };
+                }
+                const abortedPromise = new Promise((_, reject) => {
+                  abortHandler = () => {
+                    reject({
+                      name: "AbortError",
+                      message: abortReason || "Aborted"
+                    });
+                  };
+                  abortController.signal.addEventListener("abort", abortHandler);
+                });
+                dispatch(pending(requestId, arg, (_b = options == null ? void 0 : options.getPendingMeta) == null ? void 0 : _b.call(options, {
+                  requestId,
+                  arg
+                }, {
+                  getState,
+                  extra
+                })));
+                finalAction = yield Promise.race([abortedPromise, Promise.resolve(payloadCreator(arg, {
+                  dispatch,
+                  getState,
+                  extra,
+                  requestId,
+                  signal: abortController.signal,
+                  abort,
+                  rejectWithValue: (value, meta) => {
+                    return new RejectWithValue(value, meta);
+                  },
+                  fulfillWithValue: (value, meta) => {
+                    return new FulfillWithMeta(value, meta);
+                  }
+                })).then((result) => {
+                  if (result instanceof RejectWithValue) {
+                    throw result;
+                  }
+                  if (result instanceof FulfillWithMeta) {
+                    return fulfilled(result.payload, requestId, arg, result.meta);
+                  }
+                  return fulfilled(result, requestId, arg);
+                })]);
+              } catch (err) {
+                finalAction = err instanceof RejectWithValue ? rejected(null, requestId, arg, err.payload, err.meta) : rejected(err, requestId, arg);
+              } finally {
+                if (abortHandler) {
+                  abortController.signal.removeEventListener("abort", abortHandler);
+                }
+              }
+              const skipDispatch = options && !options.dispatchConditionRejection && rejected.match(finalAction) && finalAction.meta.condition;
+              if (!skipDispatch) {
+                dispatch(finalAction);
+              }
+              return finalAction;
+            });
+          }();
+          return Object.assign(promise, {
+            abort,
+            requestId,
+            arg,
+            unwrap() {
+              return promise.then(unwrapResult);
+            }
+          });
+        };
+      }
+      return Object.assign(actionCreator, {
+        pending,
+        rejected,
+        fulfilled,
+        settled: isAnyOf(rejected, fulfilled),
+        typePrefix
+      });
+    }
+    createAsyncThunk2.withTypes = () => createAsyncThunk2;
+    return createAsyncThunk2;
+  })();
+  function unwrapResult(action) {
+    if (action.meta && action.meta.rejectedWithValue) {
+      throw action.payload;
+    }
+    if (action.error) {
+      throw action.error;
+    }
+    return action.payload;
+  }
+  function isThenable(value) {
+    return value !== null && typeof value === "object" && typeof value.then === "function";
+  }
+  var asyncThunkSymbol = /* @__PURE__ */ Symbol.for("rtk-slice-createasyncthunk");
+  var asyncThunkCreator = {
+    [asyncThunkSymbol]: createAsyncThunk
+  };
+  function getType(slice, actionKey) {
+    return `${slice}/${actionKey}`;
+  }
+  function buildCreateSlice({
+    creators
+  } = {}) {
+    var _a;
+    const cAT = (_a = creators == null ? void 0 : creators.asyncThunk) == null ? void 0 : _a[asyncThunkSymbol];
+    return function createSlice2(options) {
+      const {
+        name,
+        reducerPath = name
+      } = options;
+      if (!name) {
+        throw new Error(false ? formatProdErrorMessage(11) : "`name` is a required option for createSlice");
+      }
+      if (typeof process !== "undefined" && true) {
+        if (options.initialState === void 0) {
+          console.error("You must provide an `initialState` value that is not `undefined`. You may have misspelled `initialState`");
+        }
+      }
+      const reducers = (typeof options.reducers === "function" ? options.reducers(buildReducerCreators()) : options.reducers) || {};
+      const reducerNames = Object.keys(reducers);
+      const context = {
+        sliceCaseReducersByName: {},
+        sliceCaseReducersByType: {},
+        actionCreators: {},
+        sliceMatchers: []
+      };
+      const contextMethods = {
+        addCase(typeOrActionCreator, reducer2) {
+          const type = typeof typeOrActionCreator === "string" ? typeOrActionCreator : typeOrActionCreator.type;
+          if (!type) {
+            throw new Error(false ? formatProdErrorMessage(12) : "`context.addCase` cannot be called with an empty action type");
+          }
+          if (type in context.sliceCaseReducersByType) {
+            throw new Error(false ? formatProdErrorMessage(13) : "`context.addCase` cannot be called with two reducers for the same action type: " + type);
+          }
+          context.sliceCaseReducersByType[type] = reducer2;
+          return contextMethods;
+        },
+        addMatcher(matcher, reducer2) {
+          context.sliceMatchers.push({
+            matcher,
+            reducer: reducer2
+          });
+          return contextMethods;
+        },
+        exposeAction(name2, actionCreator) {
+          context.actionCreators[name2] = actionCreator;
+          return contextMethods;
+        },
+        exposeCaseReducer(name2, reducer2) {
+          context.sliceCaseReducersByName[name2] = reducer2;
+          return contextMethods;
+        }
+      };
+      reducerNames.forEach((reducerName) => {
+        const reducerDefinition = reducers[reducerName];
+        const reducerDetails = {
+          reducerName,
+          type: getType(name, reducerName),
+          createNotation: typeof options.reducers === "function"
+        };
+        if (isAsyncThunkSliceReducerDefinition(reducerDefinition)) {
+          handleThunkCaseReducerDefinition(reducerDetails, reducerDefinition, contextMethods, cAT);
+        } else {
+          handleNormalReducerDefinition(reducerDetails, reducerDefinition, contextMethods);
+        }
+      });
+      function buildReducer() {
+        if (true) {
+          if (typeof options.extraReducers === "object") {
+            throw new Error(false ? formatProdErrorMessage(14) : "The object notation for `createSlice.extraReducers` has been removed. Please use the 'builder callback' notation instead: https://redux-toolkit.js.org/api/createSlice");
+          }
+        }
+        const [extraReducers = {}, actionMatchers = [], defaultCaseReducer = void 0] = typeof options.extraReducers === "function" ? executeReducerBuilderCallback(options.extraReducers) : [options.extraReducers];
+        const finalCaseReducers = __spreadValues(__spreadValues({}, extraReducers), context.sliceCaseReducersByType);
+        return createReducer(options.initialState, (builder) => {
+          for (let key in finalCaseReducers) {
+            builder.addCase(key, finalCaseReducers[key]);
+          }
+          for (let sM of context.sliceMatchers) {
+            builder.addMatcher(sM.matcher, sM.reducer);
+          }
+          for (let m of actionMatchers) {
+            builder.addMatcher(m.matcher, m.reducer);
+          }
+          if (defaultCaseReducer) {
+            builder.addDefaultCase(defaultCaseReducer);
+          }
+        });
+      }
+      const selectSelf = (state) => state;
+      const injectedSelectorCache = /* @__PURE__ */ new Map();
+      let _reducer;
+      function reducer(state, action) {
+        if (!_reducer)
+          _reducer = buildReducer();
+        return _reducer(state, action);
+      }
+      function getInitialState() {
+        if (!_reducer)
+          _reducer = buildReducer();
+        return _reducer.getInitialState();
+      }
+      function makeSelectorProps(reducerPath2, injected = false) {
+        function selectSlice(state) {
+          let sliceState = state[reducerPath2];
+          if (typeof sliceState === "undefined") {
+            if (injected) {
+              sliceState = getInitialState();
+            } else if (true) {
+              throw new Error(false ? formatProdErrorMessage(15) : "selectSlice returned undefined for an uninjected slice reducer");
+            }
+          }
+          return sliceState;
+        }
+        function getSelectors(selectState = selectSelf) {
+          const selectorCache = emplace(injectedSelectorCache, injected, {
+            insert: () => /* @__PURE__ */ new WeakMap()
+          });
+          return emplace(selectorCache, selectState, {
+            insert: () => {
+              var _a2;
+              const map = {};
+              for (const [name2, selector] of Object.entries((_a2 = options.selectors) != null ? _a2 : {})) {
+                map[name2] = wrapSelector(selector, selectState, getInitialState, injected);
+              }
+              return map;
+            }
+          });
+        }
+        return {
+          reducerPath: reducerPath2,
+          getSelectors,
+          get selectors() {
+            return getSelectors(selectSlice);
+          },
+          selectSlice
+        };
+      }
+      const slice = __spreadProps(__spreadValues({
+        name,
+        reducer,
+        actions: context.actionCreators,
+        caseReducers: context.sliceCaseReducersByName,
+        getInitialState
+      }, makeSelectorProps(reducerPath)), {
+        injectInto(injectable, _a2 = {}) {
+          var _b = _a2, {
+            reducerPath: pathOpt
+          } = _b, config = __objRest(_b, [
+            "reducerPath"
+          ]);
+          const newReducerPath = pathOpt != null ? pathOpt : reducerPath;
+          injectable.inject({
+            reducerPath: newReducerPath,
+            reducer
+          }, config);
+          return __spreadValues(__spreadValues({}, slice), makeSelectorProps(newReducerPath, true));
+        }
+      });
+      return slice;
+    };
+  }
+  function wrapSelector(selector, selectState, getInitialState, injected) {
+    function wrapper(rootState, ...args) {
+      let sliceState = selectState(rootState);
+      if (typeof sliceState === "undefined") {
+        if (injected) {
+          sliceState = getInitialState();
+        } else if (true) {
+          throw new Error(false ? formatProdErrorMessage(16) : "selectState returned undefined for an uninjected slice reducer");
+        }
+      }
+      return selector(sliceState, ...args);
+    }
+    wrapper.unwrapped = selector;
+    return wrapper;
+  }
+  var createSlice = /* @__PURE__ */ buildCreateSlice();
+  function buildReducerCreators() {
+    function asyncThunk(payloadCreator, config) {
+      return __spreadValues({
+        _reducerDefinitionType: "asyncThunk",
+        payloadCreator
+      }, config);
+    }
+    asyncThunk.withTypes = () => asyncThunk;
+    return {
+      reducer(caseReducer) {
+        return Object.assign({
+          // hack so the wrapping function has the same name as the original
+          // we need to create a wrapper so the `reducerDefinitionType` is not assigned to the original
+          [caseReducer.name](...args) {
+            return caseReducer(...args);
+          }
+        }[caseReducer.name], {
+          _reducerDefinitionType: "reducer"
+          /* reducer */
+        });
+      },
+      preparedReducer(prepare, reducer) {
+        return {
+          _reducerDefinitionType: "reducerWithPrepare",
+          prepare,
+          reducer
+        };
+      },
+      asyncThunk
+    };
+  }
+  function handleNormalReducerDefinition({
+    type,
+    reducerName,
+    createNotation
+  }, maybeReducerWithPrepare, context) {
+    let caseReducer;
+    let prepareCallback;
+    if ("reducer" in maybeReducerWithPrepare) {
+      if (createNotation && !isCaseReducerWithPrepareDefinition(maybeReducerWithPrepare)) {
+        throw new Error(false ? formatProdErrorMessage(17) : "Please use the `create.preparedReducer` notation for prepared action creators with the `create` notation.");
+      }
+      caseReducer = maybeReducerWithPrepare.reducer;
+      prepareCallback = maybeReducerWithPrepare.prepare;
+    } else {
+      caseReducer = maybeReducerWithPrepare;
+    }
+    context.addCase(type, caseReducer).exposeCaseReducer(reducerName, caseReducer).exposeAction(reducerName, prepareCallback ? createAction(type, prepareCallback) : createAction(type));
+  }
+  function isAsyncThunkSliceReducerDefinition(reducerDefinition) {
+    return reducerDefinition._reducerDefinitionType === "asyncThunk";
+  }
+  function isCaseReducerWithPrepareDefinition(reducerDefinition) {
+    return reducerDefinition._reducerDefinitionType === "reducerWithPrepare";
+  }
+  function handleThunkCaseReducerDefinition({
+    type,
+    reducerName
+  }, reducerDefinition, context, cAT) {
+    if (!cAT) {
+      throw new Error(false ? formatProdErrorMessage(18) : "Cannot use `create.asyncThunk` in the built-in `createSlice`. Use `buildCreateSlice({ creators: { asyncThunk: asyncThunkCreator } })` to create a customised version of `createSlice`.");
+    }
+    const {
+      payloadCreator,
+      fulfilled,
+      pending,
+      rejected,
+      settled,
+      options
+    } = reducerDefinition;
+    const thunk2 = cAT(type, payloadCreator, options);
+    context.exposeAction(reducerName, thunk2);
+    if (fulfilled) {
+      context.addCase(thunk2.fulfilled, fulfilled);
+    }
+    if (pending) {
+      context.addCase(thunk2.pending, pending);
+    }
+    if (rejected) {
+      context.addCase(thunk2.rejected, rejected);
+    }
+    if (settled) {
+      context.addMatcher(thunk2.settled, settled);
+    }
+    context.exposeCaseReducer(reducerName, {
+      fulfilled: fulfilled || noop,
+      pending: pending || noop,
+      rejected: rejected || noop,
+      settled: settled || noop
+    });
+  }
+  function noop() {
+  }
+  var listener = "listener";
+  var completed = "completed";
+  var cancelled = "cancelled";
+  var taskCancelled = `task-${cancelled}`;
+  var taskCompleted = `task-${completed}`;
+  var listenerCancelled = `${listener}-${cancelled}`;
+  var listenerCompleted = `${listener}-${completed}`;
+  var assertFunction = (func, expected) => {
+    if (typeof func !== "function") {
+      throw new Error(false ? formatProdErrorMessage(32) : `${expected} is not a function`);
+    }
+  };
+  var {
+    assign
+  } = Object;
+  var alm = "listenerMiddleware";
+  var getListenerEntryPropsFrom = (options) => {
+    let {
+      type,
+      actionCreator,
+      matcher,
+      predicate,
+      effect
+    } = options;
+    if (type) {
+      predicate = createAction(type).match;
+    } else if (actionCreator) {
+      type = actionCreator.type;
+      predicate = actionCreator.match;
+    } else if (matcher) {
+      predicate = matcher;
+    } else if (predicate) {
+    } else {
+      throw new Error(false ? formatProdErrorMessage(21) : "Creating or removing a listener requires one of the known fields for matching an action");
+    }
+    assertFunction(effect, "options.listener");
+    return {
+      predicate,
+      type,
+      effect
+    };
+  };
+  var createListenerEntry = Object.assign((options) => {
+    const {
+      type,
+      predicate,
+      effect
+    } = getListenerEntryPropsFrom(options);
+    const id = nanoid();
+    const entry = {
+      id,
+      effect,
+      type,
+      predicate,
+      pending: /* @__PURE__ */ new Set(),
+      unsubscribe: () => {
+        throw new Error(false ? formatProdErrorMessage(22) : "Unsubscribe not initialized");
+      }
+    };
+    return entry;
+  }, {
+    withTypes: () => createListenerEntry
+  });
+  var addListener = Object.assign(createAction(`${alm}/add`), {
+    withTypes: () => addListener
+  });
+  var clearAllListeners = createAction(`${alm}/removeAll`);
+  var removeListener = Object.assign(createAction(`${alm}/remove`), {
+    withTypes: () => removeListener
+  });
+  var ORIGINAL_STATE = Symbol.for("rtk-state-proxy-original");
+
+  // src/store.ts
+  var initialState = [
+    [
+      {
+        slotId: "slot_1",
+        item: { id: "yyz", src: "assets/palace/items/courage.png" }
+      },
+      {
+        slotId: "slot_2",
+        item: { id: "xxz", src: "assets/palace/items/gamepad.png" }
+      },
+      {
+        slotId: "slot_3",
+        item: { id: "xwz", src: "assets/palace/items/greece.png" }
+      },
+      {
+        slotId: "slot_4",
+        item: { id: "xmz", src: "assets/palace/items/papyrus.png" }
+      },
+      { slotId: "slot_5", item: null }
+    ],
+    [
+      {
+        slotId: "slot_6",
+        item: { id: "yyz", src: "assets/palace/items/courage.png" }
+      },
+      {
+        slotId: "slot_7",
+        item: { id: "xxz", src: "assets/palace/items/gamepad.png" }
+      },
+      {
+        slotId: "slot_8",
+        item: { id: "xwz", src: "assets/palace/items/greece.png" }
+      },
+      {
+        slotId: "slot_9",
+        item: { id: "xmz", src: "assets/palace/items/papyrus.png" }
+      },
+      {
+        slotId: "slot_10",
+        item: { id: "xmz", src: "assets/palace/items/parthenon.png" }
+      }
+    ]
+  ];
+  var localStorageSlice = createSlice({
+    name: "localStorage",
+    initialState,
+    reducers: {
+      updateItem: (state, action) => {
+        const { slotId, item } = action.payload;
+        for (let map of state) {
+          const slot = map.find((slot2) => slot2.slotId === slotId);
+          if (slot) {
+            slot.item = item;
+            return;
+          }
+        }
+      }
+    }
+  });
+  var { updateItem } = localStorageSlice.actions;
+  var store = configureStore({
+    reducer: {
+      localStorage: localStorageSlice.reducer
+    }
+  });
+  var store_default = store;
+
+  // src/palace.ts
+  window.store = store_default;
+  var MAPS = [];
+  var heroContainer = document.getElementById("hero_container");
+  var heroImage = document.getElementById("heroImg");
+  var enemy = document.getElementById("enemyImg");
+  var enemyContainer = document.getElementById("enemy_container");
+  var errorScoreContainer = document.getElementById("error_score");
+  var successfulKillsScoreContainer = document.getElementById("killed_score");
+  var menu = document.getElementById("menu");
+  var searchInput = document.getElementById("searchInput");
+  var menuB = document.getElementById("menuB");
+  var backgroundSrc = "assets/palace/maps/castle/castle.gif";
+  var currentCacheLeftIndex = 0;
+  var currentCacheRightIndex = 1;
+  var makeId = (length) => {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  };
+  var ANIMATION_RUNNING_VALUES = {
+    [0 /* attack */]: 0,
+    [1 /* run */]: 0,
+    [2 /* walk */]: 0,
+    [3 /* opponent_run */]: 0,
+    [4 /* camera_left_to_right */]: 0,
+    [5 /* camera_right_to_left */]: 0,
+    [6 /* character_left_to_right_move */]: 0
+  };
+  var pickedSlotId = null;
+  var selectItem = (event) => {
+    const target = event.currentTarget;
+    const slotId = target.id;
+    alert(`picked slot : ${slotId}`);
+    pickedSlotId = slotId;
+    openMenu();
+  };
+  window.selectItem = selectItem;
+  var createItemSlots = (slots) => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+    return `
+    <div class='slotGroup slotsLeft'>
+      <div class='slot' onclick='selectItem(event)' id='slot_1'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
         </div>
-        <div class='slot' onclick='selectItem(event)' id='slot_2'>
-              <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-              </div>
-           <img class='item' src='${(r=e[1])!=null&&r.src?e[1].src:""}'/>
-        </div>
+        <img class='item' src='${((_b = (_a = slots[0]) == null ? void 0 : _a.item) == null ? void 0 : _b.src) || ""}'/>
       </div>
-      <div class='slotGroup slotsCenter'>
+      <div class='slot' onclick='selectItem(event)' id='slot_2'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
+        </div>
+        <img class='item' src='${((_d = (_c = slots[1]) == null ? void 0 : _c.item) == null ? void 0 : _d.src) || ""}'/>
+      </div>
+    </div>
+    <div class='slotGroup slotsCenter'>
       <div class='slot' onclick='selectItem(event)' id='slot_3'>
-      <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-             </div>
-           <img class='item' src='${(n=e[2])!=null&&n.src?e[2].src:""}'/>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
         </div>
+        <img class='item' src='${((_f = (_e = slots[2]) == null ? void 0 : _e.item) == null ? void 0 : _f.src) || ""}'/>
       </div>
-      <div class='slotGroup slotRight'>
-        <div class='slot'>
-            <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-              </div>
-           <img class='item' src='${(i=e[3])!=null&&i.src?e[3].src:""}'/>
+    </div>
+    <div class='slotGroup slotRight'>
+      <div class='slot' onclick='selectItem(event)' id='slot_4'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
         </div>
-        <div class='slot' onclick='selectItem(event)' id='slot_4'>
-             <div class="fire">
-                <div class="fire-left">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-center">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-right">
-                  <div class="main-fire"></div>
-                  <div class="particle-fire"></div>
-                </div>
-                <div class="fire-bottom">
-                  <div class="main-fire"></div>
-                </div>
-             </div>
-            ${(o=e[4])!=null&&o.src?'<img src="'+e[4].src+'" />':""}
-        </div>
+        <img class='item' src='${((_h = (_g = slots[3]) == null ? void 0 : _g.item) == null ? void 0 : _h.src) || ""}'/>
       </div>
-    `},ce=(e,t)=>{let r=document.createElement("div");r.classList.add("mapBlock");let n=document.createElement("img");n.src=Tr,r.append(n),r.style.position="fixed",r.style.left=`${e}px`;let i=document.createElement("div");return i.innerHTML=Pr(t),r.append(i),document.getElementsByTagName("body")[0].append(r),r},xe=e=>{if(!(M[e]===0||M[e]>1)){if(e===5&&I[0].offsetLeft>=0){M[5]=0;return}if(e===4&&I[I.length-1].offsetLeft<=0){M[4]=0;return}I.forEach(t=>t.style.left=`${t.offsetLeft+(e===4?-1:1)*4}px`),requestAnimationFrame(()=>xe(e))}};var Ot=(e,t,r,n,i,o,s,a,c)=>{M[c]++,De(e,t,r,n,i,o,s,a,c)},De=(e,t,r,n,i,o,s,a,c)=>{if(e&&!(!M[c]||M[c]>1)){if(t<5)return t++,requestAnimationFrame(()=>De(e,t,r,n,i,o,s,a,c));if(t=0,i===o){if(a===!1)return;i=s}else i++;e.src=`${n}/${i}.${r}`,requestAnimationFrame(()=>De(e,t,r,n,i,o,s,a,c))}};var Ce=e=>{if(M[4]===0)return;if(e<10)return e++,requestAnimationFrame(()=>Ce(e));e=0;let t=I[0];t.offsetLeft<-window.innerWidth&&(t.remove(),I.shift(),ae++);let r=I[I.length-1];r&&r.offsetLeft<=window.innerWidth/10&&Me<window.store.getState().localStorage.length-1&&(I.push(ce(r.offsetLeft+r.offsetWidth,window.store.getState().localStorage[Me])),Me++),requestAnimationFrame(()=>Ce(e))},Te=e=>{if(M[5]===0)return;if(e<10)return e++,requestAnimationFrame(()=>Te(e));e=0;let t=I[0];if(t&&t.offsetLeft>-window.innerWidth&&ae>0){let n=window.store.getState().localStorage[ae-1];I.unshift(ce(t.offsetLeft-t.offsetWidth,n)),ae--}let r=I[I.length-1];r&&r.offsetLeft>window.innerWidth&&(r.remove(),I.pop()),requestAnimationFrame(()=>Te(e))};var Rr=()=>{Cr.style.display="flex"},zr=()=>{xe(4),Ot(Et,0,"png","assets/palace/hero/old_walk",1,6,1,!0,2)},jr=()=>{xe(5),Ot(Et,0,"png","assets/palace/hero/walk_left",1,6,1,!0,2)};document.addEventListener("keydown",e=>{e.key==="d"&&M[4]===0&&(M[4]++,zr(),Ce(10)),e.key==="q"&&M[5]===0&&(M[5]++,jr(),Te(10)),e.key===" "&&Rr()});document.addEventListener("keyup",()=>{M[6]=0,M[2]=0,M[4]=0,M[5]=0});window.onload=()=>{I.push(ce(0,window.store.getState().localStorage[0])),I.push(ce(window.innerWidth,window.store.getState().localStorage[1]))};var bt;wt.addEventListener("input",()=>{clearTimeout(bt),bt=window.setTimeout(()=>{let e=wt.value.trim();e?Vr(e):Ie.innerHTML=""},300)});var Vr=e=>{fetch(`http://localhost:3000/iconfinder?query=${e}`).then(t=>t.json()).then(t=>{Lr(t.icons)}).catch(t=>{console.error("Error fetching icons:",t)})},$r=e=>{if(!Ae)return;let t=Fr(Ae);if(!t)return;t.src=e;let[r,n]=Ae.split("_").map(Number);window.store.dispatch(vt({blockIndex:r,itemIndex:n,item:{id:xr(3),src:e}}))},Lr=e=>{Ie.innerHTML="",e.forEach(t=>{let r=document.createElement("img");r.onclick=()=>$r(t.raster_sizes[6].formats[0].preview_url),r.src=t.raster_sizes[6].formats[0].preview_url,r.classList.add("search-result-item"),Ie.appendChild(r)})},Fr=e=>{let t=document.getElementById(e);if(t&&t.children.length>0){for(let r=0;r<t.children.length;r++)if(t.children[r].tagName.toLowerCase()==="img")return t.children[r]}return null};})();
+      <div class='slot' onclick='selectItem(event)' id='slot_5'>
+        <div class="fire">
+          <div class="fire-left">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-center">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-right">
+            <div class="main-fire"></div>
+            <div class="particle-fire"></div>
+          </div>
+          <div class="fire-bottom">
+            <div class="main-fire"></div>
+          </div>
+        </div>
+        <img class='item' src='${((_j = (_i = slots[4]) == null ? void 0 : _i.item) == null ? void 0 : _j.src) || ""}'/>
+      </div>
+    </div>
+  `;
+  };
+  var createMapPalaceBlock = (left, map) => {
+    const block = document.createElement("div");
+    block.classList.add("mapBlock");
+    const backgroundImage = document.createElement("img");
+    backgroundImage.src = backgroundSrc;
+    block.append(backgroundImage);
+    block.style.position = "fixed";
+    block.style.left = `${left}px`;
+    const slots = document.createElement("div");
+    slots.innerHTML = createItemSlots(map);
+    block.append(slots);
+    document.getElementsByTagName("body")[0].append(block);
+    return block;
+  };
+  var moveCamera = (direction) => {
+    if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
+      return;
+    }
+    if (direction === 5 /* camera_right_to_left */ && MAPS[0].offsetLeft >= 0) {
+      ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
+      return;
+    }
+    if (direction === 4 /* camera_left_to_right */ && MAPS[MAPS.length - 1].offsetLeft <= 0) {
+      ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] = 0;
+      return;
+    }
+    MAPS.forEach(
+      (map) => map.style.left = `${map.offsetLeft + (direction === 4 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+    );
+    requestAnimationFrame(() => moveCamera(direction));
+  };
+  var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+    ANIMATION_RUNNING_VALUES[animationId]++;
+    launchCharacterAnimation(
+      characterElement,
+      throttleNum,
+      extension,
+      spriteBase,
+      spriteIndex,
+      max,
+      min,
+      loop,
+      animationId
+    );
+  };
+  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+    if (!characterElement) {
+      return;
+    }
+    if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
+      return;
+    }
+    if (throttleNum < 5) {
+      throttleNum++;
+      return requestAnimationFrame(
+        () => launchCharacterAnimation(
+          characterElement,
+          throttleNum,
+          extension,
+          spriteBase,
+          spriteIndex,
+          max,
+          min,
+          loop,
+          animationId
+        )
+      );
+    }
+    throttleNum = 0;
+    if (spriteIndex === max) {
+      if (loop === false) {
+        return;
+      }
+      spriteIndex = min;
+    } else {
+      spriteIndex++;
+    }
+    characterElement.src = `${spriteBase}/${spriteIndex}.${extension}`;
+    requestAnimationFrame(
+      () => launchCharacterAnimation(
+        characterElement,
+        throttleNum,
+        extension,
+        spriteBase,
+        spriteIndex,
+        max,
+        min,
+        loop,
+        animationId
+      )
+    );
+  };
+  var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
+    if (ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
+      return;
+    }
+    if (throttleNum < 10) {
+      throttleNum++;
+      return requestAnimationFrame(
+        () => checkForScreenUpdateFromLeftToRight(throttleNum)
+      );
+    }
+    throttleNum = 0;
+    const firstMapDomElement = MAPS[0];
+    if (firstMapDomElement.offsetLeft < -window.innerWidth) {
+      firstMapDomElement.remove();
+      MAPS.shift();
+      currentCacheLeftIndex++;
+    }
+    const lastMapDomElement = MAPS[MAPS.length - 1];
+    if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.length - 1) {
+      MAPS.push(
+        createMapPalaceBlock(
+          lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth,
+          window.store.getState().localStorage[currentCacheRightIndex]
+        )
+      );
+      currentCacheRightIndex++;
+    }
+    requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
+  };
+  var checkForScreenUpdateFromRightToLeft = (throttleNum) => {
+    if (ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
+      return;
+    }
+    if (throttleNum < 10) {
+      throttleNum++;
+      return requestAnimationFrame(
+        () => checkForScreenUpdateFromRightToLeft(throttleNum)
+      );
+    }
+    throttleNum = 0;
+    const firstMapDomElement = MAPS[0];
+    if (firstMapDomElement && firstMapDomElement.offsetLeft > -window.innerWidth && currentCacheLeftIndex > 0) {
+      const newMapBlockData = window.store.getState().localStorage[currentCacheLeftIndex - 1];
+      MAPS.unshift(
+        createMapPalaceBlock(
+          firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth,
+          newMapBlockData
+        )
+      );
+      currentCacheLeftIndex--;
+    }
+    const lastMapDomElement = MAPS[MAPS.length - 1];
+    if (lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth) {
+      lastMapDomElement.remove();
+      MAPS.pop();
+    }
+    requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
+  };
+  var openMenu = () => {
+    menu.style.display = "flex";
+  };
+  var launchCharacterMovement = () => {
+    moveCamera(4 /* camera_left_to_right */);
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/palace/hero/old_walk",
+      1,
+      6,
+      1,
+      true,
+      2 /* walk */
+    );
+  };
+  var launchCharacterMovementLeft = () => {
+    moveCamera(5 /* camera_right_to_left */);
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/palace/hero/walk_left",
+      1,
+      6,
+      1,
+      true,
+      2 /* walk */
+    );
+  };
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "d" && ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
+        ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */]++;
+        launchCharacterMovement();
+        checkForScreenUpdateFromLeftToRight(10);
+      }
+      if (event.key === "q" && ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
+        ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */]++;
+        launchCharacterMovementLeft();
+        checkForScreenUpdateFromRightToLeft(10);
+      }
+      if (event.key === " ") {
+        openMenu();
+      }
+    }
+  );
+  document.addEventListener("keyup", () => {
+    ANIMATION_RUNNING_VALUES[6 /* character_left_to_right_move */] = 0;
+    ANIMATION_RUNNING_VALUES[2 /* walk */] = 0;
+    ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
+  });
+  window.onload = () => {
+    MAPS.push(createMapPalaceBlock(0, window.store.getState().localStorage[0]));
+    MAPS.push(
+      createMapPalaceBlock(
+        window.innerWidth,
+        window.store.getState().localStorage[1]
+      )
+    );
+  };
+  var searchTimeout;
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = window.setTimeout(() => {
+      const query = searchInput.value.trim();
+      if (query) {
+        fetchIcons(query);
+      } else {
+        menuB.innerHTML = "";
+      }
+    }, 300);
+  });
+  var fetchIcons = (query) => {
+    fetch(`http://localhost:3000/iconfinder?query=${query}`).then((response) => response.json()).then((data) => {
+      displaySearchResults(data.icons);
+    }).catch((error) => {
+      console.error("Error fetching icons:", error);
+    });
+  };
+  var changeSlotItem = (src) => {
+    if (!pickedSlotId) return;
+    const itemImg = getFirstImageById(pickedSlotId);
+    if (!itemImg) return;
+    itemImg.src = src;
+    const slotId = pickedSlotId;
+    window.store.dispatch(updateItem({ slotId, item: { id: makeId(3), src } }));
+  };
+  var displaySearchResults = (icons) => {
+    menuB.innerHTML = "";
+    icons.forEach((icon) => {
+      const imgElement = document.createElement("img");
+      imgElement.onclick = () => changeSlotItem(icon.raster_sizes[6].formats[0].preview_url);
+      imgElement.src = icon.raster_sizes[6].formats[0].preview_url;
+      imgElement.classList.add("search-result-item");
+      menuB.appendChild(imgElement);
+    });
+  };
+  var getFirstImageById = (elementId) => {
+    const element = document.getElementById(elementId);
+    if (element && element.children.length > 0) {
+      for (let i = 0; i < element.children.length; i++) {
+        if (element.children[i].tagName.toLowerCase() === "img") {
+          return element.children[i];
+        }
+      }
+    }
+    return null;
+  };
+})();
 //# sourceMappingURL=palace.js.map

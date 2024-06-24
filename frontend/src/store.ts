@@ -5,24 +5,57 @@ interface Item {
   src: string;
 }
 
-type LocalStorageState = Array<Array<Item | null>>;
+export interface Slot {
+  slotId: string;
+  item: Item | null;
+}
+
+type LocalStorageState = MapBlock[];
+
+type MapBlock = Slot[];
 
 const initialState: LocalStorageState = [
   [
-    { id: "yyz", src: "assets/palace/items/courage.png" },
-    { id: "xxz", src: "assets/palace/items/gamepad.png" },
-    { id: "xwz", src: "assets/palace/items/greece.png" },
-    { id: "xmz", src: "assets/palace/items/papyrus.png" },
-    null,
+    {
+      slotId: "slot_1",
+      item: { id: "yyz", src: "assets/palace/items/courage.png" },
+    },
+    {
+      slotId: "slot_2",
+      item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
+    },
+    {
+      slotId: "slot_3",
+      item: { id: "xwz", src: "assets/palace/items/greece.png" },
+    },
+    {
+      slotId: "slot_4",
+      item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
+    },
+    { slotId: "slot_5", item: null },
   ],
   [
-    { id: "yyz", src: "assets/palace/items/courage.png" },
-    { id: "xxz", src: "assets/palace/items/gamepad.png" },
-    { id: "xwz", src: "assets/palace/items/greece.png" },
-    { id: "xmz", src: "assets/palace/items/papyrus.png" },
-    { id: "xmz", src: "assets/palace/items/parthenon.png" },
+    {
+      slotId: "slot_6",
+      item: { id: "yyz", src: "assets/palace/items/courage.png" },
+    },
+    {
+      slotId: "slot_7",
+      item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
+    },
+    {
+      slotId: "slot_8",
+      item: { id: "xwz", src: "assets/palace/items/greece.png" },
+    },
+    {
+      slotId: "slot_9",
+      item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
+    },
+    {
+      slotId: "slot_10",
+      item: { id: "xmz", src: "assets/palace/items/parthenon.png" },
+    },
   ],
-  // Repeat similar structure for other blocks...
 ];
 
 const localStorageSlice = createSlice({
@@ -32,14 +65,17 @@ const localStorageSlice = createSlice({
     updateItem: (
       state,
       action: PayloadAction<{
-        blockIndex: number;
-        itemIndex: number;
+        slotId: string;
         item: Item | null;
       }>
     ) => {
-      const { blockIndex, itemIndex, item } = action.payload;
-      if (state[blockIndex]) {
-        state[blockIndex][itemIndex] = item;
+      const { slotId, item } = action.payload;
+      for (let map of state) {
+        const slot = map.find((slot) => slot.slotId === slotId);
+        if (slot) {
+          slot.item = item;
+          return;
+        }
       }
     },
   },
