@@ -6,6 +6,7 @@ declare global {
   interface Window {
     store: Store<RootState>;
     selectItem: (event: Event) => void;
+    closeMenu: (event: Event) => void;
   }
 }
 
@@ -69,7 +70,6 @@ let pickedSlotId: null | string = null;
 const selectItem = (event: Event): void => {
   const target = event.currentTarget as HTMLDivElement;
   const slotId = target.id;
-  alert(`picked slot : ${slotId}`);
   pickedSlotId = slotId;
   openMenu();
 };
@@ -77,118 +77,138 @@ const selectItem = (event: Event): void => {
 // Make selectItem globally accessible
 window.selectItem = selectItem;
 
-const createItemSlots = (slots: Array<Slot | null>) => {
+const createItemSlots = (slots: Slot[]) => {
   return `
-    <div class='slotGroup slotsLeft'>
-      <div class='slot' onclick='selectItem(event)' id='slot_1'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+      <div class='slotGroup slotsLeft'>
+        <div class='slot' onclick='selectItem(event)' id='${slots[0]?.slotId}'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
+           ${
+             slots[0]?.item
+               ? `<img class='item' src='${slots[0].item.src}'/>`
+               : ""
+           }
         </div>
-        <img class='item' src='${slots[0]?.item?.src || ""}'/>
-      </div>
-      <div class='slot' onclick='selectItem(event)' id='slot_2'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+        <div class='slot' onclick='selectItem(event)' id='${slots[1]?.slotId}'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
+           ${
+             slots[1]?.item
+               ? `<img class='item' src='${slots[1].item.src}'/>`
+               : ""
+           }
         </div>
-        <img class='item' src='${slots[1]?.item?.src || ""}'/>
       </div>
-    </div>
-    <div class='slotGroup slotsCenter'>
-      <div class='slot' onclick='selectItem(event)' id='slot_3'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+      <div class='slotGroup slotsCenter'>
+      <div class='slot' onclick='selectItem(event)' id='${slots[2]?.slotId}'>
+      <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
+           ${
+             slots[2]?.item
+               ? `<img class='item' src='${slots[2].item.src}'/>`
+               : ""
+           }
         </div>
-        <img class='item' src='${slots[2]?.item?.src || ""}'/>
       </div>
-    </div>
-    <div class='slotGroup slotRight'>
-      <div class='slot' onclick='selectItem(event)' id='slot_4'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+      <div class='slotGroup slotRight'>
+        <div class='slot' onclick='selectItem(event)' id='${slots[3]?.slotId}'>
+            <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
+           ${
+             slots[3]?.item
+               ? `<img class='item' src='${slots[3].item.src}'/>`
+               : ""
+           }
         </div>
-        <img class='item' src='${slots[3]?.item?.src || ""}'/>
-      </div>
-      <div class='slot' onclick='selectItem(event)' id='slot_5'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+        <div class='slot' onclick='selectItem(event)' id='${slots[4]?.slotId}'>
+             <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
+            ${
+              slots[4]?.item
+                ? `<img class='item' src='${slots[4].item.src}'/>`
+                : ""
+            }
         </div>
-        <img class='item' src='${slots[4]?.item?.src || ""}'/>
       </div>
-    </div>
-  `;
+    `;
 };
 
-const createMapPalaceBlock = (left: number, map: Array<Slot | null>) => {
+const createMapPalaceBlock = (left: number, map: Slot[]) => {
   const block = document.createElement("div");
   block.classList.add("mapBlock");
   const backgroundImage = document.createElement("img");
@@ -534,6 +554,7 @@ const openMenu = () => {
 const closeMenu = () => {
   menu.style.display = "none";
 };
+window.closeMenu = closeMenu;
 
 const launchCharacterMovement = () => {
   moveCamera(ANIMATION_ID.camera_left_to_right);
@@ -649,14 +670,35 @@ const fetchIcons = (query: string): void => {
 
 const changeSlotItem = (src: string) => {
   if (!pickedSlotId) return;
-  const itemImg = getFirstImageById(pickedSlotId);
-
-  if (!itemImg) return;
-  itemImg.src = src;
 
   // Parse pickedSlotId to get slotId
   const slotId = pickedSlotId;
+
+  // Update the item in the store
   window.store.dispatch(updateItem({ slotId, item: { id: makeId(3), src } }));
+
+  // Retrieve the updated state
+  const updatedSlot = window.store
+    .getState()
+    .localStorage.flat()
+    .find((slot) => slot.slotId === slotId);
+
+  // Update the image src in the DOM if the slot is found and has an item
+  if (updatedSlot && updatedSlot.item) {
+    const itemImg = getFirstImageById(slotId);
+    if (itemImg) {
+      itemImg.src = updatedSlot.item.src;
+    } else {
+      // Create a new img element if it doesn't exist
+      const slotElement = document.getElementById(slotId);
+      if (slotElement) {
+        const newImg = document.createElement("img");
+        newImg.classList.add("item");
+        newImg.src = updatedSlot.item.src;
+        slotElement.appendChild(newImg);
+      }
+    }
+  }
 };
 
 const displaySearchResults = (icons: Icon[]): void => {

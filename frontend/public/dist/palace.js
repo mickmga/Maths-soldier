@@ -2699,7 +2699,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var selectItem = (event) => {
     const target = event.currentTarget;
     const slotId = target.id;
-    alert(`picked slot : ${slotId}`);
     pickedSlotId = slotId;
     openMenu();
   };
@@ -2707,113 +2706,113 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var createItemSlots = (slots) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     return `
-    <div class='slotGroup slotsLeft'>
-      <div class='slot' onclick='selectItem(event)' id='slot_1'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+      <div class='slotGroup slotsLeft'>
+        <div class='slot' onclick='selectItem(event)' id='${(_a = slots[0]) == null ? void 0 : _a.slotId}'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
+           ${((_b = slots[0]) == null ? void 0 : _b.item) ? `<img class='item' src='${slots[0].item.src}'/>` : ""}
         </div>
-        <img class='item' src='${((_b = (_a = slots[0]) == null ? void 0 : _a.item) == null ? void 0 : _b.src) || ""}'/>
-      </div>
-      <div class='slot' onclick='selectItem(event)' id='slot_2'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+        <div class='slot' onclick='selectItem(event)' id='${(_c = slots[1]) == null ? void 0 : _c.slotId}'>
+              <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
+           ${((_d = slots[1]) == null ? void 0 : _d.item) ? `<img class='item' src='${slots[1].item.src}'/>` : ""}
         </div>
-        <img class='item' src='${((_d = (_c = slots[1]) == null ? void 0 : _c.item) == null ? void 0 : _d.src) || ""}'/>
       </div>
-    </div>
-    <div class='slotGroup slotsCenter'>
-      <div class='slot' onclick='selectItem(event)' id='slot_3'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+      <div class='slotGroup slotsCenter'>
+      <div class='slot' onclick='selectItem(event)' id='${(_e = slots[2]) == null ? void 0 : _e.slotId}'>
+      <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
+           ${((_f = slots[2]) == null ? void 0 : _f.item) ? `<img class='item' src='${slots[2].item.src}'/>` : ""}
         </div>
-        <img class='item' src='${((_f = (_e = slots[2]) == null ? void 0 : _e.item) == null ? void 0 : _f.src) || ""}'/>
       </div>
-    </div>
-    <div class='slotGroup slotRight'>
-      <div class='slot' onclick='selectItem(event)' id='slot_4'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+      <div class='slotGroup slotRight'>
+        <div class='slot' onclick='selectItem(event)' id='${(_g = slots[3]) == null ? void 0 : _g.slotId}'>
+            <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+              </div>
+           ${((_h = slots[3]) == null ? void 0 : _h.item) ? `<img class='item' src='${slots[3].item.src}'/>` : ""}
         </div>
-        <img class='item' src='${((_h = (_g = slots[3]) == null ? void 0 : _g.item) == null ? void 0 : _h.src) || ""}'/>
-      </div>
-      <div class='slot' onclick='selectItem(event)' id='slot_5'>
-        <div class="fire">
-          <div class="fire-left">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-center">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-right">
-            <div class="main-fire"></div>
-            <div class="particle-fire"></div>
-          </div>
-          <div class="fire-bottom">
-            <div class="main-fire"></div>
-          </div>
+        <div class='slot' onclick='selectItem(event)' id='${(_i = slots[4]) == null ? void 0 : _i.slotId}'>
+             <div class="fire">
+                <div class="fire-left">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-center">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-right">
+                  <div class="main-fire"></div>
+                  <div class="particle-fire"></div>
+                </div>
+                <div class="fire-bottom">
+                  <div class="main-fire"></div>
+                </div>
+             </div>
+            ${((_j = slots[4]) == null ? void 0 : _j.item) ? `<img class='item' src='${slots[4].item.src}'/>` : ""}
         </div>
-        <img class='item' src='${((_j = (_i = slots[4]) == null ? void 0 : _i.item) == null ? void 0 : _j.src) || ""}'/>
       </div>
-    </div>
-  `;
+    `;
   };
   var createMapPalaceBlock = (left, map) => {
     const block = document.createElement("div");
@@ -2968,6 +2967,10 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var openMenu = () => {
     menu.style.display = "flex";
   };
+  var closeMenu = () => {
+    menu.style.display = "none";
+  };
+  window.closeMenu = closeMenu;
   var launchCharacterMovement = () => {
     moveCamera(4 /* camera_left_to_right */);
     launchAnimationAndDeclareItLaunched(
@@ -3050,11 +3053,23 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   };
   var changeSlotItem = (src) => {
     if (!pickedSlotId) return;
-    const itemImg = getFirstImageById(pickedSlotId);
-    if (!itemImg) return;
-    itemImg.src = src;
     const slotId = pickedSlotId;
     window.store.dispatch(updateItem({ slotId, item: { id: makeId(3), src } }));
+    const updatedSlot = window.store.getState().localStorage.flat().find((slot) => slot.slotId === slotId);
+    if (updatedSlot && updatedSlot.item) {
+      const itemImg = getFirstImageById(slotId);
+      if (itemImg) {
+        itemImg.src = updatedSlot.item.src;
+      } else {
+        const slotElement = document.getElementById(slotId);
+        if (slotElement) {
+          const newImg = document.createElement("img");
+          newImg.classList.add("item");
+          newImg.src = updatedSlot.item.src;
+          slotElement.appendChild(newImg);
+        }
+      }
+    }
   };
   var displaySearchResults = (icons) => {
     menuB.innerHTML = "";
