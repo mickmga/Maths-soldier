@@ -68,11 +68,8 @@ const ANIMATION_RUNNING_VALUES = {
 
 let pickedSlotId: null | string = null;
 
-const selectItem = (event: Event): void => {
-  const target = event.currentTarget as HTMLDivElement;
-  const slotId = target.id;
+const selectItem = (slotId: string): void => {
   pickedSlotId = slotId;
-  openMenu();
 };
 
 const openTextContainer = (event: Event) => {
@@ -116,10 +113,22 @@ const openTextContainer = (event: Event) => {
   textAreaElement.placeholder = "Enter body here...";
   textAreaElement.value = slot?.item?.body || "";
 
-  // Append the close button, input, and text area to the container
+  // Create the update image button
+  const updateImageButton = document.createElement("button");
+  updateImageButton.innerText = "Update Image";
+  updateImageButton.style.position = "absolute";
+  updateImageButton.style.bottom = "10px";
+  updateImageButton.style.right = "10px";
+  updateImageButton.addEventListener("click", () => {
+    document.body.removeChild(textContainer); // Close text container
+    openMenu(slotId); // Open the icon menu
+  });
+
+  // Append the close button, input, text area, and update image button to the container
   textContainer.appendChild(closeButton);
   textContainer.appendChild(inputElement);
   textContainer.appendChild(textAreaElement);
+  textContainer.appendChild(updateImageButton);
 
   // Append the container to the body
   document.body.appendChild(textContainer);
@@ -141,20 +150,21 @@ const openTextContainer = (event: Event) => {
   // Add event listener for the input element
   inputElement.addEventListener("input", (event) => {
     const title = (event.target as HTMLInputElement).value;
-    window.store.dispatch(updateItem({ slotId, item: { id: slotId, title } }));
+    window.store.dispatch(
+      updateItem({ slotId, item: { ...slot?.item, title } })
+    );
   });
 
   // Add event listener for the textarea element
   textAreaElement.addEventListener("input", (event) => {
     const body = (event.target as HTMLTextAreaElement).value;
-    window.store.dispatch(updateItem({ slotId, item: { id: slotId, body } }));
+    window.store.dispatch(
+      updateItem({ slotId, item: { ...slot?.item, body } })
+    );
   });
 };
 
 window.openTextContainer = openTextContainer;
-
-// Make selectItem globally accessible
-window.selectItem = selectItem;
 
 const createItemSlots = (slots: Slot[]) => {
   return `
@@ -636,7 +646,15 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
 const initHero = () => {};
 
-const openMenu = () => {
+const openMenu = (slotId: string) => {
+  selectItem(slotId);
+  // Close the text container if it is open
+  const textContainer = document.getElementById("textContainer");
+  if (textContainer) {
+    document.body.removeChild(textContainer);
+  }
+
+  // Open the icon menu
   menu.style.display = "flex";
 };
 
@@ -695,10 +713,6 @@ document.addEventListener(
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left]++;
       launchCharacterMovementLeft();
       checkForScreenUpdateFromRightToLeft(10);
-    }
-
-    if (event.key === " ") {
-      openMenu();
     }
   }
 );

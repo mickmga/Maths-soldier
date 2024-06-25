@@ -2707,11 +2707,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     [6 /* character_left_to_right_move */]: 0
   };
   var pickedSlotId = null;
-  var selectItem = (event) => {
-    const target = event.currentTarget;
-    const slotId = target.id;
+  var selectItem = (slotId) => {
     pickedSlotId = slotId;
-    openMenu();
   };
   var openTextContainer = (event) => {
     var _a, _b;
@@ -2741,9 +2738,19 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     textAreaElement.id = "textArea";
     textAreaElement.placeholder = "Enter body here...";
     textAreaElement.value = ((_b = slot == null ? void 0 : slot.item) == null ? void 0 : _b.body) || "";
+    const updateImageButton = document.createElement("button");
+    updateImageButton.innerText = "Update Image";
+    updateImageButton.style.position = "absolute";
+    updateImageButton.style.bottom = "10px";
+    updateImageButton.style.right = "10px";
+    updateImageButton.addEventListener("click", () => {
+      document.body.removeChild(textContainer);
+      openMenu(slotId);
+    });
     textContainer.appendChild(closeButton);
     textContainer.appendChild(inputElement);
     textContainer.appendChild(textAreaElement);
+    textContainer.appendChild(updateImageButton);
     document.body.appendChild(textContainer);
     textContainer.style.display = "flex";
     textContainer.style.flexDirection = "column";
@@ -2759,15 +2766,18 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     textContainer.style.zIndex = "5";
     inputElement.addEventListener("input", (event2) => {
       const title = event2.target.value;
-      window.store.dispatch(updateItem({ slotId, item: { id: slotId, title } }));
+      window.store.dispatch(
+        updateItem({ slotId, item: __spreadProps(__spreadValues({}, slot == null ? void 0 : slot.item), { title }) })
+      );
     });
     textAreaElement.addEventListener("input", (event2) => {
       const body = event2.target.value;
-      window.store.dispatch(updateItem({ slotId, item: { id: slotId, body } }));
+      window.store.dispatch(
+        updateItem({ slotId, item: __spreadProps(__spreadValues({}, slot == null ? void 0 : slot.item), { body }) })
+      );
     });
   };
   window.openTextContainer = openTextContainer;
-  window.selectItem = selectItem;
   var createItemSlots = (slots) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     return `
@@ -3029,7 +3039,12 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     }
     requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
   };
-  var openMenu = () => {
+  var openMenu = (slotId) => {
+    selectItem(slotId);
+    const textContainer = document.getElementById("textContainer");
+    if (textContainer) {
+      document.body.removeChild(textContainer);
+    }
     menu.style.display = "flex";
   };
   var closeMenu = () => {
@@ -3076,9 +3091,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */]++;
         launchCharacterMovementLeft();
         checkForScreenUpdateFromRightToLeft(10);
-      }
-      if (event.key === " ") {
-        openMenu();
       }
     }
   );
