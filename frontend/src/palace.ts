@@ -7,6 +7,7 @@ declare global {
     store: Store<RootState>;
     selectItem: (event: Event) => void;
     closeMenu: (event: Event) => void;
+    openTextContainer: (event: Event) => void;
   }
 }
 
@@ -74,13 +75,93 @@ const selectItem = (event: Event): void => {
   openMenu();
 };
 
+const openTextContainer = (event: Event) => {
+  // Create the new container
+  const target = event.currentTarget as HTMLDivElement;
+  const slotId = target.id;
+
+  // Get the current slot item from the store
+  const state = window.store.getState();
+  const mapBlock = state.localStorage.find((map) =>
+    map.some((slot) => slot.slotId === slotId)
+  );
+  const slot = mapBlock
+    ? mapBlock.find((slot) => slot.slotId === slotId)
+    : null;
+
+  // Create the new container
+  const textContainer = document.createElement("div");
+  textContainer.id = "textContainer";
+
+  // Create the close button
+  const closeButton = document.createElement("button");
+  closeButton.innerText = "Close";
+  closeButton.style.position = "absolute";
+  closeButton.style.top = "10px";
+  closeButton.style.right = "10px";
+  closeButton.addEventListener("click", () => {
+    document.body.removeChild(textContainer);
+  });
+
+  // Create the input element
+  const inputElement = document.createElement("input");
+  inputElement.id = "textInput";
+  inputElement.type = "text";
+  inputElement.placeholder = "Enter title here...";
+  inputElement.value = slot?.item?.title || "";
+
+  // Create the text area element
+  const textAreaElement = document.createElement("textarea");
+  textAreaElement.id = "textArea";
+  textAreaElement.placeholder = "Enter body here...";
+  textAreaElement.value = slot?.item?.body || "";
+
+  // Append the close button, input, and text area to the container
+  textContainer.appendChild(closeButton);
+  textContainer.appendChild(inputElement);
+  textContainer.appendChild(textAreaElement);
+
+  // Append the container to the body
+  document.body.appendChild(textContainer);
+
+  // Apply styles to position and display the container
+  textContainer.style.display = "flex";
+  textContainer.style.flexDirection = "column";
+  textContainer.style.justifyContent = "space-around";
+  textContainer.style.alignItems = "center";
+  textContainer.style.position = "absolute";
+  textContainer.style.top = "25vh";
+  textContainer.style.left = "30vw";
+  textContainer.style.width = "40vw";
+  textContainer.style.height = "60vh";
+  textContainer.style.backgroundColor = "brown";
+  textContainer.style.opacity = "0.95";
+  textContainer.style.zIndex = "5";
+
+  // Add event listener for the input element
+  inputElement.addEventListener("input", (event) => {
+    const title = (event.target as HTMLInputElement).value;
+    window.store.dispatch(updateItem({ slotId, item: { id: slotId, title } }));
+  });
+
+  // Add event listener for the textarea element
+  textAreaElement.addEventListener("input", (event) => {
+    const body = (event.target as HTMLTextAreaElement).value;
+    window.store.dispatch(updateItem({ slotId, item: { id: slotId, body } }));
+  });
+};
+
+window.openTextContainer = openTextContainer;
+
 // Make selectItem globally accessible
 window.selectItem = selectItem;
 
 const createItemSlots = (slots: Slot[]) => {
   return `
       <div class='slotGroup slotsLeft'>
-        <div class='slot' onclick='selectItem(event)' id='${slots[0]?.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${
+          slots[0]?.slotId
+        }'>
               <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -104,7 +185,9 @@ const createItemSlots = (slots: Slot[]) => {
                : ""
            }
         </div>
-        <div class='slot' onclick='selectItem(event)' id='${slots[1]?.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${
+          slots[1]?.slotId
+        }'>
               <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -130,7 +213,9 @@ const createItemSlots = (slots: Slot[]) => {
         </div>
       </div>
       <div class='slotGroup slotsCenter'>
-      <div class='slot' onclick='selectItem(event)' id='${slots[2]?.slotId}'>
+      <div class='slot' onclick='openTextContainer(event)' id='${
+        slots[2]?.slotId
+      }'>
       <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -156,7 +241,9 @@ const createItemSlots = (slots: Slot[]) => {
         </div>
       </div>
       <div class='slotGroup slotRight'>
-        <div class='slot' onclick='selectItem(event)' id='${slots[3]?.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${
+          slots[3]?.slotId
+        }'>
             <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -180,7 +267,9 @@ const createItemSlots = (slots: Slot[]) => {
                : ""
            }
         </div>
-        <div class='slot' onclick='selectItem(event)' id='${slots[4]?.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${
+          slots[4]?.slotId
+        }'>
              <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>

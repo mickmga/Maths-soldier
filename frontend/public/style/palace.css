@@ -159,3 +159,51 @@
   line-height: 30px;
   cursor: pointer;
 }
+
+#textContainer {
+  display: none; /* Hidden by default, will be shown by the JS function */
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  position: absolute;
+  top: 25vh;
+  left: 30vw;
+  width: 40vw;
+  height: 60vh;
+  background-color: brown;
+  opacity: 0.95;
+  z-index: 5;
+}
+
+#textInput {
+  height: 20%;
+  width: 90%;
+  border: none;
+  background: none;
+  color: white;
+  font-size: large;
+  outline: none;
+}
+
+#textArea {
+  width: 90%;
+  height: 70%;
+  border: none;
+  background: none;
+  color: white;
+  font-size: large;
+  outline: none;
+  resize: none; /* Prevents resizing */
+}
+
+#textContainer button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#textContainer button:hover {
+  background-color: darkred;
+}

@@ -2597,42 +2597,51 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     [
       {
         slotId: "slot_1",
-        item: { id: "yyz", src: "assets/palace/items/courage.png" }
+        item: { id: "yyz", src: "assets/palace/items/courage.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_2",
-        item: { id: "xxz", src: "assets/palace/items/gamepad.png" }
+        item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_3",
-        item: { id: "xwz", src: "assets/palace/items/greece.png" }
+        item: { id: "xwz", src: "assets/palace/items/greece.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_4",
-        item: { id: "xmz", src: "assets/palace/items/papyrus.png" }
+        item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
+        data: { title: "", body: "" }
       },
-      { slotId: "slot_5", item: null }
+      { slotId: "slot_5", item: null, data: { title: "", body: "" } }
     ],
     [
       {
         slotId: "slot_6",
-        item: { id: "yyz", src: "assets/palace/items/courage.png" }
+        item: { id: "yyz", src: "assets/palace/items/courage.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_7",
-        item: { id: "xxz", src: "assets/palace/items/gamepad.png" }
+        item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_8",
-        item: { id: "xwz", src: "assets/palace/items/greece.png" }
+        item: { id: "xwz", src: "assets/palace/items/greece.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_9",
-        item: { id: "xmz", src: "assets/palace/items/papyrus.png" }
+        item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
+        data: { title: "", body: "" }
       },
       {
         slotId: "slot_10",
-        item: { id: "xmz", src: "assets/palace/items/parthenon.png" }
+        item: { id: "xmz", src: "assets/palace/items/parthenon.png" },
+        data: { title: "", body: "" }
       }
     ]
   ];
@@ -2642,11 +2651,13 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     reducers: {
       updateItem: (state, action) => {
         const { slotId, item } = action.payload;
-        for (let map of state) {
-          const slot = map.find((slot2) => slot2.slotId === slotId);
-          if (slot) {
-            slot.item = item;
-            return;
+        const mapBlock = state.find(
+          (map) => map.some((slot) => slot.slotId === slotId)
+        );
+        if (mapBlock) {
+          const slot = mapBlock.find((slot2) => slot2.slotId === slotId);
+          if (slot && slot.item) {
+            slot.item = __spreadValues(__spreadValues({}, slot.item), item);
           }
         }
       }
@@ -2702,12 +2713,66 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     pickedSlotId = slotId;
     openMenu();
   };
+  var openTextContainer = (event) => {
+    var _a, _b;
+    const target = event.currentTarget;
+    const slotId = target.id;
+    const state = window.store.getState();
+    const mapBlock = state.localStorage.find(
+      (map) => map.some((slot2) => slot2.slotId === slotId)
+    );
+    const slot = mapBlock ? mapBlock.find((slot2) => slot2.slotId === slotId) : null;
+    const textContainer = document.createElement("div");
+    textContainer.id = "textContainer";
+    const closeButton = document.createElement("button");
+    closeButton.innerText = "Close";
+    closeButton.style.position = "absolute";
+    closeButton.style.top = "10px";
+    closeButton.style.right = "10px";
+    closeButton.addEventListener("click", () => {
+      document.body.removeChild(textContainer);
+    });
+    const inputElement = document.createElement("input");
+    inputElement.id = "textInput";
+    inputElement.type = "text";
+    inputElement.placeholder = "Enter title here...";
+    inputElement.value = ((_a = slot == null ? void 0 : slot.item) == null ? void 0 : _a.title) || "";
+    const textAreaElement = document.createElement("textarea");
+    textAreaElement.id = "textArea";
+    textAreaElement.placeholder = "Enter body here...";
+    textAreaElement.value = ((_b = slot == null ? void 0 : slot.item) == null ? void 0 : _b.body) || "";
+    textContainer.appendChild(closeButton);
+    textContainer.appendChild(inputElement);
+    textContainer.appendChild(textAreaElement);
+    document.body.appendChild(textContainer);
+    textContainer.style.display = "flex";
+    textContainer.style.flexDirection = "column";
+    textContainer.style.justifyContent = "space-around";
+    textContainer.style.alignItems = "center";
+    textContainer.style.position = "absolute";
+    textContainer.style.top = "25vh";
+    textContainer.style.left = "30vw";
+    textContainer.style.width = "40vw";
+    textContainer.style.height = "60vh";
+    textContainer.style.backgroundColor = "brown";
+    textContainer.style.opacity = "0.95";
+    textContainer.style.zIndex = "5";
+    inputElement.addEventListener("input", (event2) => {
+      const title = event2.target.value;
+      window.store.dispatch(updateItem({ slotId, item: { id: slotId, title } }));
+    });
+    textAreaElement.addEventListener("input", (event2) => {
+      const body = event2.target.value;
+      window.store.dispatch(updateItem({ slotId, item: { id: slotId, body } }));
+    });
+  };
+  window.openTextContainer = openTextContainer;
   window.selectItem = selectItem;
   var createItemSlots = (slots) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     return `
       <div class='slotGroup slotsLeft'>
-        <div class='slot' onclick='selectItem(event)' id='${(_a = slots[0]) == null ? void 0 : _a.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${(_a = slots[0]) == null ? void 0 : _a.slotId}'>
               <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -2727,7 +2792,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
               </div>
            ${((_b = slots[0]) == null ? void 0 : _b.item) ? `<img class='item' src='${slots[0].item.src}'/>` : ""}
         </div>
-        <div class='slot' onclick='selectItem(event)' id='${(_c = slots[1]) == null ? void 0 : _c.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${(_c = slots[1]) == null ? void 0 : _c.slotId}'>
               <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -2749,7 +2814,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         </div>
       </div>
       <div class='slotGroup slotsCenter'>
-      <div class='slot' onclick='selectItem(event)' id='${(_e = slots[2]) == null ? void 0 : _e.slotId}'>
+      <div class='slot' onclick='openTextContainer(event)' id='${(_e = slots[2]) == null ? void 0 : _e.slotId}'>
       <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -2771,7 +2836,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         </div>
       </div>
       <div class='slotGroup slotRight'>
-        <div class='slot' onclick='selectItem(event)' id='${(_g = slots[3]) == null ? void 0 : _g.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${(_g = slots[3]) == null ? void 0 : _g.slotId}'>
             <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
@@ -2791,7 +2856,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
               </div>
            ${((_h = slots[3]) == null ? void 0 : _h.item) ? `<img class='item' src='${slots[3].item.src}'/>` : ""}
         </div>
-        <div class='slot' onclick='selectItem(event)' id='${(_i = slots[4]) == null ? void 0 : _i.slotId}'>
+        <div class='slot' onclick='openTextContainer(event)' id='${(_i = slots[4]) == null ? void 0 : _i.slotId}'>
              <div class="fire">
                 <div class="fire-left">
                   <div class="main-fire"></div>
