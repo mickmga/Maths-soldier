@@ -2593,65 +2593,68 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var ORIGINAL_STATE = Symbol.for("rtk-state-proxy-original");
 
   // src/store.ts
-  var initialState = [
-    [
-      {
-        slotId: "slot_1",
-        item: { id: "yyz", src: "assets/palace/items/courage.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_2",
-        item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_3",
-        item: { id: "xwz", src: "assets/palace/items/greece.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_4",
-        item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
-        data: { title: "", body: "" }
-      },
-      { slotId: "slot_5", item: null, data: { title: "", body: "" } }
+  var initialState = {
+    mapBlocks: [
+      [
+        {
+          slotId: "slot_1",
+          item: { id: "yyz", src: "assets/palace/items/courage.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_2",
+          item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_3",
+          item: { id: "xwz", src: "assets/palace/items/greece.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_4",
+          item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
+          data: { title: "", body: "" }
+        },
+        { slotId: "slot_5", item: null, data: { title: "", body: "" } }
+      ],
+      [
+        {
+          slotId: "slot_6",
+          item: { id: "yyz", src: "assets/palace/items/courage.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_7",
+          item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_8",
+          item: { id: "xwz", src: "assets/palace/items/greece.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_9",
+          item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
+          data: { title: "", body: "" }
+        },
+        {
+          slotId: "slot_10",
+          item: { id: "xmz", src: "assets/palace/items/parthenon.png" },
+          data: { title: "", body: "" }
+        }
+      ]
     ],
-    [
-      {
-        slotId: "slot_6",
-        item: { id: "yyz", src: "assets/palace/items/courage.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_7",
-        item: { id: "xxz", src: "assets/palace/items/gamepad.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_8",
-        item: { id: "xwz", src: "assets/palace/items/greece.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_9",
-        item: { id: "xmz", src: "assets/palace/items/papyrus.png" },
-        data: { title: "", body: "" }
-      },
-      {
-        slotId: "slot_10",
-        item: { id: "xmz", src: "assets/palace/items/parthenon.png" },
-        data: { title: "", body: "" }
-      }
-    ]
-  ];
+    sections: []
+  };
   var localStorageSlice = createSlice({
     name: "localStorage",
     initialState,
     reducers: {
       updateItem: (state, action) => {
         const { slotId, item } = action.payload;
-        const mapBlock = state.find(
+        const mapBlock = state.mapBlocks.find(
           (map) => map.some((slot) => slot.slotId === slotId)
         );
         if (mapBlock) {
@@ -2660,10 +2663,25 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
             slot.item = __spreadValues(__spreadValues({}, slot.item), item);
           }
         }
+      },
+      addSection: (state, action) => {
+        state.sections.push({
+          name: action.payload.name,
+          beginSlotId: action.payload.beginSlotId,
+          endSlotId: null
+        });
+      },
+      endSection: (state, action) => {
+        const currentSection = state.sections.find(
+          (section) => section.endSlotId === null
+        );
+        if (currentSection) {
+          currentSection.endSlotId = action.payload.endSlotId;
+        }
       }
     }
   });
-  var { updateItem } = localStorageSlice.actions;
+  var { updateItem, addSection, endSection } = localStorageSlice.actions;
   var store = configureStore({
     reducer: {
       localStorage: localStorageSlice.reducer
@@ -2707,6 +2725,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     [6 /* character_left_to_right_move */]: 0
   };
   var pickedSlotId = null;
+  var isSettingSection = false;
+  var newSectionName = "";
   var selectItem = (slotId) => {
     pickedSlotId = slotId;
   };
@@ -2714,8 +2734,32 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     var _a, _b;
     const target = event.currentTarget;
     const slotId = target.id;
+    if (isSettingSection) {
+      const state2 = window.store.getState();
+      const sections = state2.localStorage.sections;
+      const currentSection = sections.find(
+        (section) => section.endSlotId === void 0
+      );
+      if (currentSection) {
+        const confirmation = confirm(
+          "Careful, you will close the current section and open up a new one, do you want this?"
+        );
+        if (!confirmation) return;
+        window.store.dispatch(
+          endSection({ endSlotId: currentSection.beginSlotId })
+        );
+      }
+      const newSection = {
+        name: newSectionName,
+        beginSlotId: slotId
+      };
+      window.store.dispatch(addSection(newSection));
+      isSettingSection = false;
+      newSectionName = "";
+      return;
+    }
     const state = window.store.getState();
-    const mapBlock = state.localStorage.find(
+    const mapBlock = state.localStorage.mapBlocks.find(
       (map) => map.some((slot2) => slot2.slotId === slotId)
     );
     const slot = mapBlock ? mapBlock.find((slot2) => slot2.slotId === slotId) : null;
@@ -2777,6 +2821,24 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       );
     });
   };
+  var setupAddSection = () => {
+    isSettingSection = true;
+    const sectionName = prompt("Enter the section name:");
+    if (sectionName) {
+      newSectionName = sectionName;
+      alert("Click on a slot to set the beginning of the section.");
+    } else {
+      isSettingSection = false;
+    }
+  };
+  var addSectionButton = document.createElement("button");
+  addSectionButton.innerText = "Add Section";
+  addSectionButton.style.position = "absolute";
+  addSectionButton.style.bottom = "10px";
+  addSectionButton.style.left = "10px";
+  addSectionButton.style.zIndex = "10000";
+  addSectionButton.addEventListener("click", setupAddSection);
+  document.body.appendChild(addSectionButton);
   window.openTextContainer = openTextContainer;
   var createItemSlots = (slots) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
@@ -2999,15 +3061,16 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       currentCacheLeftIndex++;
     }
     const lastMapDomElement = MAPS[MAPS.length - 1];
-    if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.length - 1) {
+    if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.mapBlocks.length - 1) {
       MAPS.push(
         createMapPalaceBlock(
           lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth,
-          window.store.getState().localStorage[currentCacheRightIndex]
+          window.store.getState().localStorage.mapBlocks[currentCacheRightIndex]
         )
       );
       currentCacheRightIndex++;
     }
+    updateCurrentSection();
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
   var checkForScreenUpdateFromRightToLeft = (throttleNum) => {
@@ -3023,7 +3086,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     throttleNum = 0;
     const firstMapDomElement = MAPS[0];
     if (firstMapDomElement && firstMapDomElement.offsetLeft > -window.innerWidth && currentCacheLeftIndex > 0) {
-      const newMapBlockData = window.store.getState().localStorage[currentCacheLeftIndex - 1];
+      const newMapBlockData = window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
       MAPS.unshift(
         createMapPalaceBlock(
           firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth,
@@ -3037,7 +3100,26 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       lastMapDomElement.remove();
       MAPS.pop();
     }
+    updateCurrentSection();
     requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
+  };
+  var updateCurrentSection = () => {
+    const state = window.store.getState();
+    const middleOfScreen = window.innerWidth / 2;
+    let currentSectionName = "No current section";
+    for (const section of state.localStorage.sections) {
+      const beginSlotElement = document.getElementById(section.beginSlotId);
+      if (beginSlotElement) {
+        const offsetLeft = beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
+        if (offsetLeft < middleOfScreen) {
+          currentSectionName = section.name;
+        }
+      }
+    }
+    const currentSectionElement = document.getElementById("currentSection");
+    if (currentSectionElement) {
+      currentSectionElement.textContent = currentSectionName;
+    }
   };
   var openMenu = (slotId) => {
     selectItem(slotId);
@@ -3101,13 +3183,16 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
   });
   window.onload = () => {
-    MAPS.push(createMapPalaceBlock(0, window.store.getState().localStorage[0]));
+    MAPS.push(
+      createMapPalaceBlock(0, window.store.getState().localStorage.mapBlocks[0])
+    );
     MAPS.push(
       createMapPalaceBlock(
         window.innerWidth,
-        window.store.getState().localStorage[1]
+        window.store.getState().localStorage.mapBlocks[1]
       )
     );
+    updateCurrentSection();
   };
   var searchTimeout;
   searchInput.addEventListener("input", () => {
@@ -3132,7 +3217,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     if (!pickedSlotId) return;
     const slotId = pickedSlotId;
     window.store.dispatch(updateItem({ slotId, item: { id: makeId(3), src } }));
-    const updatedSlot = window.store.getState().localStorage.flat().find((slot) => slot.slotId === slotId);
+    const updatedSlot = window.store.getState().localStorage.mapBlocks.flat().find((slot) => slot.slotId === slotId);
     if (updatedSlot && updatedSlot.item) {
       const itemImg = getFirstImageById(slotId);
       if (itemImg) {

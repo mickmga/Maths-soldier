@@ -1,4 +1,10 @@
-import store, { RootState, Slot, updateItem } from "./store.js";
+import store, {
+  RootState,
+  Slot,
+  addSection,
+  endSection,
+  updateItem,
+} from "./store.js";
 import { Store } from "redux";
 
 // Declare global variables
@@ -68,6 +74,9 @@ const ANIMATION_RUNNING_VALUES = {
 
 let pickedSlotId: null | string = null;
 
+let isSettingSection = false;
+let newSectionName = "";
+
 const selectItem = (slotId: string): void => {
   pickedSlotId = slotId;
 };
@@ -77,9 +86,40 @@ const openTextContainer = (event: Event) => {
   const target = event.currentTarget as HTMLDivElement;
   const slotId = target.id;
 
+  if (isSettingSection) {
+    // Set the beginning of the section
+    const state = window.store.getState();
+    const sections = state.localStorage.sections;
+    const currentSection = sections.find(
+      (section) => section.endSlotId === undefined
+    );
+
+    if (currentSection) {
+      const confirmation = confirm(
+        "Careful, you will close the current section and open up a new one, do you want this?"
+      );
+      if (!confirmation) return;
+
+      window.store.dispatch(
+        endSection({ endSlotId: currentSection.beginSlotId })
+      );
+    }
+
+    const newSection = {
+      name: newSectionName,
+      beginSlotId: slotId,
+    };
+
+    window.store.dispatch(addSection(newSection));
+
+    isSettingSection = false;
+    newSectionName = "";
+    return;
+  }
+
   // Get the current slot item from the store
   const state = window.store.getState();
-  const mapBlock = state.localStorage.find((map) =>
+  const mapBlock = state.localStorage.mapBlocks.find((map) =>
     map.some((slot) => slot.slotId === slotId)
   );
   const slot = mapBlock
@@ -163,6 +203,29 @@ const openTextContainer = (event: Event) => {
     );
   });
 };
+
+// Add section setup function
+const setupAddSection = () => {
+  isSettingSection = true;
+  const sectionName = prompt("Enter the section name:");
+  if (sectionName) {
+    newSectionName = sectionName;
+    alert("Click on a slot to set the beginning of the section.");
+  } else {
+    isSettingSection = false;
+  }
+};
+
+// Add button to trigger section setup
+const addSectionButton = document.createElement("button");
+addSectionButton.innerText = "Add Section";
+addSectionButton.style.position = "absolute";
+addSectionButton.style.bottom = "10px";
+addSectionButton.style.left = "10px";
+addSectionButton.style.zIndex = "10000";
+addSectionButton.addEventListener("click", setupAddSection);
+
+document.body.appendChild(addSectionButton);
 
 window.openTextContainer = openTextContainer;
 
@@ -559,10 +622,6 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
   throttleNum = 0;
 
-  //deletion
-
-  //pick first map block
-
   const firstMapDomElement = MAPS[0];
 
   if (firstMapDomElement.offsetLeft < -window.innerWidth) {
@@ -571,23 +630,24 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
     currentCacheLeftIndex++;
   }
 
-  //creation
-
   const lastMapDomElement = MAPS[MAPS.length - 1];
 
   if (
     lastMapDomElement &&
     lastMapDomElement.offsetLeft <= window.innerWidth / 10 &&
-    currentCacheRightIndex < window.store.getState().localStorage.length - 1
+    currentCacheRightIndex <
+      window.store.getState().localStorage.mapBlocks.length - 1
   ) {
     MAPS.push(
       createMapPalaceBlock(
         lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth,
-        window.store.getState().localStorage[currentCacheRightIndex]
+        window.store.getState().localStorage.mapBlocks[currentCacheRightIndex]
       )
     );
     currentCacheRightIndex++;
   }
+
+  updateCurrentSection();
 
   requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
 };
@@ -596,8 +656,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
   if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0) {
     return;
   }
-
-  //collect data from the cache
 
   if (throttleNum < 10) {
     throttleNum++;
@@ -608,10 +666,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
   throttleNum = 0;
 
-  //creation
-
-  //pick first map block
-
   const firstMapDomElement = MAPS[0];
 
   if (
@@ -620,7 +674,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     currentCacheLeftIndex > 0
   ) {
     const newMapBlockData =
-      window.store.getState().localStorage[currentCacheLeftIndex - 1];
+      window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
     MAPS.unshift(
       createMapPalaceBlock(
         firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth,
@@ -630,8 +684,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     currentCacheLeftIndex--;
   }
 
-  //deletion
-
   const lastMapDomElement = MAPS[MAPS.length - 1];
 
   if (lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth) {
@@ -639,7 +691,32 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     MAPS.pop();
   }
 
+  updateCurrentSection();
+
   requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
+};
+
+const updateCurrentSection = () => {
+  const state = window.store.getState();
+  const middleOfScreen = window.innerWidth / 2;
+
+  let currentSectionName = "No current section";
+
+  for (const section of state.localStorage.sections) {
+    const beginSlotElement = document.getElementById(section.beginSlotId);
+    if (beginSlotElement) {
+      const offsetLeft =
+        beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
+      if (offsetLeft < middleOfScreen) {
+        currentSectionName = section.name;
+      }
+    }
+  }
+
+  const currentSectionElement = document.getElementById("currentSection");
+  if (currentSectionElement) {
+    currentSectionElement.textContent = currentSectionName;
+  }
 };
 
 //CHALLENGE.TS ENDING
@@ -725,13 +802,17 @@ document.addEventListener("keyup", () => {
 });
 
 window.onload = () => {
-  MAPS.push(createMapPalaceBlock(0, window.store.getState().localStorage[0]));
+  MAPS.push(
+    createMapPalaceBlock(0, window.store.getState().localStorage.mapBlocks[0])
+  );
   MAPS.push(
     createMapPalaceBlock(
       window.innerWidth,
-      window.store.getState().localStorage[1]
+      window.store.getState().localStorage.mapBlocks[1]
     )
   );
+
+  updateCurrentSection();
 };
 
 interface IconFormat {
@@ -783,7 +864,7 @@ const changeSlotItem = (src: string) => {
   // Retrieve the updated state
   const updatedSlot = window.store
     .getState()
-    .localStorage.flat()
+    .localStorage.mapBlocks.flat()
     .find((slot) => slot.slotId === slotId);
 
   // Update the image src in the DOM if the slot is found and has an item
