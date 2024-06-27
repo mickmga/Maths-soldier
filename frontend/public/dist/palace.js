@@ -2850,6 +2850,16 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       );
     });
   };
+  var setupAddSection = () => {
+    isSettingSection = true;
+    const sectionName = prompt("Enter the section name:");
+    if (sectionName) {
+      newSectionName = sectionName;
+      alert("Click on a slot to set the beginning of the section.");
+    } else {
+      isSettingSection = false;
+    }
+  };
   var addSectionButton = document.createElement("button");
   addSectionButton.innerText = "Add Section";
   addSectionButton.style.position = "absolute";
@@ -2858,7 +2868,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   addSectionButton.style.zIndex = "10000";
   addSectionButton.addEventListener("click", () => {
     isSettingSectionStart = true;
-    alert("Click on a slot to set the start of the new section.");
+    setupAddSection();
   });
   document.body.appendChild(addSectionButton);
   var currentSectionElement = document.createElement("div");

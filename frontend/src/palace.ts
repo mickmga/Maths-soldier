@@ -260,7 +260,7 @@ addSectionButton.style.left = "10px";
 addSectionButton.style.zIndex = "10000";
 addSectionButton.addEventListener("click", () => {
   isSettingSectionStart = true;
-  alert("Click on a slot to set the start of the new section.");
+  setupAddSection();
 });
 
 // Append the button to the body or a specific container
