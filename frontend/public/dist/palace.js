@@ -2665,23 +2665,26 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         }
       },
       addSection: (state, action) => {
-        state.sections.push({
-          name: action.payload.name,
-          beginSlotId: action.payload.beginSlotId,
-          endSlotId: null
-        });
+        const { name, beginSlotId } = action.payload;
+        state.sections.push({ name, beginSlotId, endSlotId: null });
       },
-      endSection: (state, action) => {
-        const currentSection = state.sections.find(
-          (section) => section.endSlotId === null
+      updateSection: (state, action) => {
+        const { name, beginSlotId, endSlotId } = action.payload;
+        const section = state.sections.find(
+          (section2) => section2.beginSlotId === beginSlotId
         );
-        if (currentSection) {
-          currentSection.endSlotId = action.payload.endSlotId;
+        if (section) {
+          section.endSlotId = endSlotId;
         }
+      },
+      removeSection: (state, action) => {
+        state.sections = state.sections.filter(
+          (section) => section.beginSlotId !== action.payload.beginSlotId
+        );
       }
     }
   });
-  var { updateItem, addSection, endSection } = localStorageSlice.actions;
+  var { updateItem, addSection, updateSection, removeSection } = localStorageSlice.actions;
   var store = configureStore({
     reducer: {
       localStorage: localStorageSlice.reducer
@@ -2690,6 +2693,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var store_default = store;
 
   // src/palace.ts
+  var isSettingSectionStart = false;
   window.store = store_default;
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
@@ -2730,35 +2734,60 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var selectItem = (slotId) => {
     pickedSlotId = slotId;
   };
+  var updateCurrentSectionDisplay = () => {
+    const state = window.store.getState();
+    const middleOfScreen = window.innerWidth / 2;
+    const currentSectionElement2 = document.getElementById("currentSection");
+    if (!currentSectionElement2) return;
+    const currentSection = state.localStorage.sections.find((section) => {
+      const beginSlotElement = document.getElementById(section.beginSlotId);
+      const endSlotElement = document.getElementById(section.endSlotId || "");
+      if (!beginSlotElement || !endSlotElement) return false;
+      const beginOffset = beginSlotElement.offsetLeft;
+      const endOffset = endSlotElement.offsetLeft;
+      return beginOffset <= middleOfScreen && endOffset >= middleOfScreen;
+    });
+    if (currentSection) {
+      currentSectionElement2.innerText = `Current Section: ${currentSection.name}`;
+    } else {
+      currentSectionElement2.innerText = "No Current Section";
+    }
+  };
+  window.addEventListener("scroll", updateCurrentSectionDisplay);
+  window.addEventListener("resize", updateCurrentSectionDisplay);
   var openTextContainer = (event) => {
     var _a, _b;
     const target = event.currentTarget;
     const slotId = target.id;
-    if (isSettingSection) {
-      const state2 = window.store.getState();
-      const sections = state2.localStorage.sections;
-      const currentSection = sections.find(
-        (section) => section.endSlotId === void 0
-      );
-      if (currentSection) {
-        const confirmation = confirm(
-          "Careful, you will close the current section and open up a new one, do you want this?"
+    if (isSettingSectionStart) {
+      const existingSection2 = window.store.getState().localStorage.sections.find((section) => section.beginSlotId === slotId);
+      if (existingSection2) {
+        const confirmDelete = confirm(
+          `The section "${existingSection2.name}" already starts here. Do you want to remove it?`
         );
-        if (!confirmation) return;
-        window.store.dispatch(
-          endSection({ endSlotId: currentSection.beginSlotId })
-        );
+        if (confirmDelete) {
+          window.store.dispatch(removeSection({ beginSlotId: slotId }));
+        } else {
+          return;
+        }
       }
-      const newSection = {
-        name: newSectionName,
-        beginSlotId: slotId
-      };
-      window.store.dispatch(addSection(newSection));
-      isSettingSection = false;
-      newSectionName = "";
+      setSectionStart(slotId);
       return;
     }
     const state = window.store.getState();
+    const existingSection = state.localStorage.sections.find(
+      (section) => section.beginSlotId === slotId
+    );
+    if (existingSection) {
+      const confirmation = confirm(
+        `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
+      );
+      if (confirmation) {
+        window.store.dispatch(removeSection(existingSection));
+      } else {
+        return;
+      }
+    }
     const mapBlock = state.localStorage.mapBlocks.find(
       (map) => map.some((slot2) => slot2.slotId === slotId)
     );
@@ -2821,24 +2850,25 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       );
     });
   };
-  var setupAddSection = () => {
-    isSettingSection = true;
-    const sectionName = prompt("Enter the section name:");
-    if (sectionName) {
-      newSectionName = sectionName;
-      alert("Click on a slot to set the beginning of the section.");
-    } else {
-      isSettingSection = false;
-    }
-  };
   var addSectionButton = document.createElement("button");
   addSectionButton.innerText = "Add Section";
   addSectionButton.style.position = "absolute";
   addSectionButton.style.bottom = "10px";
   addSectionButton.style.left = "10px";
   addSectionButton.style.zIndex = "10000";
-  addSectionButton.addEventListener("click", setupAddSection);
+  addSectionButton.addEventListener("click", () => {
+    isSettingSectionStart = true;
+    alert("Click on a slot to set the start of the new section.");
+  });
   document.body.appendChild(addSectionButton);
+  var currentSectionElement = document.createElement("div");
+  currentSectionElement.id = "currentSection";
+  currentSectionElement.style.position = "absolute";
+  currentSectionElement.style.bottom = "10px";
+  currentSectionElement.style.left = "50%";
+  currentSectionElement.style.transform = "translateX(-50%)";
+  document.body.appendChild(currentSectionElement);
+  updateCurrentSectionDisplay();
   window.openTextContainer = openTextContainer;
   var createItemSlots = (slots) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
@@ -3054,6 +3084,20 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       );
     }
     throttleNum = 0;
+    const middleOfScreen = window.innerWidth / 2;
+    const currentSection = window.store.getState().localStorage.sections.find((section) => {
+      const beginSlotElement = document.getElementById(section.beginSlotId);
+      if (beginSlotElement) {
+        const beginOffset = beginSlotElement.offsetLeft;
+        return beginOffset < middleOfScreen;
+      }
+      return false;
+    });
+    if (currentSection) {
+      document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
+    } else {
+      document.getElementById("currentSection").innerText = "No current section";
+    }
     const firstMapDomElement = MAPS[0];
     if (firstMapDomElement.offsetLeft < -window.innerWidth) {
       firstMapDomElement.remove();
@@ -3070,7 +3114,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       );
       currentCacheRightIndex++;
     }
-    updateCurrentSection();
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
   var checkForScreenUpdateFromRightToLeft = (throttleNum) => {
@@ -3084,6 +3127,20 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       );
     }
     throttleNum = 0;
+    const middleOfScreen = window.innerWidth / 2;
+    const currentSection = window.store.getState().localStorage.sections.find((section) => {
+      const beginSlotElement = document.getElementById(section.beginSlotId);
+      if (beginSlotElement) {
+        const beginOffset = beginSlotElement.offsetLeft;
+        return beginOffset < middleOfScreen;
+      }
+      return false;
+    });
+    if (currentSection) {
+      document.getElementById("currentSection").innerText = currentSection.name;
+    } else {
+      document.getElementById("currentSection").innerText = "No current section";
+    }
     const firstMapDomElement = MAPS[0];
     if (firstMapDomElement && firstMapDomElement.offsetLeft > -window.innerWidth && currentCacheLeftIndex > 0) {
       const newMapBlockData = window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
@@ -3100,7 +3157,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       lastMapDomElement.remove();
       MAPS.pop();
     }
-    updateCurrentSection();
     requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
   };
   var updateCurrentSection = () => {
@@ -3109,16 +3165,19 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     let currentSectionName = "No current section";
     for (const section of state.localStorage.sections) {
       const beginSlotElement = document.getElementById(section.beginSlotId);
-      if (beginSlotElement) {
-        const offsetLeft = beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
-        if (offsetLeft < middleOfScreen) {
+      const endSlotElement = section.endSlotId ? document.getElementById(section.endSlotId) : null;
+      if (beginSlotElement && endSlotElement) {
+        const beginOffsetLeft = beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
+        const endOffsetLeft = endSlotElement.offsetLeft + endSlotElement.offsetWidth / 2;
+        if (beginOffsetLeft < middleOfScreen && endOffsetLeft > middleOfScreen) {
           currentSectionName = section.name;
+          break;
         }
       }
     }
-    const currentSectionElement = document.getElementById("currentSection");
-    if (currentSectionElement) {
-      currentSectionElement.textContent = currentSectionName;
+    const currentSectionElement2 = document.getElementById("currentSection");
+    if (currentSectionElement2) {
+      currentSectionElement2.textContent = currentSectionName;
     }
   };
   var openMenu = (slotId) => {
@@ -3253,6 +3312,56 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       }
     }
     return null;
+  };
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target.classList.contains("slot")) {
+      if (isSettingSectionStart) {
+        const slotId = target.id;
+        const state = window.store.getState();
+        const existingSection = state.localStorage.sections.find(
+          (section) => section.beginSlotId === slotId
+        );
+        if (existingSection) {
+          const confirmation = confirm(
+            `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
+          );
+          if (confirmation) {
+            window.store.dispatch(removeSection(existingSection));
+          } else {
+            return;
+          }
+        }
+        setSectionStart(slotId);
+      } else {
+        openTextContainer(event);
+      }
+    }
+  });
+  var setSectionStart = (slotId) => {
+    const state = window.store.getState();
+    const sections = state.localStorage.sections;
+    if (sections.length > 0) {
+      const lastSection = sections[sections.length - 1];
+      const mapBlocks = state.localStorage.mapBlocks.flat();
+      const newSectionStartIndex = mapBlocks.findIndex(
+        (slot) => slot.slotId === slotId
+      );
+      const previousSlot = newSectionStartIndex > 0 ? mapBlocks[newSectionStartIndex - 1] : null;
+      if (previousSlot) {
+        window.store.dispatch(
+          updateSection(__spreadProps(__spreadValues({}, lastSection), {
+            endSlotId: previousSlot.slotId
+          }))
+        );
+      }
+    }
+    const newSection = {
+      name: newSectionName,
+      beginSlotId: slotId
+    };
+    window.store.dispatch(addSection(newSection));
+    isSettingSection = false;
   };
 })();
 //# sourceMappingURL=palace.js.map

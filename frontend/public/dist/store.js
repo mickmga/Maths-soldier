@@ -69,21 +69,22 @@ const localStorageSlice = createSlice({
             }
         },
         addSection: (state, action) => {
-            state.sections.push({
-                name: action.payload.name,
-                beginSlotId: action.payload.beginSlotId,
-                endSlotId: null,
-            });
+            const { name, beginSlotId } = action.payload;
+            state.sections.push({ name, beginSlotId, endSlotId: null });
         },
-        endSection: (state, action) => {
-            const currentSection = state.sections.find((section) => section.endSlotId === null);
-            if (currentSection) {
-                currentSection.endSlotId = action.payload.endSlotId;
+        updateSection: (state, action) => {
+            const { name, beginSlotId, endSlotId } = action.payload;
+            const section = state.sections.find((section) => section.beginSlotId === beginSlotId);
+            if (section) {
+                section.endSlotId = endSlotId;
             }
+        },
+        removeSection: (state, action) => {
+            state.sections = state.sections.filter((section) => section.beginSlotId !== action.payload.beginSlotId);
         },
     },
 });
-export const { updateItem, addSection, endSection } = localStorageSlice.actions;
+export const { updateItem, addSection, updateSection, removeSection } = localStorageSlice.actions;
 const store = configureStore({
     reducer: {
         localStorage: localStorageSlice.reducer,

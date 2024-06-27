@@ -2,10 +2,14 @@ import store, {
   RootState,
   Slot,
   addSection,
-  endSection,
+  updateSection,
+  removeSection,
   updateItem,
 } from "./store.js";
+
 import { Store } from "redux";
+
+let isSettingSectionStart = false;
 
 // Declare global variables
 declare global {
@@ -81,44 +85,75 @@ const selectItem = (slotId: string): void => {
   pickedSlotId = slotId;
 };
 
+const updateCurrentSectionDisplay = () => {
+  const state = window.store.getState();
+  const middleOfScreen = window.innerWidth / 2;
+
+  const currentSectionElement = document.getElementById("currentSection");
+  if (!currentSectionElement) return;
+
+  const currentSection = state.localStorage.sections.find((section) => {
+    const beginSlotElement = document.getElementById(section.beginSlotId);
+    const endSlotElement = document.getElementById(section.endSlotId || "");
+    if (!beginSlotElement || !endSlotElement) return false;
+
+    const beginOffset = beginSlotElement.offsetLeft;
+    const endOffset = endSlotElement.offsetLeft;
+    return beginOffset <= middleOfScreen && endOffset >= middleOfScreen;
+  });
+
+  if (currentSection) {
+    currentSectionElement.innerText = `Current Section: ${currentSection.name}`;
+  } else {
+    currentSectionElement.innerText = "No Current Section";
+  }
+};
+
+window.addEventListener("scroll", updateCurrentSectionDisplay);
+window.addEventListener("resize", updateCurrentSectionDisplay);
+
 const openTextContainer = (event: Event) => {
-  // Create the new container
   const target = event.currentTarget as HTMLDivElement;
   const slotId = target.id;
 
-  if (isSettingSection) {
-    // Set the beginning of the section
-    const state = window.store.getState();
-    const sections = state.localStorage.sections;
-    const currentSection = sections.find(
-      (section) => section.endSlotId === undefined
-    );
+  if (isSettingSectionStart) {
+    const existingSection = window.store
+      .getState()
+      .localStorage.sections.find((section) => section.beginSlotId === slotId);
 
-    if (currentSection) {
-      const confirmation = confirm(
-        "Careful, you will close the current section and open up a new one, do you want this?"
+    if (existingSection) {
+      const confirmDelete = confirm(
+        `The section "${existingSection.name}" already starts here. Do you want to remove it?`
       );
-      if (!confirmation) return;
-
-      window.store.dispatch(
-        endSection({ endSlotId: currentSection.beginSlotId })
-      );
+      if (confirmDelete) {
+        window.store.dispatch(removeSection({ beginSlotId: slotId }));
+      } else {
+        return;
+      }
     }
 
-    const newSection = {
-      name: newSectionName,
-      beginSlotId: slotId,
-    };
-
-    window.store.dispatch(addSection(newSection));
-
-    isSettingSection = false;
-    newSectionName = "";
+    setSectionStart(slotId);
     return;
   }
 
-  // Get the current slot item from the store
+  // Check if a section already starts at this slot
   const state = window.store.getState();
+  const existingSection = state.localStorage.sections.find(
+    (section) => section.beginSlotId === slotId
+  );
+
+  if (existingSection) {
+    const confirmation = confirm(
+      `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
+    );
+    if (confirmation) {
+      window.store.dispatch(removeSection(existingSection));
+    } else {
+      return; // Exit the function if the user does not want to destroy the existing section
+    }
+  }
+
+  // Get the current slot item from the store
   const mapBlock = state.localStorage.mapBlocks.find((map) =>
     map.some((slot) => slot.slotId === slotId)
   );
@@ -216,16 +251,31 @@ const setupAddSection = () => {
   }
 };
 
-// Add button to trigger section setup
+// Create the button to add a new section
 const addSectionButton = document.createElement("button");
 addSectionButton.innerText = "Add Section";
 addSectionButton.style.position = "absolute";
 addSectionButton.style.bottom = "10px";
 addSectionButton.style.left = "10px";
 addSectionButton.style.zIndex = "10000";
-addSectionButton.addEventListener("click", setupAddSection);
+addSectionButton.addEventListener("click", () => {
+  isSettingSectionStart = true;
+  alert("Click on a slot to set the start of the new section.");
+});
 
+// Append the button to the body or a specific container
 document.body.appendChild(addSectionButton);
+
+// Add the current section display element
+const currentSectionElement = document.createElement("div");
+currentSectionElement.id = "currentSection";
+currentSectionElement.style.position = "absolute";
+currentSectionElement.style.bottom = "10px";
+currentSectionElement.style.left = "50%";
+currentSectionElement.style.transform = "translateX(-50%)";
+document.body.appendChild(currentSectionElement);
+
+updateCurrentSectionDisplay();
 
 window.openTextContainer = openTextContainer;
 
@@ -622,6 +672,27 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
   throttleNum = 0;
 
+  const middleOfScreen = window.innerWidth / 2;
+
+  const currentSection = window.store
+    .getState()
+    .localStorage.sections.find((section) => {
+      const beginSlotElement = document.getElementById(section.beginSlotId);
+      if (beginSlotElement) {
+        const beginOffset = beginSlotElement.offsetLeft;
+        return beginOffset < middleOfScreen;
+      }
+      return false;
+    });
+
+  if (currentSection) {
+    document.getElementById("currentSection")!.innerText =
+      "Current section: " + currentSection.name;
+  } else {
+    document.getElementById("currentSection")!.innerText = "No current section";
+  }
+
+  // Deletion and creation logic...
   const firstMapDomElement = MAPS[0];
 
   if (firstMapDomElement.offsetLeft < -window.innerWidth) {
@@ -647,8 +718,6 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
     currentCacheRightIndex++;
   }
 
-  updateCurrentSection();
-
   requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
 };
 
@@ -665,6 +734,25 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
   }
 
   throttleNum = 0;
+
+  const middleOfScreen = window.innerWidth / 2;
+
+  const currentSection = window.store
+    .getState()
+    .localStorage.sections.find((section) => {
+      const beginSlotElement = document.getElementById(section.beginSlotId);
+      if (beginSlotElement) {
+        const beginOffset = beginSlotElement.offsetLeft;
+        return beginOffset < middleOfScreen;
+      }
+      return false;
+    });
+
+  if (currentSection) {
+    document.getElementById("currentSection")!.innerText = currentSection.name;
+  } else {
+    document.getElementById("currentSection")!.innerText = "No current section";
+  }
 
   const firstMapDomElement = MAPS[0];
 
@@ -691,8 +779,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     MAPS.pop();
   }
 
-  updateCurrentSection();
-
   requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
 };
 
@@ -704,11 +790,19 @@ const updateCurrentSection = () => {
 
   for (const section of state.localStorage.sections) {
     const beginSlotElement = document.getElementById(section.beginSlotId);
-    if (beginSlotElement) {
-      const offsetLeft =
+    const endSlotElement = section.endSlotId
+      ? document.getElementById(section.endSlotId)
+      : null;
+
+    if (beginSlotElement && endSlotElement) {
+      const beginOffsetLeft =
         beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
-      if (offsetLeft < middleOfScreen) {
+      const endOffsetLeft =
+        endSlotElement.offsetLeft + endSlotElement.offsetWidth / 2;
+
+      if (beginOffsetLeft < middleOfScreen && endOffsetLeft > middleOfScreen) {
         currentSectionName = section.name;
+        break;
       }
     }
   }
@@ -913,4 +1007,69 @@ const getFirstImageById = (elementId: string): HTMLImageElement | null => {
 
   // Return null if no <img> element is found
   return null;
+};
+
+document.addEventListener("click", (event) => {
+  const target = event.target as HTMLElement;
+
+  if (target.classList.contains("slot")) {
+    if (isSettingSectionStart) {
+      const slotId = target.id;
+      // Check if the section already exists at this slot
+      const state = window.store.getState();
+      const existingSection = state.localStorage.sections.find(
+        (section) => section.beginSlotId === slotId
+      );
+
+      if (existingSection) {
+        const confirmation = confirm(
+          `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
+        );
+        if (confirmation) {
+          window.store.dispatch(removeSection(existingSection));
+        } else {
+          return; // Exit the function if the user does not want to destroy the existing section
+        }
+      }
+
+      // Set the section start
+      setSectionStart(slotId);
+    } else {
+      openTextContainer(event);
+    }
+  }
+});
+const setSectionStart = (slotId: string) => {
+  const state = window.store.getState();
+  const sections = state.localStorage.sections;
+
+  if (sections.length > 0) {
+    const lastSection = sections[sections.length - 1];
+
+    // Get the index of the slot just before the new section's start slot
+    const mapBlocks = state.localStorage.mapBlocks.flat();
+    const newSectionStartIndex = mapBlocks.findIndex(
+      (slot) => slot.slotId === slotId
+    );
+    const previousSlot =
+      newSectionStartIndex > 0 ? mapBlocks[newSectionStartIndex - 1] : null;
+
+    if (previousSlot) {
+      // Update the end of the last section to be the slot just before the new section's start slot
+      window.store.dispatch(
+        updateSection({
+          ...lastSection,
+          endSlotId: previousSlot.slotId,
+        })
+      );
+    }
+  }
+
+  const newSection = {
+    name: newSectionName,
+    beginSlotId: slotId,
+  };
+
+  window.store.dispatch(addSection(newSection));
+  isSettingSection = false;
 };

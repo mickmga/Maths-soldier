@@ -19,15 +19,13 @@ export interface Slot {
 export interface Section {
   name: string;
   beginSlotId: string;
-  endSlotId?: string | null;
+  endSlotId: string | null;
 }
 
 type LocalStorageState = {
-  mapBlocks: MapBlock[];
+  mapBlocks: Slot[][];
   sections: Section[];
 };
-
-type MapBlock = Slot[];
 
 const initialState: LocalStorageState = {
   mapBlocks: [
@@ -111,24 +109,35 @@ const localStorageSlice = createSlice({
       state,
       action: PayloadAction<{ name: string; beginSlotId: string }>
     ) => {
-      state.sections.push({
-        name: action.payload.name,
-        beginSlotId: action.payload.beginSlotId,
-        endSlotId: null,
-      });
+      const { name, beginSlotId } = action.payload;
+      state.sections.push({ name, beginSlotId, endSlotId: null });
     },
-    endSection: (state, action: PayloadAction<{ endSlotId: string }>) => {
-      const currentSection = state.sections.find(
-        (section) => section.endSlotId === null
+    updateSection: (
+      state,
+      action: PayloadAction<{
+        name: string;
+        beginSlotId: string;
+        endSlotId: string;
+      }>
+    ) => {
+      const { name, beginSlotId, endSlotId } = action.payload;
+      const section = state.sections.find(
+        (section) => section.beginSlotId === beginSlotId
       );
-      if (currentSection) {
-        currentSection.endSlotId = action.payload.endSlotId;
+      if (section) {
+        section.endSlotId = endSlotId;
       }
+    },
+    removeSection: (state, action: PayloadAction<{ beginSlotId: string }>) => {
+      state.sections = state.sections.filter(
+        (section) => section.beginSlotId !== action.payload.beginSlotId
+      );
     },
   },
 });
 
-export const { updateItem, addSection, endSection } = localStorageSlice.actions;
+export const { updateItem, addSection, updateSection, removeSection } =
+  localStorageSlice.actions;
 
 const store = configureStore({
   reducer: {
