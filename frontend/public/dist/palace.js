@@ -2878,7 +2878,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   currentSectionElement.style.left = "50%";
   currentSectionElement.style.transform = "translateX(-50%)";
   document.body.appendChild(currentSectionElement);
-  updateCurrentSectionDisplay();
   window.openTextContainer = openTextContainer;
   var createItemSlots = (slots) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
@@ -3095,15 +3094,20 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     }
     throttleNum = 0;
     const middleOfScreen = window.innerWidth / 2;
-    const currentSection = window.store.getState().localStorage.sections.find((section) => {
+    const sectionsAtTheLeftOfTheMiddle = [];
+    window.store.getState().localStorage.sections.find((section) => {
       const beginSlotElement = document.getElementById(section.beginSlotId);
       if (beginSlotElement) {
         const beginOffset = beginSlotElement.offsetLeft;
-        return beginOffset < middleOfScreen;
+        if (beginOffset < middleOfScreen) {
+          console.log("pushed section>");
+          console.log(section);
+          sectionsAtTheLeftOfTheMiddle.push(section);
+        }
       }
-      return false;
     });
-    if (currentSection) {
+    if (sectionsAtTheLeftOfTheMiddle) {
+      const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
       document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
     } else {
       document.getElementById("currentSection").innerText = "No current section";
@@ -3138,16 +3142,18 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     }
     throttleNum = 0;
     const middleOfScreen = window.innerWidth / 2;
-    const currentSection = window.store.getState().localStorage.sections.find((section) => {
+    const sectionsAtTheLeftOfTheMiddle = [];
+    window.store.getState().localStorage.sections.find((section) => {
       const beginSlotElement = document.getElementById(section.beginSlotId);
       if (beginSlotElement) {
         const beginOffset = beginSlotElement.offsetLeft;
-        return beginOffset < middleOfScreen;
+        if (beginOffset < middleOfScreen)
+          sectionsAtTheLeftOfTheMiddle.push(section);
       }
-      return false;
     });
-    if (currentSection) {
-      document.getElementById("currentSection").innerText = currentSection.name;
+    if (sectionsAtTheLeftOfTheMiddle) {
+      const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
+      document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
     } else {
       document.getElementById("currentSection").innerText = "No current section";
     }
@@ -3370,6 +3376,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       name: newSectionName,
       beginSlotId: slotId
     };
+    console.log("new section >");
+    console.log(newSection);
     window.store.dispatch(addSection(newSection));
     isSettingSection = false;
   };

@@ -1,6 +1,7 @@
 import store, {
   RootState,
   Slot,
+  Section,
   addSection,
   updateSection,
   removeSection,
@@ -274,8 +275,6 @@ currentSectionElement.style.bottom = "10px";
 currentSectionElement.style.left = "50%";
 currentSectionElement.style.transform = "translateX(-50%)";
 document.body.appendChild(currentSectionElement);
-
-updateCurrentSectionDisplay();
 
 window.openTextContainer = openTextContainer;
 
@@ -674,18 +673,24 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
   const middleOfScreen = window.innerWidth / 2;
 
-  const currentSection = window.store
-    .getState()
-    .localStorage.sections.find((section) => {
-      const beginSlotElement = document.getElementById(section.beginSlotId);
-      if (beginSlotElement) {
-        const beginOffset = beginSlotElement.offsetLeft;
-        return beginOffset < middleOfScreen;
-      }
-      return false;
-    });
+  const sectionsAtTheLeftOfTheMiddle: Section[] = [];
 
-  if (currentSection) {
+  window.store.getState().localStorage.sections.find((section) => {
+    const beginSlotElement = document.getElementById(section.beginSlotId);
+    if (beginSlotElement) {
+      const beginOffset = beginSlotElement.offsetLeft;
+
+      if (beginOffset < middleOfScreen) {
+        console.log("pushed section>");
+        console.log(section);
+        sectionsAtTheLeftOfTheMiddle.push(section);
+      }
+    }
+  });
+  if (sectionsAtTheLeftOfTheMiddle) {
+    const currentSection =
+      sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
+
     document.getElementById("currentSection")!.innerText =
       "Current section: " + currentSection.name;
   } else {
@@ -737,19 +742,23 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
   const middleOfScreen = window.innerWidth / 2;
 
-  const currentSection = window.store
-    .getState()
-    .localStorage.sections.find((section) => {
-      const beginSlotElement = document.getElementById(section.beginSlotId);
-      if (beginSlotElement) {
-        const beginOffset = beginSlotElement.offsetLeft;
-        return beginOffset < middleOfScreen;
-      }
-      return false;
-    });
+  const sectionsAtTheLeftOfTheMiddle: Section[] = [];
 
-  if (currentSection) {
-    document.getElementById("currentSection")!.innerText = currentSection.name;
+  window.store.getState().localStorage.sections.find((section: Section) => {
+    const beginSlotElement = document.getElementById(section.beginSlotId);
+    if (beginSlotElement) {
+      const beginOffset = beginSlotElement.offsetLeft;
+
+      if (beginOffset < middleOfScreen)
+        sectionsAtTheLeftOfTheMiddle.push(section);
+    }
+  });
+  if (sectionsAtTheLeftOfTheMiddle) {
+    const currentSection =
+      sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
+
+    document.getElementById("currentSection")!.innerText =
+      "Current section: " + currentSection.name;
   } else {
     document.getElementById("currentSection")!.innerText = "No current section";
   }
@@ -1070,6 +1079,8 @@ const setSectionStart = (slotId: string) => {
     beginSlotId: slotId,
   };
 
+  console.log("new section >");
+  console.log(newSection);
   window.store.dispatch(addSection(newSection));
   isSettingSection = false;
 };
