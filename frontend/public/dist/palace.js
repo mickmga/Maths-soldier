@@ -2743,8 +2743,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       const beginSlotElement = document.getElementById(section.beginSlotId);
       const endSlotElement = document.getElementById(section.endSlotId || "");
       if (!beginSlotElement || !endSlotElement) return false;
-      const beginOffset = beginSlotElement.offsetLeft;
-      const endOffset = endSlotElement.offsetLeft;
+      const beginOffset = beginSlotElement.getBoundingClientRect().left;
+      const endOffset = endSlotElement.getBoundingClientRect().left;
       return beginOffset <= middleOfScreen && endOffset >= middleOfScreen;
     });
     if (currentSection) {
@@ -2760,14 +2760,15 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     const target = event.currentTarget;
     const slotId = target.id;
     if (isSettingSectionStart) {
-      const existingSection2 = window.store.getState().localStorage.sections.find((section) => section.beginSlotId === slotId);
-      if (existingSection2) {
+      const existingSection = window.store.getState().localStorage.sections.find((section) => section.beginSlotId === slotId);
+      if (existingSection) {
         const confirmDelete = confirm(
-          `The section "${existingSection2.name}" already starts here. Do you want to remove it?`
+          `The section "${existingSection.name}" already starts here. Do you want to remove it?`
         );
         if (confirmDelete) {
           window.store.dispatch(removeSection({ beginSlotId: slotId }));
         } else {
+          isSettingSectionStart = false;
           return;
         }
       }
@@ -2775,19 +2776,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       return;
     }
     const state = window.store.getState();
-    const existingSection = state.localStorage.sections.find(
-      (section) => section.beginSlotId === slotId
-    );
-    if (existingSection) {
-      const confirmation = confirm(
-        `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
-      );
-      if (confirmation) {
-        window.store.dispatch(removeSection(existingSection));
-      } else {
-        return;
-      }
-    }
     const mapBlock = state.localStorage.mapBlocks.find(
       (map) => map.some((slot2) => slot2.slotId === slotId)
     );
@@ -3008,16 +2996,16 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
-    if (direction === 5 /* camera_right_to_left */ && MAPS[0].offsetLeft >= 0) {
+    if (direction === 5 /* camera_right_to_left */ && MAPS[0].getBoundingClientRect().left >= 0) {
       ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
       return;
     }
-    if (direction === 4 /* camera_left_to_right */ && MAPS[MAPS.length - 1].offsetLeft <= 0) {
+    if (direction === 4 /* camera_left_to_right */ && MAPS[MAPS.length - 1].getBoundingClientRect().left <= 0) {
       ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] = 0;
       return;
     }
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 4 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+      (map) => map.style.left = `${map.getBoundingClientRect().left + (direction === 4 /* camera_left_to_right */ ? -1 : 1) * 4}px`
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
@@ -3098,10 +3086,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     window.store.getState().localStorage.sections.find((section) => {
       const beginSlotElement = document.getElementById(section.beginSlotId);
       if (beginSlotElement) {
-        const beginOffset = beginSlotElement.offsetLeft;
+        const beginOffset = beginSlotElement.getBoundingClientRect().left;
         if (beginOffset < middleOfScreen) {
-          console.log("pushed section>");
-          console.log(section);
           sectionsAtTheLeftOfTheMiddle.push(section);
         }
       }
@@ -3113,16 +3099,16 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       document.getElementById("currentSection").innerText = "No current section";
     }
     const firstMapDomElement = MAPS[0];
-    if (firstMapDomElement.offsetLeft < -window.innerWidth) {
+    if (firstMapDomElement.getBoundingClientRect().left < -window.innerWidth) {
       firstMapDomElement.remove();
       MAPS.shift();
       currentCacheLeftIndex++;
     }
     const lastMapDomElement = MAPS[MAPS.length - 1];
-    if (lastMapDomElement && lastMapDomElement.offsetLeft <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.mapBlocks.length - 1) {
+    if (lastMapDomElement && lastMapDomElement.getBoundingClientRect().left <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.mapBlocks.length - 1) {
       MAPS.push(
         createMapPalaceBlock(
-          lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth,
+          lastMapDomElement.getBoundingClientRect().left + lastMapDomElement.offsetWidth,
           window.store.getState().localStorage.mapBlocks[currentCacheRightIndex]
         )
       );
@@ -3146,30 +3132,34 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     window.store.getState().localStorage.sections.find((section) => {
       const beginSlotElement = document.getElementById(section.beginSlotId);
       if (beginSlotElement) {
-        const beginOffset = beginSlotElement.offsetLeft;
-        if (beginOffset < middleOfScreen)
+        const beginOffset = beginSlotElement.getBoundingClientRect().left;
+        if (beginOffset < middleOfScreen) {
           sectionsAtTheLeftOfTheMiddle.push(section);
+          console.log("we found one");
+        }
       }
     });
     if (sectionsAtTheLeftOfTheMiddle) {
       const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
+      console.log("current section found >");
+      console.log();
       document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
     } else {
       document.getElementById("currentSection").innerText = "No current section";
     }
     const firstMapDomElement = MAPS[0];
-    if (firstMapDomElement && firstMapDomElement.offsetLeft > -window.innerWidth && currentCacheLeftIndex > 0) {
+    if (firstMapDomElement && firstMapDomElement.getBoundingClientRect().left > -window.innerWidth && currentCacheLeftIndex > 0) {
       const newMapBlockData = window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
       MAPS.unshift(
         createMapPalaceBlock(
-          firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth,
+          firstMapDomElement.getBoundingClientRect().left - firstMapDomElement.offsetWidth,
           newMapBlockData
         )
       );
       currentCacheLeftIndex--;
     }
     const lastMapDomElement = MAPS[MAPS.length - 1];
-    if (lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth) {
+    if (lastMapDomElement && lastMapDomElement.getBoundingClientRect().left > window.innerWidth) {
       lastMapDomElement.remove();
       MAPS.pop();
     }
@@ -3183,9 +3173,9 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       const beginSlotElement = document.getElementById(section.beginSlotId);
       const endSlotElement = section.endSlotId ? document.getElementById(section.endSlotId) : null;
       if (beginSlotElement && endSlotElement) {
-        const beginOffsetLeft = beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
-        const endOffsetLeft = endSlotElement.offsetLeft + endSlotElement.offsetWidth / 2;
-        if (beginOffsetLeft < middleOfScreen && endOffsetLeft > middleOfScreen) {
+        const beginLeftPos = beginSlotElement.getBoundingClientRect().left + beginSlotElement.offsetWidth / 2;
+        const endLeftPos = endSlotElement.getBoundingClientRect().left + endSlotElement.offsetWidth / 2;
+        if (beginLeftPos < middleOfScreen && endLeftPos > middleOfScreen) {
           currentSectionName = section.name;
           break;
         }
@@ -3333,6 +3323,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     const target = event.target;
     if (target.classList.contains("slot")) {
       if (isSettingSectionStart) {
+        console.log("is setting section start after click >");
+        console.log(isSettingSectionStart);
         const slotId = target.id;
         const state = window.store.getState();
         const existingSection = state.localStorage.sections.find(
@@ -3376,10 +3368,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       name: newSectionName,
       beginSlotId: slotId
     };
-    console.log("new section >");
-    console.log(newSection);
     window.store.dispatch(addSection(newSection));
-    isSettingSection = false;
+    isSettingSectionStart = false;
   };
 })();
 //# sourceMappingURL=palace.js.map

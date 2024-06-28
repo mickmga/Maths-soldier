@@ -98,8 +98,8 @@ const updateCurrentSectionDisplay = () => {
     const endSlotElement = document.getElementById(section.endSlotId || "");
     if (!beginSlotElement || !endSlotElement) return false;
 
-    const beginOffset = beginSlotElement.offsetLeft;
-    const endOffset = endSlotElement.offsetLeft;
+    const beginOffset = beginSlotElement.getBoundingClientRect().left;
+    const endOffset = endSlotElement.getBoundingClientRect().left;
     return beginOffset <= middleOfScreen && endOffset >= middleOfScreen;
   });
 
@@ -129,6 +129,7 @@ const openTextContainer = (event: Event) => {
       if (confirmDelete) {
         window.store.dispatch(removeSection({ beginSlotId: slotId }));
       } else {
+        isSettingSectionStart = false;
         return;
       }
     }
@@ -139,20 +140,6 @@ const openTextContainer = (event: Event) => {
 
   // Check if a section already starts at this slot
   const state = window.store.getState();
-  const existingSection = state.localStorage.sections.find(
-    (section) => section.beginSlotId === slotId
-  );
-
-  if (existingSection) {
-    const confirmation = confirm(
-      `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
-    );
-    if (confirmation) {
-      window.store.dispatch(removeSection(existingSection));
-    } else {
-      return; // Exit the function if the user does not want to destroy the existing section
-    }
-  }
 
   // Get the current slot item from the store
   const mapBlock = state.localStorage.mapBlocks.find((map) =>
@@ -447,7 +434,7 @@ const moveCamera = (direction: ANIMATION_ID) => {
 
   if (
     direction === ANIMATION_ID.camera_right_to_left &&
-    MAPS[0].offsetLeft >= 0
+    MAPS[0].getBoundingClientRect().left >= 0
   ) {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
     return;
@@ -455,7 +442,7 @@ const moveCamera = (direction: ANIMATION_ID) => {
 
   if (
     direction === ANIMATION_ID.camera_left_to_right &&
-    MAPS[MAPS.length - 1].offsetLeft <= 0
+    MAPS[MAPS.length - 1].getBoundingClientRect().left <= 0
   ) {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
     return;
@@ -464,7 +451,7 @@ const moveCamera = (direction: ANIMATION_ID) => {
   MAPS.forEach(
     (map) =>
       (map.style.left = `${
-        map.offsetLeft +
+        map.getBoundingClientRect().left +
         (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * 4
       }px`)
   );
@@ -593,10 +580,10 @@ const launchAttack = () => {
 
   setTimeout(() => {
     if (
-      heroContainer.offsetLeft +
+      heroContainer.getBoundingClientRect().left +
         heroContainer.offsetWidth +
         window.innerWidth * 0.05 >
-        enemyContainer.offsetLeft &&
+        enemyContainer.getBoundingClientRect().left &&
       enemy
     ) {
       enemy.remove();
@@ -641,13 +628,18 @@ let enemyOnScreen = true;
 const moveEnemy = () => {
   if (!enemyOnScreen) return;
 
-  enemyContainer.style.left = `${enemyContainer.offsetLeft - 10}px`;
+  enemyContainer.style.left = `${
+    enemyContainer.getBoundingClientRect().left - 10
+  }px`;
 
   requestAnimationFrame(moveEnemy);
 };
 
 const detectCollision = () => {
-  if (heroContainer.offsetLeft > enemyContainer.offsetLeft) {
+  if (
+    heroContainer.getBoundingClientRect().left >
+    enemyContainer.getBoundingClientRect().left
+  ) {
     errorScore++;
     updateScores();
 
@@ -678,11 +670,9 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
   window.store.getState().localStorage.sections.find((section) => {
     const beginSlotElement = document.getElementById(section.beginSlotId);
     if (beginSlotElement) {
-      const beginOffset = beginSlotElement.offsetLeft;
+      const beginOffset = beginSlotElement.getBoundingClientRect().left;
 
       if (beginOffset < middleOfScreen) {
-        console.log("pushed section>");
-        console.log(section);
         sectionsAtTheLeftOfTheMiddle.push(section);
       }
     }
@@ -700,7 +690,7 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
   // Deletion and creation logic...
   const firstMapDomElement = MAPS[0];
 
-  if (firstMapDomElement.offsetLeft < -window.innerWidth) {
+  if (firstMapDomElement.getBoundingClientRect().left < -window.innerWidth) {
     firstMapDomElement.remove();
     MAPS.shift();
     currentCacheLeftIndex++;
@@ -710,13 +700,14 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
 
   if (
     lastMapDomElement &&
-    lastMapDomElement.offsetLeft <= window.innerWidth / 10 &&
+    lastMapDomElement.getBoundingClientRect().left <= window.innerWidth / 10 &&
     currentCacheRightIndex <
       window.store.getState().localStorage.mapBlocks.length - 1
   ) {
     MAPS.push(
       createMapPalaceBlock(
-        lastMapDomElement.offsetLeft + lastMapDomElement.offsetWidth,
+        lastMapDomElement.getBoundingClientRect().left +
+          lastMapDomElement.offsetWidth,
         window.store.getState().localStorage.mapBlocks[currentCacheRightIndex]
       )
     );
@@ -747,15 +738,21 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
   window.store.getState().localStorage.sections.find((section: Section) => {
     const beginSlotElement = document.getElementById(section.beginSlotId);
     if (beginSlotElement) {
-      const beginOffset = beginSlotElement.offsetLeft;
+      const beginOffset = beginSlotElement.getBoundingClientRect().left;
 
-      if (beginOffset < middleOfScreen)
+      if (beginOffset < middleOfScreen) {
         sectionsAtTheLeftOfTheMiddle.push(section);
+        console.log("we found one");
+      }
     }
   });
   if (sectionsAtTheLeftOfTheMiddle) {
     const currentSection =
       sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
+
+    console.log("current section found >");
+
+    console.log();
 
     document.getElementById("currentSection")!.innerText =
       "Current section: " + currentSection.name;
@@ -767,14 +764,15 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
   if (
     firstMapDomElement &&
-    firstMapDomElement.offsetLeft > -window.innerWidth &&
+    firstMapDomElement.getBoundingClientRect().left > -window.innerWidth &&
     currentCacheLeftIndex > 0
   ) {
     const newMapBlockData =
       window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
     MAPS.unshift(
       createMapPalaceBlock(
-        firstMapDomElement.offsetLeft - firstMapDomElement.offsetWidth,
+        firstMapDomElement.getBoundingClientRect().left -
+          firstMapDomElement.offsetWidth,
         newMapBlockData
       )
     );
@@ -783,7 +781,10 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 
   const lastMapDomElement = MAPS[MAPS.length - 1];
 
-  if (lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth) {
+  if (
+    lastMapDomElement &&
+    lastMapDomElement.getBoundingClientRect().left > window.innerWidth
+  ) {
     lastMapDomElement.remove();
     MAPS.pop();
   }
@@ -804,12 +805,14 @@ const updateCurrentSection = () => {
       : null;
 
     if (beginSlotElement && endSlotElement) {
-      const beginOffsetLeft =
-        beginSlotElement.offsetLeft + beginSlotElement.offsetWidth / 2;
-      const endOffsetLeft =
-        endSlotElement.offsetLeft + endSlotElement.offsetWidth / 2;
+      const beginLeftPos =
+        beginSlotElement.getBoundingClientRect().left +
+        beginSlotElement.offsetWidth / 2;
+      const endLeftPos =
+        endSlotElement.getBoundingClientRect().left +
+        endSlotElement.offsetWidth / 2;
 
-      if (beginOffsetLeft < middleOfScreen && endOffsetLeft > middleOfScreen) {
+      if (beginLeftPos < middleOfScreen && endLeftPos > middleOfScreen) {
         currentSectionName = section.name;
         break;
       }
@@ -1023,6 +1026,8 @@ document.addEventListener("click", (event) => {
 
   if (target.classList.contains("slot")) {
     if (isSettingSectionStart) {
+      console.log("is setting section start after click >");
+      console.log(isSettingSectionStart);
       const slotId = target.id;
       // Check if the section already exists at this slot
       const state = window.store.getState();
@@ -1079,8 +1084,10 @@ const setSectionStart = (slotId: string) => {
     beginSlotId: slotId,
   };
 
-  console.log("new section >");
-  console.log(newSection);
   window.store.dispatch(addSection(newSection));
-  isSettingSection = false;
+  isSettingSectionStart = false;
+};
+
+const openMap = () => {
+  document.getElementById("palaceMap")!.style.display = "flex";
 };

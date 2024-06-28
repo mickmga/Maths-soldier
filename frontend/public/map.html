@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop with Auto-Scroll</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #container {
+            position: absolute;
+            top: 40vh;
+            left: 10vw;
+            width: 80vw;
+            height: 20vh; /* Aspect ratio of 1:1 for blocks */
+            border: 1px solid black;
+            overflow-x: auto;
+            white-space: nowrap;
+            background-color: #f0f0f0;
+        }
+        .block {
+            display: inline-block;
+            width: 9%;
+            height: 9%;
+            background-color: blue;
+            margin-right: 1%;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        // Generate blocks dynamically
+        const container = document.getElementById('container');
+        for (let i = 0; i < 20; i++) {
+            const block = document.createElement('div');
+            block.classList.add('block');
+            block.setAttribute('draggable', true);
+            block.setAttribute('id', 'block' + i);
+            container.appendChild(block);
+        }
+
+        // Drag and drop with auto-scroll functionality
+        const blocks = document.querySelectorAll('.block');
+        let currentBlock = null;
+        let scrollInterval = null;
+
+        blocks.forEach(block => {
+            block.addEventListener('dragstart', (e) => {
+                currentBlock = block;
+                setTimeout(() => block.style.display = 'none', 0);
+            });
+
+            block.addEventListener('dragend', () => {
+                setTimeout(() => {
+                    currentBlock.style.display = 'inline-block';
+                    currentBlock = null;
+                }, 0);
+                clearInterval(scrollInterval);
+            });
+
+            block.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            block.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                block.style.border = '2px dashed #000';
+            });
+
+            block.addEventListener('dragleave', () => {
+                block.style.border = 'none';
+            });
+
+            block.addEventListener('drop', (e) => {
+                e.preventDefault();
+                block.style.border = 'none';
+                container.insertBefore(currentBlock, block);
+            });
+        });
+
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const scrollSpeed = 20;
+            const buffer = 50;
+
+            if (e.clientX > container.offsetWidth + container.offsetLeft - buffer) {
+                clearInterval(scrollInterval);
+                scrollInterval = setInterval(() => container.scrollLeft += scrollSpeed, 50);
+            } else if (e.clientX < container.offsetLeft + buffer) {
+                clearInterval(scrollInterval);
+                scrollInterval = setInterval(() => container.scrollLeft -= scrollSpeed, 50);
+            } else {
+                clearInterval(scrollInterval);
+            }
+        });
+
+        container.addEventListener('dragleave', () => {
+            clearInterval(scrollInterval);
+        });
+
+        container.addEventListener('drop', () => {
+            clearInterval(scrollInterval);
+        });
+    </script>
+</body>
+</html>
