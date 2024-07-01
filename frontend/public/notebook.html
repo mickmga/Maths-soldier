@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trello Clone</title>
+  <link rel="stylesheet" href="style/notebook.css">
+</head>
+<body>
+  <div class="board">
+    <div class="bloc" id="bloc1">
+      <button class="addSubblocBtn">+ Add Subbloc</button>
+      <h2 class="bloc-title" contenteditable="true">Bloc 1</h2>
+      <div class="subbloc" draggable="true" id="subbloc1-1">
+        <div class="subbloc-title" contenteditable="true">Subbloc 1-1</div>
+        <div class="subbloc-body" contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+        <div class="expand-arrow">&#9660;</div>
+      </div>
+      <div class="subbloc" draggable="true" id="subbloc1-2">
+        <div class="subbloc-title" contenteditable="true">Subbloc 1-2</div>
+        <div class="subbloc-body" contenteditable="true">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+        <div class="expand-arrow">&#9660;</div>
+      </div>
+    </div>
+    <div class="bloc" id="bloc2">
+      <button class="addSubblocBtn">+ Add Subbloc</button>
+      <h2 class="bloc-title" contenteditable="true">Bloc 2</h2>
+    </div>
+  </div>
+  <button id="addBlocBtn">+ Add Bloc</button>
+
+  <script src="dist/notebook.js" type="module"></script>
+</body>
+</html>

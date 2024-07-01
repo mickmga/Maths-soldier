@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f4f4f4;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.bloc {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  width: 200px;
+  min-height: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.addSubblocBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bloc-title {
+  cursor: pointer;
+  margin: 40px 0 0 0;
+}
+
+.subbloc {
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin: 5px 0;
+  padding: 10px;
+  cursor: move;
+  position: relative;
+}
+
+.subbloc-title {
+  font-weight: bold;
+  cursor: text;
+}
+
+.subbloc-body {
+  display: none;
+  margin-top: 10px;
+  cursor: text;
+}
+
+.expand-arrow {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.dragover {
+  border: 2px dashed #007bff;
+}
+
+#addBlocBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#addBlocBtn:hover {
+  background-color: #0056b3;
+}
