@@ -3009,67 +3009,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
-  var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
-    ANIMATION_RUNNING_VALUES[animationId]++;
-    launchCharacterAnimation(
-      characterElement,
-      throttleNum,
-      extension,
-      spriteBase,
-      spriteIndex,
-      max,
-      min,
-      loop,
-      animationId
-    );
-  };
-  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
-    if (!characterElement) {
-      return;
-    }
-    if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
-      return;
-    }
-    if (throttleNum < 5) {
-      throttleNum++;
-      return requestAnimationFrame(
-        () => launchCharacterAnimation(
-          characterElement,
-          throttleNum,
-          extension,
-          spriteBase,
-          spriteIndex,
-          max,
-          min,
-          loop,
-          animationId
-        )
-      );
-    }
-    throttleNum = 0;
-    if (spriteIndex === max) {
-      if (loop === false) {
-        return;
-      }
-      spriteIndex = min;
-    } else {
-      spriteIndex++;
-    }
-    characterElement.src = `${spriteBase}/${spriteIndex}.${extension}`;
-    requestAnimationFrame(
-      () => launchCharacterAnimation(
-        characterElement,
-        throttleNum,
-        extension,
-        spriteBase,
-        spriteIndex,
-        max,
-        min,
-        loop,
-        animationId
-      )
-    );
-  };
   var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
     if (ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
       return;
@@ -3084,6 +3023,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     const middleOfScreen = window.innerWidth / 2;
     const sectionsAtTheLeftOfTheMiddle = [];
     window.store.getState().localStorage.sections.find((section) => {
+      console.log(section);
       const beginSlotElement = document.getElementById(section.beginSlotId);
       if (beginSlotElement) {
         const beginOffset = beginSlotElement.getBoundingClientRect().left;
@@ -3092,7 +3032,9 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         }
       }
     });
-    if (sectionsAtTheLeftOfTheMiddle) {
+    if (sectionsAtTheLeftOfTheMiddle.length) {
+      console.log("section at the left >");
+      console.log(sectionsAtTheLeftOfTheMiddle);
       const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
       document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
     } else {
@@ -3139,10 +3081,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         }
       }
     });
-    if (sectionsAtTheLeftOfTheMiddle) {
+    if (sectionsAtTheLeftOfTheMiddle.length) {
       const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
-      console.log("current section found >");
-      console.log();
       document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
     } else {
       document.getElementById("currentSection").innerText = "No current section";
@@ -3198,46 +3138,24 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     menu.style.display = "none";
   };
   window.closeMenu = closeMenu;
-  var launchCharacterMovement = () => {
-    moveCamera(4 /* camera_left_to_right */);
-    launchAnimationAndDeclareItLaunched(
-      heroImage,
-      0,
-      "png",
-      "assets/palace/hero/old_walk",
-      1,
-      6,
-      1,
-      true,
-      2 /* walk */
-    );
-  };
-  var launchCharacterMovementLeft = () => {
-    moveCamera(5 /* camera_right_to_left */);
-    launchAnimationAndDeclareItLaunched(
-      heroImage,
-      0,
-      "png",
-      "assets/palace/hero/walk_left",
-      1,
-      6,
-      1,
-      true,
-      2 /* walk */
-    );
-  };
   document.addEventListener(
     "keydown",
     (event) => {
       if (event.key === "d" && ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
         ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */]++;
-        launchCharacterMovement();
         checkForScreenUpdateFromLeftToRight(10);
+        if (!isAnimating) {
+          isAnimating = true;
+          moveCamera(4 /* camera_left_to_right */);
+          animate(11);
+        }
       }
       if (event.key === "q" && ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
         ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */]++;
-        launchCharacterMovementLeft();
+        isAnimating = true;
         checkForScreenUpdateFromRightToLeft(10);
+        animate(9);
+        moveCamera(5 /* camera_right_to_left */);
       }
     }
   );
@@ -3246,6 +3164,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     ANIMATION_RUNNING_VALUES[2 /* walk */] = 0;
     ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] = 0;
     ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
+    isAnimating = false;
   });
   window.onload = () => {
     MAPS.push(
@@ -3370,6 +3289,49 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     };
     window.store.dispatch(addSection(newSection));
     isSettingSectionStart = false;
+  };
+  var canvas = document.getElementById("spriteCanvas");
+  var ctx = canvas.getContext("2d");
+  var spriteSheet = new Image();
+  spriteSheet.src = "assets/palace/characters/premium.png";
+  var spriteWidth = 64;
+  var spriteHeight = 64;
+  var numCols = 13;
+  var numFrames = 8;
+  var frameIndex = 0;
+  var fps = 10;
+  var frameDuration = 1e3 / fps;
+  var startCol = 1;
+  var isAnimating = false;
+  function drawFrame(frameIndex2, x, y, spriteRow) {
+    const col = (frameIndex2 + startCol) % numCols;
+    const sx = col * spriteWidth;
+    const sy = spriteRow * spriteHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(
+      spriteSheet,
+      sx,
+      sy,
+      spriteWidth,
+      spriteHeight,
+      // Source rectangle
+      x,
+      y,
+      100,
+      100
+      // Destination rectangle
+    );
+  }
+  function animate(spriteRow) {
+    if (!isAnimating) return;
+    setTimeout(() => {
+      frameIndex = (frameIndex + 1) % numFrames;
+      drawFrame(frameIndex, 96, 96, spriteRow);
+      requestAnimationFrame(() => animate(spriteRow));
+    }, frameDuration);
+  }
+  spriteSheet.onload = function() {
+    drawFrame(frameIndex, 96, 96, 11);
   };
 })();
 //# sourceMappingURL=palace.js.map

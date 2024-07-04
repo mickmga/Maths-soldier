@@ -668,6 +668,7 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
   const sectionsAtTheLeftOfTheMiddle: Section[] = [];
 
   window.store.getState().localStorage.sections.find((section) => {
+    console.log(section);
     const beginSlotElement = document.getElementById(section.beginSlotId);
     if (beginSlotElement) {
       const beginOffset = beginSlotElement.getBoundingClientRect().left;
@@ -677,7 +678,9 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
       }
     }
   });
-  if (sectionsAtTheLeftOfTheMiddle) {
+  if (sectionsAtTheLeftOfTheMiddle.length) {
+    console.log("section at the left >");
+    console.log(sectionsAtTheLeftOfTheMiddle);
     const currentSection =
       sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
 
@@ -746,13 +749,9 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
       }
     }
   });
-  if (sectionsAtTheLeftOfTheMiddle) {
+  if (sectionsAtTheLeftOfTheMiddle.length) {
     const currentSection =
       sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
-
-    console.log("current section found >");
-
-    console.log();
 
     document.getElementById("currentSection")!.innerText =
       "Current section: " + currentSection.name;
@@ -885,8 +884,14 @@ document.addEventListener(
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0
     ) {
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
-      launchCharacterMovement();
+      //launchCharacterMovement();
       checkForScreenUpdateFromLeftToRight(10);
+      if (!isAnimating) {
+        isAnimating = true;
+
+        moveCamera(ANIMATION_ID.camera_left_to_right);
+        animate(11); // Start animation when "d" is pressed
+      }
     }
 
     if (
@@ -894,8 +899,11 @@ document.addEventListener(
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] === 0
     ) {
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left]++;
-      launchCharacterMovementLeft();
+      isAnimating = true;
+      // launchCharacterMovementLeft();
       checkForScreenUpdateFromRightToLeft(10);
+      animate(9); // Start animation when "d" is pressed
+      moveCamera(ANIMATION_ID.camera_right_to_left);
     }
   }
 );
@@ -905,6 +913,7 @@ document.addEventListener("keyup", () => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.walk] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
+  isAnimating = false; // Stop animation when "d" is released
 });
 
 window.onload = () => {
@@ -1090,4 +1099,60 @@ const setSectionStart = (slotId: string) => {
 
 const openMap = () => {
   document.getElementById("palaceMap")!.style.display = "flex";
+};
+
+//choice.ts
+
+const canvas = document.getElementById("spriteCanvas")! as HTMLCanvasElement;
+const ctx = canvas.getContext("2d")!;
+
+const spriteSheet = new Image();
+spriteSheet.src = "assets/palace/characters/premium.png"; // Update this to the correct path
+
+const spriteWidth = 64; // Width of a single frame
+const spriteHeight = 64; // Height of a single frame
+const numCols = 13; // Number of columns in your sprite sheet
+const spriteRow = 11; // The 11th row (0-indexed) is the walk animation
+const numFrames = 8; // Number of frames in the walk animation
+
+let frameIndex = 0;
+const fps = 10;
+const frameDuration = 1000 / fps;
+const startCol = 1; // Start from the second column (0-indexed)
+let isAnimating = false; // Animation state
+
+function drawFrame(
+  frameIndex: number,
+  x: number,
+  y: number,
+  spriteRow: number
+) {
+  const col = (frameIndex + startCol) % numCols;
+  const sx = col * spriteWidth;
+  const sy = spriteRow * spriteHeight;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(
+    spriteSheet,
+    sx,
+    sy,
+    spriteWidth,
+    spriteHeight, // Source rectangle
+    x,
+    y,
+    100,
+    100 // Destination rectangle
+  );
+}
+
+function animate(spriteRow: number) {
+  if (!isAnimating) return; // Stop animation if not animating
+  setTimeout(() => {
+    frameIndex = (frameIndex + 1) % numFrames;
+    drawFrame(frameIndex, 96, 96, spriteRow); // Character stays at (96, 96)
+    requestAnimationFrame(() => animate(spriteRow));
+  }, frameDuration);
+}
+
+spriteSheet.onload = function () {
+  drawFrame(frameIndex, 96, 96, 11); // Draw the initial frame
 };

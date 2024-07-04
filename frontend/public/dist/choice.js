@@ -6,12 +6,13 @@ spriteSheet.src = "assets/palace/characters/premium.png"; // Update this to the 
 const spriteWidth = 64; // Width of a single frame
 const spriteHeight = 64; // Height of a single frame
 const numCols = 13; // Number of columns in your sprite sheet
-const walkRow = 10; // The 11th row (0-indexed) is the walk animation
+const walkRow = 11; // The 11th row (0-indexed) is the walk animation
 const numFrames = 8; // Number of frames in the walk animation
 let frameIndex = 0;
 const fps = 10;
 const frameDuration = 1000 / fps;
 const startCol = 1; // Start from the second column (0-indexed)
+let isAnimating = false; // Animation state
 function drawFrame(frameIndex, x, y) {
     const col = (frameIndex + startCol) % numCols;
     const sx = col * spriteWidth;
@@ -22,12 +23,28 @@ function drawFrame(frameIndex, x, y) {
     );
 }
 function animate() {
+    if (!isAnimating)
+        return; // Stop animation if not animating
     setTimeout(() => {
         frameIndex = (frameIndex + 1) % numFrames;
         drawFrame(frameIndex, 96, 96); // Character stays at (96, 96)
         requestAnimationFrame(animate);
     }, frameDuration);
 }
+// Event listeners for keydown and keyup
+window.addEventListener("keydown", (e) => {
+    if (e.key === "d") {
+        if (!isAnimating) {
+            isAnimating = true;
+            animate(); // Start animation when "d" is pressed
+        }
+    }
+});
+window.addEventListener("keyup", (e) => {
+    if (e.key === "d") {
+        isAnimating = false; // Stop animation when "d" is released
+    }
+});
 spriteSheet.onload = function () {
-    animate();
+    drawFrame(frameIndex, 96, 96); // Draw the initial frame
 };
