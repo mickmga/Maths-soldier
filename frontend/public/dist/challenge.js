@@ -4,13 +4,71 @@
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
   var heroImage = document.getElementById("heroImg");
-  var enemy = document.getElementById("enemyImg");
-  var enemyContainer = document.getElementById("enemy_container");
   var errorScoreContainer = document.getElementById("error_score");
   var successfulKillsScoreContainer = document.getElementById("killed_score");
   var errorScore = 0;
   var successfulKillsScore = 0;
-  var opponnentsOnScreen = [enemy];
+  var ennemiesOnScreen = [];
+  var Answer = class {
+    constructor(data, good) {
+      this.data = data;
+      this.good = good;
+    }
+  };
+  var Enemy = class {
+    constructor(element, answer) {
+      this.element = element;
+      this.answer = answer;
+    }
+  };
+  var CAPITALS = {
+    title: "Capitals of the world",
+    good: [new Answer("Paris", true), new Answer("London", true)],
+    bad: [new Answer("Chicago", false), new Answer("Monaco", false)]
+  };
+  var getNextAnswer = () => {
+    const randVal = Math.random() > 0.5;
+    if (randVal) {
+      return CAPITALS.good.length ? CAPITALS.good.pop() : CAPITALS.bad.length ? CAPITALS.bad.pop() : "done";
+    } else {
+      return CAPITALS.bad.length ? CAPITALS.bad.pop() : CAPITALS.good.length ? CAPITALS.good.pop() : "done";
+    }
+  };
+  var buildEnemyElement = () => {
+    const newOpponentContainer = document.createElement("div");
+    newOpponentContainer.classList.add("enemy_container");
+    const newEnnemyImg = document.createElement("img");
+    newEnnemyImg.src = "assets/challenge/characters/enemies/wolf/1.png";
+    newOpponentContainer.append(newEnnemyImg);
+    document.getElementsByTagName("body")[0].append(newOpponentContainer);
+    return newOpponentContainer;
+  };
+  var buildEnemy = (answer) => {
+    const enemyElement = buildEnemyElement();
+    if (!enemyElement) {
+      console.log("error");
+      return;
+    }
+    document.getElementsByTagName("body")[0].append();
+    const enemy = new Enemy(enemyElement, answer);
+    ennemiesOnScreen.push(enemy);
+    return enemy;
+  };
+  var buildAndLaunchEnemy = (answer) => {
+    const enemy = buildEnemy(answer);
+    if (!enemy) {
+      return;
+    }
+    launchOpponent(enemy);
+  };
+  var triggerOpponentsApparition = () => {
+    const newAnswer = getNextAnswer();
+    if (newAnswer && newAnswer !== "done") {
+      buildAndLaunchEnemy(newAnswer);
+    } else {
+      console.log("we re done");
+    }
+  };
   var backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
   var ANIMATION_RUNNING_VALUES = {
     [0 /* attack */]: 0,
@@ -120,14 +178,25 @@
       false,
       0 /* attack */
     );
-    setTimeout(() => {
-      if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyContainer.getBoundingClientRect().left && enemy) {
-        enemy.remove();
-        enemyOnScreen = false;
+    const enemyCanBeHit = (enemy) => {
+      return enemy.element.getBoundingClientRect().left > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemy.element.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.15;
+    };
+    ennemiesOnScreen.forEach((enemy) => {
+      if (!enemyCanBeHit(enemy)) {
+        console.log("Enemy can't be hit. Opponent left >");
+        console.log(
+          enemy.element.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
+        );
+        console.log(", hero left > ");
+        console.log(heroContainer.getBoundingClientRect().left);
+        return;
+      }
+      setTimeout(() => {
+        destroyEnemyAndLaunchNewOne(enemy);
         successfulKillsScore++;
         updateScores();
-      }
-    }, 500);
+      }, 400);
+    });
     setTimeout(() => {
       launchAnimationAndDeclareItLaunched(
         heroImage,
@@ -141,21 +210,38 @@
         1 /* run */
       );
       initAnimation(0 /* attack */);
-    }, 1e3);
+    }, 500);
   };
-  var enemyOnScreen = true;
-  var moveEnemy = () => {
-    if (!enemyOnScreen) return;
-    enemyContainer.style.left = `${enemyContainer.offsetLeft - 10}px`;
-    requestAnimationFrame(moveEnemy);
+  var launchOpponent = (enemy) => {
+    launchAnimationAndDeclareItLaunched(
+      enemy.element.firstChild,
+      0,
+      "png",
+      "assets/challenge/characters/enemies/wolf",
+      1,
+      9,
+      1,
+      true,
+      3 /* opponent_run */
+    );
+    moveEnemy(enemy);
   };
-  var detectCollision = () => {
-    if (heroContainer.offsetLeft > enemyContainer.offsetLeft) {
-      errorScore++;
-      updateScores();
-      return;
-    }
-    requestAnimationFrame(detectCollision);
+  var moveEnemy = (enemy) => {
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 10}px`;
+    requestAnimationFrame(() => moveEnemy(enemy));
+  };
+  var destroyEnemy = (enemy) => {
+    enemy.element.remove();
+    ennemiesOnScreen.forEach((enemyOnScreen, index) => {
+      if (enemy === enemyOnScreen) {
+        ennemiesOnScreen.splice(index, 1);
+      }
+    });
+    initAnimation(3 /* opponent_run */);
+  };
+  var destroyEnemyAndLaunchNewOne = (enemy) => {
+    destroyEnemy(enemy);
+    triggerOpponentsApparition();
   };
   var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
     if (ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
@@ -226,12 +312,11 @@
     }
   });
   var checkForOpponentsClearance = () => {
-    opponnentsOnScreen.forEach((opponnentOnScreen) => {
-      if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyContainer.getBoundingClientRect().left && enemy) {
+    ennemiesOnScreen.forEach((enemyOnScreen) => {
+      if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyOnScreen.element.getBoundingClientRect().left) {
       }
-      if (opponnentOnScreen.getBoundingClientRect().left < 0) {
-        opponnentOnScreen.remove();
-        opponnentsOnScreen.pop();
+      if (enemyOnScreen.element.getBoundingClientRect().left < 0) {
+        destroyEnemyAndLaunchNewOne(enemyOnScreen);
       }
     });
     requestAnimationFrame(checkForOpponentsClearance);
@@ -240,10 +325,9 @@
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
     launchRun();
-    moveEnemy();
-    detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
+    triggerOpponentsApparition();
   };
 })();
 //# sourceMappingURL=challenge.js.map

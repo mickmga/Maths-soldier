@@ -2699,7 +2699,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var heroContainer = document.getElementById("hero_container");
   var heroImage = document.getElementById("heroImg");
   var enemy = document.getElementById("enemyImg");
-  var enemyContainer = document.getElementById("enemy_container");
+  var enemyContainer = document.getElementsByClassName("enemy_container")[0];
   var errorScoreContainer = document.getElementById("error_score");
   var successfulKillsScoreContainer = document.getElementById("killed_score");
   var menu = document.getElementById("menu");

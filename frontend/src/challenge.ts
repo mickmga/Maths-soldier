@@ -3,18 +3,119 @@ export {};
 const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
 const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
-const enemy = document.getElementById("enemyImg")! as HTMLImageElement;
-const enemyContainer = document.getElementById("enemy_container")!;
+
 const errorScoreContainer = document.getElementById("error_score")!;
 const successfulKillsScoreContainer = document.getElementById("killed_score")!;
 let errorScore = 0;
 let successfulKillsScore = 0;
 
-const opponnentsOnScreen = [enemy];
+const ennemiesOnScreen: Enemy[] = [];
 
-let opponentsOnTheRight = [enemy];
+class Answer {
+  data: string;
+  good: boolean;
+
+  constructor(data: string, good: boolean) {
+    this.data = data;
+    this.good = good;
+  }
+}
+
+type Topic = {
+  title: string;
+  good: Answer[];
+  bad: Answer[];
+};
+
+class Enemy {
+  element: HTMLElement;
+  answer: Answer;
+
+  constructor(element: HTMLElement, answer: Answer) {
+    this.element = element;
+    this.answer = answer;
+  }
+}
+
+const CAPITALS = {
+  title: "Capitals of the world",
+  good: [new Answer("Paris", true), new Answer("London", true)],
+  bad: [new Answer("Chicago", false), new Answer("Monaco", false)],
+};
+
+let topics: Topic[] = [CAPITALS];
 
 //local storage
+
+const getNextAnswer = () => {
+  const randVal = Math.random() > 0.5;
+
+  if (randVal) {
+    return CAPITALS.good.length
+      ? CAPITALS.good.pop()
+      : CAPITALS.bad.length
+      ? CAPITALS.bad.pop()
+      : "done";
+  } else {
+    return CAPITALS.bad.length
+      ? CAPITALS.bad.pop()
+      : CAPITALS.good.length
+      ? CAPITALS.good.pop()
+      : "done";
+  }
+};
+
+const buildEnemyElement = () => {
+  const newOpponentContainer = document.createElement("div");
+  newOpponentContainer.classList.add("enemy_container");
+  const newEnnemyImg = document.createElement("img") as HTMLImageElement;
+  newEnnemyImg.src = "assets/challenge/characters/enemies/wolf/1.png";
+
+  newOpponentContainer.append(newEnnemyImg);
+
+  document.getElementsByTagName("body")[0].append(newOpponentContainer);
+
+  return newOpponentContainer;
+};
+
+const buildEnemy = (answer: Answer) => {
+  //construct opponent at a specific point, run it
+
+  const enemyElement = buildEnemyElement();
+
+  if (!enemyElement) {
+    console.log("error");
+    return;
+  }
+
+  document.getElementsByTagName("body")[0].append();
+
+  const enemy = new Enemy(enemyElement, answer);
+
+  ennemiesOnScreen.push(enemy);
+
+  return enemy;
+};
+
+const buildAndLaunchEnemy = (answer: Answer) => {
+  const enemy = buildEnemy(answer);
+
+  if (!enemy) {
+    return;
+  }
+
+  launchOpponent(enemy);
+};
+
+const triggerOpponentsApparition = () => {
+  const newAnswer = getNextAnswer();
+
+  if (newAnswer && newAnswer !== "done") {
+    buildAndLaunchEnemy(newAnswer);
+  } else {
+    console.log("we re done");
+  }
+};
 
 let backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
 
@@ -201,20 +302,35 @@ const launchAttack = () => {
     ANIMATION_ID.attack
   );
 
-  setTimeout(() => {
-    if (
-      heroContainer.getBoundingClientRect().left +
-        heroContainer.getBoundingClientRect().width +
-        window.innerWidth * 0.05 >
-        enemyContainer.getBoundingClientRect().left &&
-      enemy
-    ) {
-      enemy.remove();
-      enemyOnScreen = false;
+  const enemyCanBeHit = (enemy: Enemy) => {
+    return (
+      enemy.element.getBoundingClientRect().left >
+        heroContainer.getBoundingClientRect().left +
+          heroContainer.getBoundingClientRect().width &&
+      enemy.element.getBoundingClientRect().left <
+        heroContainer.getBoundingClientRect().left +
+          heroContainer.getBoundingClientRect().width +
+          window.innerWidth * 0.15
+    );
+  };
+
+  ennemiesOnScreen.forEach((enemy) => {
+    if (!enemyCanBeHit(enemy)) {
+      console.log("Enemy can't be hit. Opponent left >");
+      console.log(
+        enemy.element.getBoundingClientRect().left +
+          heroContainer.getBoundingClientRect().width
+      );
+      console.log(", hero left > ");
+      console.log(heroContainer.getBoundingClientRect().left);
+      return;
+    }
+    setTimeout(() => {
+      destroyEnemyAndLaunchNewOne(enemy);
       successfulKillsScore++;
       updateScores();
-    }
-  }, 500);
+    }, 400);
+  });
 
   setTimeout(() => {
     launchAnimationAndDeclareItLaunched(
@@ -229,12 +345,12 @@ const launchAttack = () => {
       ANIMATION_ID.run
     );
     initAnimation(ANIMATION_ID.attack);
-  }, 1000);
+  }, 500);
 };
 
-const launchOpponent = () => {
+const launchOpponent = (enemy: Enemy) => {
   launchAnimationAndDeclareItLaunched(
-    enemy,
+    enemy.element.firstChild as HTMLImageElement,
     0,
     "png",
     "assets/challenge/characters/enemies/wolf",
@@ -244,25 +360,46 @@ const launchOpponent = () => {
     true,
     ANIMATION_ID.opponent_run
   );
+  moveEnemy(enemy);
 };
 
-let enemyOnScreen = true;
+const moveEnemy = (enemy: Enemy) => {
+  enemy.element.style.left = `${
+    enemy.element.getBoundingClientRect().left - 10
+  }px`;
 
-const moveEnemy = () => {
-  if (!enemyOnScreen) return;
+  requestAnimationFrame(() => moveEnemy(enemy));
+};
 
-  enemyContainer.style.left = `${enemyContainer.offsetLeft - 10}px`;
+const destroyEnemy = (enemy: Enemy) => {
+  enemy.element.remove();
 
-  requestAnimationFrame(moveEnemy);
+  ennemiesOnScreen.forEach((enemyOnScreen, index) => {
+    if (enemy === enemyOnScreen) {
+      ennemiesOnScreen.splice(index, 1);
+    }
+  });
+
+  initAnimation(ANIMATION_ID.opponent_run);
+};
+
+const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
+  destroyEnemy(enemy);
+  triggerOpponentsApparition();
 };
 
 const detectCollision = () => {
-  if (heroContainer.offsetLeft > enemyContainer.offsetLeft) {
-    errorScore++;
-    updateScores();
+  ennemiesOnScreen.forEach((enemyOnScreen) => {
+    if (
+      heroContainer.offsetLeft >
+      enemyOnScreen.element.getBoundingClientRect().left
+    ) {
+      errorScore++;
+      updateScores();
 
-    return;
-  }
+      return;
+    }
+  });
 
   requestAnimationFrame(detectCollision);
 };
@@ -444,18 +581,16 @@ document.addEventListener("keydown", (event) => {
 });
 
 const checkForOpponentsClearance = () => {
-  opponnentsOnScreen.forEach((opponnentOnScreen) => {
+  ennemiesOnScreen.forEach((enemyOnScreen) => {
     if (
       heroContainer.getBoundingClientRect().left +
         heroContainer.getBoundingClientRect().width +
         window.innerWidth * 0.05 >
-        enemyContainer.getBoundingClientRect().left &&
-      enemy
+      enemyOnScreen.element.getBoundingClientRect().left
     ) {
     }
-    if (opponnentOnScreen.getBoundingClientRect().left < 0) {
-      opponnentOnScreen.remove();
-      opponnentsOnScreen.pop();
+    if (enemyOnScreen.element.getBoundingClientRect().left < 0) {
+      destroyEnemyAndLaunchNewOne(enemyOnScreen);
     }
   });
 
@@ -466,11 +601,8 @@ window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
   launchRun();
-  //moveCamera();
-  //launchAnimationAndDeclareItLaunched(heroImage, 0, 'png', 'assets/challenge/characters/hero/run', 1, 8, 1, true, ANIMATION_ID.run);
-  //launchOpponent();
-  moveEnemy();
-  detectCollision();
+  // detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
+  triggerOpponentsApparition();
 };

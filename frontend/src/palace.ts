@@ -29,7 +29,7 @@ const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
 const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
 const enemy = document.getElementById("enemyImg")! as HTMLImageElement;
-const enemyContainer = document.getElementById("enemy_container")!;
+const enemyContainer = document.getElementsByClassName("enemy_container")[0]!;
 const errorScoreContainer = document.getElementById("error_score")!;
 const successfulKillsScoreContainer = document.getElementById("killed_score")!;
 const menu = document.getElementById("menu")!;
@@ -561,78 +561,6 @@ const launchCharacterAnimation = (
 
 const initAnimation = (animationId: ANIMATION_ID) => {
   ANIMATION_RUNNING_VALUES[animationId] = 0;
-};
-
-const launchAttack = () => {
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
-
-  launchAnimationAndDeclareItLaunched(
-    heroImage,
-    0,
-    "png",
-    "assets/challenge/characters/hero/attack",
-    1,
-    4,
-    1,
-    false,
-    ANIMATION_ID.attack
-  );
-
-  setTimeout(() => {
-    if (
-      heroContainer.getBoundingClientRect().left +
-        heroContainer.offsetWidth +
-        window.innerWidth * 0.05 >
-        enemyContainer.getBoundingClientRect().left &&
-      enemy
-    ) {
-      enemy.remove();
-      enemyOnScreen = false;
-      successfulKillsScore++;
-      updateScores();
-    }
-  }, 500);
-
-  setTimeout(() => {
-    launchAnimationAndDeclareItLaunched(
-      heroImage,
-      0,
-      "png",
-      "assets/challenge/characters/hero/run",
-      1,
-      8,
-      1,
-      true,
-      ANIMATION_ID.run
-    );
-    initAnimation(ANIMATION_ID.attack);
-  }, 1000);
-};
-
-const launchOpponent = () => {
-  launchAnimationAndDeclareItLaunched(
-    enemy,
-    0,
-    "png",
-    "assets/challenge/characters/enemies/wolf",
-    1,
-    9,
-    1,
-    true,
-    ANIMATION_ID.opponent_run
-  );
-};
-
-let enemyOnScreen = true;
-
-const moveEnemy = () => {
-  if (!enemyOnScreen) return;
-
-  enemyContainer.style.left = `${
-    enemyContainer.getBoundingClientRect().left - 10
-  }px`;
-
-  requestAnimationFrame(moveEnemy);
 };
 
 const detectCollision = () => {

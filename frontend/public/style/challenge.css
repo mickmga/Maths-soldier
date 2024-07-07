@@ -26,10 +26,10 @@ body {
   z-index: 3;
 }
 
-#enemy_container {
+.enemy_container {
   position: fixed;
   bottom: 25vh;
-  left: 70vw;
+  left: 120vw;
   height: 25vh;
   z-index: 1000;
   display: flex;
@@ -38,7 +38,7 @@ body {
 }
 
 #hero_container img,
-#enemy_container img {
+.enemy_container img {
   height: 100%;
   width: auto;
 }
@@ -59,4 +59,17 @@ body {
   z-index: 3;
   font-size: medium;
   color: red;
+}
+
+#answer_data_container {
+  height: 10vh;
+  width: 30vw;
+  background: blue;
+  position: absolute;
+  left: 35vw;
+  top: 85vh;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
