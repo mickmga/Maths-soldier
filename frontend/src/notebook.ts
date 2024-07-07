@@ -1,7 +1,16 @@
+import { Store } from "redux";
+import store, { RootState } from "./store";
+
 const blocs = document.querySelectorAll(".bloc");
 const subblocs = document.querySelectorAll(".subbloc");
 const addBlocBtn = document.getElementById("addBlocBtn");
 const addSubblocBtns = document.querySelectorAll(".addSubblocBtn");
+
+interface Window {
+  store: Store<RootState>;
+}
+
+window.store = store;
 
 let subblocCounter = 3; // Start with a counter for new subblocs
 
@@ -55,6 +64,8 @@ function addDragAndDropListeners(element: HTMLElement) {
           } else {
             bloc.insertBefore(draggable, target.nextSibling);
           }
+
+          const position = Array.from(bloc.children).indexOf(draggable);
         } else {
           bloc.appendChild(draggable);
         }
@@ -155,3 +166,13 @@ addBlocBtn?.addEventListener("click", () => {
     });
   }
 });
+
+const renderNotes = () => {
+  const sections = window.store.getState().localStorage.sections;
+  //collect store
+  //for each section, render a bloc
+};
+
+window.onload = () => {
+  console.log(window.store.getState());
+};

@@ -2,11 +2,15 @@ import { build } from "esbuild";
 import path from "path";
 
 build({
-  entryPoints: [path.join("src", "palace.ts")],
+  entryPoints: [
+    path.join("src", "palace.ts"),
+    path.join("src", "notebook.ts"),
+    path.join("src", "challenge.ts"),
+  ],
   bundle: true,
   minify: false,
   sourcemap: true,
-  outfile: path.join("public", "dist", "palace.js"),
+  outdir: path.join("public", "dist"),
   target: ["es6"],
   platform: "browser",
   loader: {

@@ -6,7 +6,7 @@ import store, {
   updateSection,
   removeSection,
   updateItem,
-} from "./store.js";
+} from "./store";
 
 import { Store } from "redux";
 
