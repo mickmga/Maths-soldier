@@ -137,9 +137,12 @@ enum ANIMATION_ID {
   run,
   walk,
   opponent_run,
+  opponent_death,
   camera_left_to_right,
   camera_right_to_left,
   character_left_to_right_move,
+  transformation_pre_run,
+  transformation_run,
 }
 
 const ANIMATION_RUNNING_VALUES = {
@@ -147,9 +150,12 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.run]: 0,
   [ANIMATION_ID.walk]: 0,
   [ANIMATION_ID.opponent_run]: 0,
+  [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 0,
+  [ANIMATION_ID.transformation_pre_run]: 0,
+  [ANIMATION_ID.transformation_run]: 0,
 };
 
 const createMapBlock = (left: number) => {
@@ -237,7 +243,7 @@ const launchCharacterAnimation = (
     return;
   }
 
-  if (throttleNum < 5) {
+  if (throttleNum < throttleNum) {
     throttleNum++;
     return requestAnimationFrame(() =>
       launchCharacterAnimation(
@@ -294,9 +300,9 @@ const launchAttack = () => {
     heroImage,
     0,
     "png",
-    "assets/challenge/characters/hero/attack",
+    "assets/challenge/characters/transformed_hero/attack",
     1,
-    4,
+    12,
     1,
     false,
     ANIMATION_ID.attack
@@ -332,19 +338,21 @@ const launchAttack = () => {
     }, 400);
   });
 
+  return;
+
   setTimeout(() => {
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/hero/run",
+      "assets/challenge/characters/transformed_hero_run",
       1,
-      8,
+      6,
       1,
       true,
-      ANIMATION_ID.run
+      ANIMATION_ID.transformation_run
     );
-    initAnimation(ANIMATION_ID.attack);
   }, 500);
 };
 
@@ -372,15 +380,34 @@ const moveEnemy = (enemy: Enemy) => {
 };
 
 const destroyEnemy = (enemy: Enemy) => {
-  enemy.element.remove();
+  const launchExplosion = () => {
+    launchAnimationAndDeclareItLaunched(
+      enemy.element.firstChild as HTMLImageElement,
+      0,
+      "png",
+      "assets/challenge/explosion",
+      1,
+      10,
+      1,
+      false,
+      ANIMATION_ID.opponent_death
+    );
+  };
+
+  setTimeout(
+    () => (ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0),
+    500
+  );
+
+  launchExplosion();
+
+  //  enemy.element.remove();
 
   ennemiesOnScreen.forEach((enemyOnScreen, index) => {
     if (enemy === enemyOnScreen) {
       ennemiesOnScreen.splice(index, 1);
     }
   });
-
-  initAnimation(ANIMATION_ID.opponent_run);
 };
 
 const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
@@ -573,7 +600,7 @@ const launchFly = (jumpingForward = true) => {
 };
 document.addEventListener("keydown", (event) => {
   if (event.key === " ") {
-    launchFly();
+    turnInvisible();
   }
   if (event.key === "w") {
     launchAttack();
@@ -597,10 +624,16 @@ const checkForOpponentsClearance = () => {
   requestAnimationFrame(checkForOpponentsClearance);
 };
 
+const turnInvisible = () => {
+  heroContainer.style.opacity = "0.3";
+
+  setTimeout(() => (heroContainer.style.opacity = "1"), 2000);
+};
+
 window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
-  launchRun();
+  // launchRun();
   // detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
