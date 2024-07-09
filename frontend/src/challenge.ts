@@ -11,6 +11,9 @@ let successfulKillsScore = 0;
 
 const ennemiesOnScreen: Enemy[] = [];
 
+let transformed = false;
+let transformationOn = false;
+
 class Answer {
   data: string;
   good: boolean;
@@ -158,6 +161,19 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.transformation_run]: 0,
 };
 
+const THROTTLE_NUMS = {
+  [ANIMATION_ID.attack]: 0,
+  [ANIMATION_ID.run]: 5,
+  [ANIMATION_ID.walk]: 5,
+  [ANIMATION_ID.opponent_run]: 5,
+  [ANIMATION_ID.opponent_death]: 0,
+  [ANIMATION_ID.camera_left_to_right]: 5,
+  [ANIMATION_ID.camera_right_to_left]: 5,
+  [ANIMATION_ID.character_left_to_right_move]: 5,
+  [ANIMATION_ID.transformation_pre_run]: 5,
+  [ANIMATION_ID.transformation_run]: 5,
+};
+
 const createMapBlock = (left: number) => {
   const block = document.createElement("div");
   block.classList.add("mapBlock");
@@ -243,7 +259,7 @@ const launchCharacterAnimation = (
     return;
   }
 
-  if (throttleNum < throttleNum) {
+  if (throttleNum < THROTTLE_NUMS[animationId]) {
     throttleNum++;
     return requestAnimationFrame(() =>
       launchCharacterAnimation(
@@ -264,6 +280,7 @@ const launchCharacterAnimation = (
 
   if (spriteIndex === max) {
     if (loop === false) {
+      ANIMATION_RUNNING_VALUES[animationId] = 0;
       return;
     }
 
@@ -294,15 +311,21 @@ const initAnimation = (animationId: ANIMATION_ID) => {
 };
 
 const launchAttack = () => {
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
+  if (transformed) {
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
+  } else {
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
+  }
 
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
     "png",
-    "assets/challenge/characters/transformed_hero/attack",
+    `assets/challenge/characters/${
+      transformed ? "transformed_hero" : "hero"
+    }/attack`,
     1,
-    12,
+    transformed ? 12 : 4,
     1,
     false,
     ANIMATION_ID.attack
@@ -338,22 +361,21 @@ const launchAttack = () => {
     }, 400);
   });
 
-  return;
-
   setTimeout(() => {
-    ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/transformed_hero_run",
+      `assets/challenge/characters/${
+        transformed ? "transformed_hero" : "hero"
+      }/run`,
       1,
-      6,
+      transformed ? 6 : 8,
       1,
       true,
-      ANIMATION_ID.transformation_run
+      transformed ? ANIMATION_ID.transformation_run : ANIMATION_ID.run
     );
-  }, 500);
+  }, 200);
 };
 
 const launchOpponent = (enemy: Enemy) => {
@@ -394,14 +416,13 @@ const destroyEnemy = (enemy: Enemy) => {
     );
   };
 
-  setTimeout(
-    () => (ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0),
-    500
-  );
+  setTimeout(() => {
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+    enemy.element.remove();
+    triggerOpponentsApparition();
+  }, 300);
 
   launchExplosion();
-
-  //  enemy.element.remove();
 
   ennemiesOnScreen.forEach((enemyOnScreen, index) => {
     if (enemy === enemyOnScreen) {
@@ -412,7 +433,7 @@ const destroyEnemy = (enemy: Enemy) => {
 
 const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
   destroyEnemy(enemy);
-  triggerOpponentsApparition();
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
 };
 
 const detectCollision = () => {
@@ -605,6 +626,9 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "w") {
     launchAttack();
   }
+  if (event.key === "b") {
+    launchTransformation();
+  }
 });
 
 const checkForOpponentsClearance = () => {
@@ -630,10 +654,51 @@ const turnInvisible = () => {
   setTimeout(() => (heroContainer.style.opacity = "1"), 2000);
 };
 
+const launchTransformation = () => {
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
+
+  transformed = true;
+  transformationOn = true;
+
+  launchAnimationAndDeclareItLaunched(
+    heroImage,
+    0,
+    "png",
+    "assets/challenge/characters/transformed_hero/pre_run",
+    1,
+    9,
+    1,
+    true,
+    ANIMATION_ID.transformation_pre_run
+  );
+  document.getElementById("transformation_background")!.style.display = "flex";
+
+  setTimeout(() => {
+    transformationOn = false;
+
+    document.getElementById("transformation_background")!.style.display =
+      "none";
+
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
+
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/transformed_hero/run",
+      1,
+      6,
+      1,
+      true,
+      ANIMATION_ID.transformation_run
+    );
+  }, 2000);
+};
+
 window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
-  // launchRun();
+  launchRun();
   // detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();

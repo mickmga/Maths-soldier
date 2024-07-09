@@ -9,6 +9,8 @@
   var errorScore = 0;
   var successfulKillsScore = 0;
   var ennemiesOnScreen = [];
+  var transformed = false;
+  var transformationOn = false;
   var Answer = class {
     constructor(data, good) {
       this.data = data;
@@ -82,6 +84,18 @@
     [8 /* transformation_pre_run */]: 0,
     [9 /* transformation_run */]: 0
   };
+  var THROTTLE_NUMS = {
+    [0 /* attack */]: 0,
+    [1 /* run */]: 5,
+    [2 /* walk */]: 5,
+    [3 /* opponent_run */]: 5,
+    [4 /* opponent_death */]: 0,
+    [5 /* camera_left_to_right */]: 5,
+    [6 /* camera_right_to_left */]: 5,
+    [7 /* character_left_to_right_move */]: 5,
+    [8 /* transformation_pre_run */]: 5,
+    [9 /* transformation_run */]: 5
+  };
   var createMapBlock = (left) => {
     const block = document.createElement("div");
     block.classList.add("mapBlock");
@@ -92,6 +106,15 @@
     block.style.left = `${left}px`;
     document.getElementsByTagName("body")[0].append(block);
     return block;
+  };
+  var moveCamera = (direction) => {
+    if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
+      return;
+    }
+    MAPS.forEach(
+      (map) => map.style.left = `${map.offsetLeft + (direction === 5 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+    );
+    requestAnimationFrame(() => moveCamera(direction));
   };
   var updateScores = () => {
     errorScoreContainer.innerHTML = "Erreurs: " + errorScore.toString();
@@ -116,7 +139,7 @@
     if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
       return;
     }
-    if (throttleNum < throttleNum) {
+    if (throttleNum < THROTTLE_NUMS[animationId]) {
       throttleNum++;
       return requestAnimationFrame(
         () => launchCharacterAnimation(
@@ -135,6 +158,7 @@
     throttleNum = 0;
     if (spriteIndex === max) {
       if (loop === false) {
+        ANIMATION_RUNNING_VALUES[animationId] = 0;
         return;
       }
       spriteIndex = min;
@@ -157,14 +181,18 @@
     );
   };
   var launchAttack = () => {
-    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    if (transformed) {
+      ANIMATION_RUNNING_VALUES[9 /* transformation_run */] = 0;
+    } else {
+      ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    }
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/transformed_hero/attack",
+      `assets/challenge/characters/${transformed ? "transformed_hero" : "hero"}/attack`,
       1,
-      12,
+      transformed ? 12 : 4,
       1,
       false,
       0 /* attack */
@@ -188,21 +216,19 @@
         updateScores();
       }, 400);
     });
-    return;
     setTimeout(() => {
-      ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
       launchAnimationAndDeclareItLaunched(
         heroImage,
         0,
         "png",
-        "assets/challenge/characters/transformed_hero_run",
+        `assets/challenge/characters/${transformed ? "transformed_hero" : "hero"}/run`,
         1,
-        6,
+        transformed ? 6 : 8,
         1,
         true,
-        9 /* transformation_run */
+        transformed ? 9 /* transformation_run */ : 1 /* run */
       );
-    }, 500);
+    }, 200);
   };
   var launchOpponent = (enemy) => {
     launchAnimationAndDeclareItLaunched(
@@ -236,10 +262,11 @@
         4 /* opponent_death */
       );
     };
-    setTimeout(
-      () => ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0,
-      500
-    );
+    setTimeout(() => {
+      ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
+      enemy.element.remove();
+      triggerOpponentsApparition();
+    }, 300);
     launchExplosion();
     ennemiesOnScreen.forEach((enemyOnScreen, index) => {
       if (enemy === enemyOnScreen) {
@@ -249,7 +276,7 @@
   };
   var destroyEnemyAndLaunchNewOne = (enemy) => {
     destroyEnemy(enemy);
-    triggerOpponentsApparition();
+    ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
   };
   var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
     if (ANIMATION_RUNNING_VALUES[5 /* camera_left_to_right */] === 0) {
@@ -277,6 +304,21 @@
     }
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
+  var launchRun = () => {
+    ANIMATION_RUNNING_VALUES[5 /* camera_left_to_right */]++;
+    moveCamera(5 /* camera_left_to_right */);
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/hero/run",
+      1,
+      8,
+      1,
+      true,
+      1 /* run */
+    );
+  };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
     if (event.key === " ") {
@@ -284,6 +326,9 @@
     }
     if (event.key === "w") {
       launchAttack();
+    }
+    if (event.key === "b") {
+      launchTransformation();
     }
   });
   var checkForOpponentsClearance = () => {
@@ -300,9 +345,43 @@
     heroContainer.style.opacity = "0.3";
     setTimeout(() => heroContainer.style.opacity = "1", 2e3);
   };
+  var launchTransformation = () => {
+    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    transformed = true;
+    transformationOn = true;
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/transformed_hero/pre_run",
+      1,
+      9,
+      1,
+      true,
+      8 /* transformation_pre_run */
+    );
+    document.getElementById("transformation_background").style.display = "flex";
+    setTimeout(() => {
+      transformationOn = false;
+      document.getElementById("transformation_background").style.display = "none";
+      ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
+      launchAnimationAndDeclareItLaunched(
+        heroImage,
+        0,
+        "png",
+        "assets/challenge/characters/transformed_hero/run",
+        1,
+        6,
+        1,
+        true,
+        9 /* transformation_run */
+      );
+    }, 2e3);
+  };
   window.onload = () => {
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
+    launchRun();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
     triggerOpponentsApparition();
