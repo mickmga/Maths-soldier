@@ -361,8 +361,11 @@
       8 /* transformation_pre_run */
     );
     document.getElementById("transformation_background").style.display = "flex";
+    clearAllOponentsAndTimeouts();
+    ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
     setTimeout(() => {
       transformationOn = false;
+      triggerOpponentsApparition();
       document.getElementById("transformation_background").style.display = "none";
       ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
       launchAnimationAndDeclareItLaunched(
@@ -377,6 +380,12 @@
         9 /* transformation_run */
       );
     }, 2e3);
+  };
+  var clearAllOponentsAndTimeouts = () => {
+    ennemiesOnScreen.forEach((enemy, index) => {
+      enemy.element.remove();
+      ennemiesOnScreen.splice(index, 1);
+    });
   };
   window.onload = () => {
     MAPS.push(createMapBlock(0));

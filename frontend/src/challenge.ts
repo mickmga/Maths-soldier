@@ -673,8 +673,12 @@ const launchTransformation = () => {
   );
   document.getElementById("transformation_background")!.style.display = "flex";
 
+  clearAllOponentsAndTimeouts();
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+
   setTimeout(() => {
     transformationOn = false;
+    triggerOpponentsApparition();
 
     document.getElementById("transformation_background")!.style.display =
       "none";
@@ -693,6 +697,13 @@ const launchTransformation = () => {
       ANIMATION_ID.transformation_run
     );
   }, 2000);
+};
+
+const clearAllOponentsAndTimeouts = () => {
+  ennemiesOnScreen.forEach((enemy, index) => {
+    enemy.element.remove();
+    ennemiesOnScreen.splice(index, 1);
+  });
 };
 
 window.onload = () => {
