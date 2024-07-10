@@ -66,6 +66,7 @@ enum ANIMATION_ID {
   camera_right_to_left,
   character_left_to_right_move,
   golem_idle,
+  golem_door_creation,
 }
 
 const ANIMATION_RUNNING_VALUES = {
@@ -77,6 +78,7 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.camera_right_to_left]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 0,
   [ANIMATION_ID.golem_idle]: 0,
+  [ANIMATION_ID.golem_door_creation]: 0,
 };
 
 let pickedSlotId: null | string = null;
@@ -115,147 +117,6 @@ const updateCurrentSectionDisplay = () => {
 window.addEventListener("scroll", updateCurrentSectionDisplay);
 window.addEventListener("resize", updateCurrentSectionDisplay);
 
-const openTextContainer = (event: Event) => {
-  const target = event.currentTarget as HTMLDivElement;
-  const slotId = target.id;
-
-  if (isSettingSectionStart) {
-    const existingSection = window.store
-      .getState()
-      .localStorage.sections.find((section) => section.beginSlotId === slotId);
-
-    if (existingSection) {
-      const confirmDelete = confirm(
-        `The section "${existingSection.name}" already starts here. Do you want to remove it?`
-      );
-      if (confirmDelete) {
-        window.store.dispatch(removeSection({ beginSlotId: slotId }));
-      } else {
-        isSettingSectionStart = false;
-        return;
-      }
-    }
-
-    setSectionStart(slotId);
-    return;
-  }
-
-  // Check if a section already starts at this slot
-  const state = window.store.getState();
-
-  // Get the current slot item from the store
-  const mapBlock = state.localStorage.mapBlocks.find((map) =>
-    map.some((slot) => slot.slotId === slotId)
-  );
-  const slot = mapBlock
-    ? mapBlock.find((slot) => slot.slotId === slotId)
-    : null;
-
-  // Create the new container
-  const textContainer = document.createElement("div");
-  textContainer.id = "textContainer";
-
-  // Create the close button
-  const closeButton = document.createElement("button");
-  closeButton.innerText = "Close";
-  closeButton.style.position = "absolute";
-  closeButton.style.top = "10px";
-  closeButton.style.right = "10px";
-  closeButton.addEventListener("click", () => {
-    document.body.removeChild(textContainer);
-  });
-
-  // Create the input element
-  const inputElement = document.createElement("input");
-  inputElement.id = "textInput";
-  inputElement.type = "text";
-  inputElement.placeholder = "Enter title here...";
-  inputElement.value = slot?.item?.title || "";
-
-  // Create the text area element
-  const textAreaElement = document.createElement("textarea");
-  textAreaElement.id = "textArea";
-  textAreaElement.placeholder = "Enter body here...";
-  textAreaElement.value = slot?.item?.body || "";
-
-  // Create the update image button
-  const updateImageButton = document.createElement("button");
-  updateImageButton.innerText = "Update Image";
-  updateImageButton.style.position = "absolute";
-  updateImageButton.style.bottom = "10px";
-  updateImageButton.style.right = "10px";
-  updateImageButton.addEventListener("click", () => {
-    document.body.removeChild(textContainer); // Close text container
-    openMenu(slotId); // Open the icon menu
-  });
-
-  // Append the close button, input, text area, and update image button to the container
-  textContainer.appendChild(closeButton);
-  textContainer.appendChild(inputElement);
-  textContainer.appendChild(textAreaElement);
-  textContainer.appendChild(updateImageButton);
-
-  // Append the container to the body
-  document.body.appendChild(textContainer);
-
-  // Apply styles to position and display the container
-  textContainer.style.display = "flex";
-  textContainer.style.flexDirection = "column";
-  textContainer.style.justifyContent = "space-around";
-  textContainer.style.alignItems = "center";
-  textContainer.style.position = "absolute";
-  textContainer.style.top = "25vh";
-  textContainer.style.left = "30vw";
-  textContainer.style.width = "40vw";
-  textContainer.style.height = "60vh";
-  textContainer.style.backgroundColor = "brown";
-  textContainer.style.opacity = "0.95";
-  textContainer.style.zIndex = "5";
-
-  // Add event listener for the input element
-  inputElement.addEventListener("input", (event) => {
-    const title = (event.target as HTMLInputElement).value;
-    window.store.dispatch(
-      updateItem({ slotId, item: { ...slot?.item, title } })
-    );
-  });
-
-  // Add event listener for the textarea element
-  textAreaElement.addEventListener("input", (event) => {
-    const body = (event.target as HTMLTextAreaElement).value;
-    window.store.dispatch(
-      updateItem({ slotId, item: { ...slot?.item, body } })
-    );
-  });
-};
-
-// Add section setup function
-const setupAddSection = () => {
-  isSettingSection = true;
-  const sectionName = prompt("Enter the section name:");
-  if (sectionName) {
-    newSectionName = sectionName;
-    alert("Click on a slot to set the beginning of the section.");
-  } else {
-    isSettingSection = false;
-  }
-};
-
-// Create the button to add a new section
-const addSectionButton = document.createElement("button");
-addSectionButton.innerText = "Add Section";
-addSectionButton.style.position = "absolute";
-addSectionButton.style.bottom = "10px";
-addSectionButton.style.left = "10px";
-addSectionButton.style.zIndex = "10000";
-addSectionButton.addEventListener("click", () => {
-  isSettingSectionStart = true;
-  setupAddSection();
-});
-
-// Append the button to the body or a specific container
-document.body.appendChild(addSectionButton);
-
 // Add the current section display element
 const currentSectionElement = document.createElement("div");
 currentSectionElement.id = "currentSection";
@@ -265,9 +126,7 @@ currentSectionElement.style.left = "50%";
 currentSectionElement.style.transform = "translateX(-50%)";
 document.body.appendChild(currentSectionElement);
 
-window.openTextContainer = openTextContainer;
-
-const animateGolem = () => {
+const launchGolemIdleAnimation = () => {
   const golemImage = document.getElementById("golemImage") as HTMLImageElement;
 
   if (!golemImage) {
@@ -308,10 +167,31 @@ const createMapPalaceBlock = (left: number) => {
 
     block.append(golemContainer);
 
-    animateGolem();
+    launchGolemIdleAnimation();
   }
 
   return block;
+};
+
+const launchGolemDoorCreationAnimation = () => {
+  const golemImage = document.getElementById("golemImage") as HTMLImageElement;
+
+  if (!golemImage) {
+    console.log("l image n existe pas");
+    return;
+  }
+
+  launchAnimationAndDeclareItLaunched(
+    golemImage,
+    0,
+    "png",
+    "assets/challenge/characters/neutral/golem",
+    1,
+    8,
+    1,
+    true,
+    ANIMATION_ID.golem_idle
+  );
 };
 
 const moveCamera = (direction: ANIMATION_ID) => {

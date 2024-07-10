@@ -2730,11 +2730,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     [7 /* golem_idle */]: 0
   };
   var pickedSlotId = null;
-  var isSettingSection = false;
   var newSectionName = "";
-  var selectItem = (slotId) => {
-    pickedSlotId = slotId;
-  };
   var updateCurrentSectionDisplay = () => {
     const state = window.store.getState();
     const middleOfScreen = window.innerWidth / 2;
@@ -2756,110 +2752,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   };
   window.addEventListener("scroll", updateCurrentSectionDisplay);
   window.addEventListener("resize", updateCurrentSectionDisplay);
-  var openTextContainer = (event) => {
-    var _a, _b;
-    const target = event.currentTarget;
-    const slotId = target.id;
-    if (isSettingSectionStart) {
-      const existingSection = window.store.getState().localStorage.sections.find((section) => section.beginSlotId === slotId);
-      if (existingSection) {
-        const confirmDelete = confirm(
-          `The section "${existingSection.name}" already starts here. Do you want to remove it?`
-        );
-        if (confirmDelete) {
-          window.store.dispatch(removeSection({ beginSlotId: slotId }));
-        } else {
-          isSettingSectionStart = false;
-          return;
-        }
-      }
-      setSectionStart(slotId);
-      return;
-    }
-    const state = window.store.getState();
-    const mapBlock = state.localStorage.mapBlocks.find(
-      (map) => map.some((slot2) => slot2.slotId === slotId)
-    );
-    const slot = mapBlock ? mapBlock.find((slot2) => slot2.slotId === slotId) : null;
-    const textContainer = document.createElement("div");
-    textContainer.id = "textContainer";
-    const closeButton = document.createElement("button");
-    closeButton.innerText = "Close";
-    closeButton.style.position = "absolute";
-    closeButton.style.top = "10px";
-    closeButton.style.right = "10px";
-    closeButton.addEventListener("click", () => {
-      document.body.removeChild(textContainer);
-    });
-    const inputElement = document.createElement("input");
-    inputElement.id = "textInput";
-    inputElement.type = "text";
-    inputElement.placeholder = "Enter title here...";
-    inputElement.value = ((_a = slot == null ? void 0 : slot.item) == null ? void 0 : _a.title) || "";
-    const textAreaElement = document.createElement("textarea");
-    textAreaElement.id = "textArea";
-    textAreaElement.placeholder = "Enter body here...";
-    textAreaElement.value = ((_b = slot == null ? void 0 : slot.item) == null ? void 0 : _b.body) || "";
-    const updateImageButton = document.createElement("button");
-    updateImageButton.innerText = "Update Image";
-    updateImageButton.style.position = "absolute";
-    updateImageButton.style.bottom = "10px";
-    updateImageButton.style.right = "10px";
-    updateImageButton.addEventListener("click", () => {
-      document.body.removeChild(textContainer);
-      openMenu(slotId);
-    });
-    textContainer.appendChild(closeButton);
-    textContainer.appendChild(inputElement);
-    textContainer.appendChild(textAreaElement);
-    textContainer.appendChild(updateImageButton);
-    document.body.appendChild(textContainer);
-    textContainer.style.display = "flex";
-    textContainer.style.flexDirection = "column";
-    textContainer.style.justifyContent = "space-around";
-    textContainer.style.alignItems = "center";
-    textContainer.style.position = "absolute";
-    textContainer.style.top = "25vh";
-    textContainer.style.left = "30vw";
-    textContainer.style.width = "40vw";
-    textContainer.style.height = "60vh";
-    textContainer.style.backgroundColor = "brown";
-    textContainer.style.opacity = "0.95";
-    textContainer.style.zIndex = "5";
-    inputElement.addEventListener("input", (event2) => {
-      const title = event2.target.value;
-      window.store.dispatch(
-        updateItem({ slotId, item: __spreadProps(__spreadValues({}, slot == null ? void 0 : slot.item), { title }) })
-      );
-    });
-    textAreaElement.addEventListener("input", (event2) => {
-      const body = event2.target.value;
-      window.store.dispatch(
-        updateItem({ slotId, item: __spreadProps(__spreadValues({}, slot == null ? void 0 : slot.item), { body }) })
-      );
-    });
-  };
-  var setupAddSection = () => {
-    isSettingSection = true;
-    const sectionName = prompt("Enter the section name:");
-    if (sectionName) {
-      newSectionName = sectionName;
-      alert("Click on a slot to set the beginning of the section.");
-    } else {
-      isSettingSection = false;
-    }
-  };
-  var addSectionButton = document.createElement("button");
-  addSectionButton.innerText = "Add Section";
-  addSectionButton.style.position = "absolute";
-  addSectionButton.style.bottom = "10px";
-  addSectionButton.style.left = "10px";
-  addSectionButton.style.zIndex = "10000";
-  addSectionButton.addEventListener("click", () => {
-    isSettingSectionStart = true;
-    setupAddSection();
-  });
-  document.body.appendChild(addSectionButton);
   var currentSectionElement = document.createElement("div");
   currentSectionElement.id = "currentSection";
   currentSectionElement.style.position = "absolute";
@@ -2867,7 +2759,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   currentSectionElement.style.left = "50%";
   currentSectionElement.style.transform = "translateX(-50%)";
   document.body.appendChild(currentSectionElement);
-  window.openTextContainer = openTextContainer;
   var animateGolem = () => {
     const golemImage = document.getElementById("golemImage");
     if (!golemImage) {
@@ -3078,14 +2969,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       MAPS.pop();
     }
     requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
-  };
-  var openMenu = (slotId) => {
-    selectItem(slotId);
-    const textContainer = document.getElementById("textContainer");
-    if (textContainer) {
-      document.body.removeChild(textContainer);
-    }
-    menu.style.display = "flex";
   };
   var closeMenu = () => {
     menu.style.display = "none";
