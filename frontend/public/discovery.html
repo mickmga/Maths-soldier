@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html>
-   <head></head>
-  <body>
-    <img id="background"/>
-    <div id="ground"></div>
-    
-  </body>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style/discovery.css">
+  <link rel="stylesheet" href="style/flame.css">
+</head>
+<body>
+  <div id="hero_container">
+    <canvas id="spriteCanvas" width="256" height="256"></canvas>
+  </div>       
 
+  <div id="ground" style="position: fixed; top: 80%; width: 100%; height: 20%; left: 0; background:  #1c7dbf; z-index: 10;">
+
+  </div>
+  
+  <div id="menu">
+    <div id="closeButton" onclick="closeMenu()">X</div>
+    <div id="menuA">
+      <input id="searchInput" type="text" placeholder="Cherchez un objet">
+    </div>
+    <div id="menuB">
+      <!-- Search results will be injected here -->
+    </div>
+  </div>
+
+  <!-- Add this inside the body -->
+<!-- Add this inside the body -->
+<div id="currentSection">No current section</div>
+
+
+
+  <script type="module" src="dist/discovery.js"></script>
+</body>
 </html>
+

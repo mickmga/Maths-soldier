@@ -347,39 +347,42 @@
   };
   var launchTransformation = () => {
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    document.getElementById("transformation_background").style.display = "flex";
+    heroImage.src = "assets/challenge/characters/hero/walk/walk1.png";
     transformed = true;
     transformationOn = true;
-    launchAnimationAndDeclareItLaunched(
-      heroImage,
-      0,
-      "png",
-      "assets/challenge/characters/transformed_hero/pre_run",
-      1,
-      9,
-      1,
-      true,
-      8 /* transformation_pre_run */
-    );
-    document.getElementById("transformation_background").style.display = "flex";
-    clearAllOponentsAndTimeouts();
-    ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
     setTimeout(() => {
-      transformationOn = false;
-      triggerOpponentsApparition();
-      document.getElementById("transformation_background").style.display = "none";
-      ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
       launchAnimationAndDeclareItLaunched(
         heroImage,
         0,
         "png",
-        "assets/challenge/characters/transformed_hero/run",
+        "assets/challenge/characters/transformed_hero/pre_run",
         1,
-        6,
+        9,
         1,
         true,
-        9 /* transformation_run */
+        8 /* transformation_pre_run */
       );
-    }, 2e3);
+      clearAllOponentsAndTimeouts();
+      ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
+      setTimeout(() => {
+        transformationOn = false;
+        triggerOpponentsApparition();
+        document.getElementById("transformation_background").style.display = "none";
+        ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
+        launchAnimationAndDeclareItLaunched(
+          heroImage,
+          0,
+          "png",
+          "assets/challenge/characters/transformed_hero/run",
+          1,
+          6,
+          1,
+          true,
+          9 /* transformation_run */
+        );
+      }, 2e3);
+    }, 500);
   };
   var clearAllOponentsAndTimeouts = () => {
     ennemiesOnScreen.forEach((enemy, index) => {
