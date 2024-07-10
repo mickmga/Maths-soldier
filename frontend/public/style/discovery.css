@@ -11,7 +11,7 @@
 }
 
 #hero_container img {
-  height: 100%;
+  height: 80%;
   width: auto;
 }
 
@@ -263,13 +263,6 @@
   border-radius: 5px;
 }
 
-#spriteCanvas {
-  position: absolute;
-  top: -9vh;
-  left: 5vw;
-  z-index: 5;
-}
-
 .mapBlock {
   height: 80vh;
   width: 100vw;
@@ -278,4 +271,13 @@
 .mapBlock img {
   height: 100%;
   width: 100%;
+}
+
+#golemImage {
+  position: absolute;
+  left: 50vw;
+  height: 25vh;
+  top: 50vh;
+  width: auto;
+  z-index: 2;
 }

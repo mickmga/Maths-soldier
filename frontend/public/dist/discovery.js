@@ -2726,7 +2726,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     [3 /* opponent_run */]: 0,
     [4 /* camera_left_to_right */]: 0,
     [5 /* camera_right_to_left */]: 0,
-    [6 /* character_left_to_right_move */]: 0
+    [6 /* character_left_to_right_move */]: 0,
+    [7 /* golem_idle */]: 0
   };
   var pickedSlotId = null;
   var isSettingSection = false;
@@ -2867,118 +2868,25 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   currentSectionElement.style.transform = "translateX(-50%)";
   document.body.appendChild(currentSectionElement);
   window.openTextContainer = openTextContainer;
-  var createItemSlots = (slots) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
-    return `
-        <div class='slotGroup slotsLeft'>
-          <div class='slot' onclick='openTextContainer(event)' id='${(_a = slots[0]) == null ? void 0 : _a.slotId}'>
-                <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-             ${((_b = slots[0]) == null ? void 0 : _b.item) ? `<img class='item' src='${slots[0].item.src}'/>` : ""}
-          </div>
-          <div class='slot' onclick='openTextContainer(event)' id='${(_c = slots[1]) == null ? void 0 : _c.slotId}'>
-                <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-             ${((_d = slots[1]) == null ? void 0 : _d.item) ? `<img class='item' src='${slots[1].item.src}'/>` : ""}
-          </div>
-        </div>
-        <div class='slotGroup slotsCenter'>
-        <div class='slot' onclick='openTextContainer(event)' id='${(_e = slots[2]) == null ? void 0 : _e.slotId}'>
-        <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-               </div>
-             ${((_f = slots[2]) == null ? void 0 : _f.item) ? `<img class='item' src='${slots[2].item.src}'/>` : ""}
-          </div>
-        </div>
-        <div class='slotGroup slotRight'>
-          <div class='slot' onclick='openTextContainer(event)' id='${(_g = slots[3]) == null ? void 0 : _g.slotId}'>
-              <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-             ${((_h = slots[3]) == null ? void 0 : _h.item) ? `<img class='item' src='${slots[3].item.src}'/>` : ""}
-          </div>
-          <div class='slot' onclick='openTextContainer(event)' id='${(_i = slots[4]) == null ? void 0 : _i.slotId}'>
-               <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-               </div>
-              ${((_j = slots[4]) == null ? void 0 : _j.item) ? `<img class='item' src='${slots[4].item.src}'/>` : ""}
-          </div>
-        </div>
-      `;
+  var animateGolem = () => {
+    const golemImage = document.getElementById("golemImage");
+    if (!golemImage) {
+      console.log("l image du golem n existe pas");
+      return;
+    }
+    launchAnimationAndDeclareItLaunched(
+      golemImage,
+      0,
+      "png",
+      "assets/challenge/characters/neutral/golem",
+      1,
+      8,
+      1,
+      true,
+      7 /* golem_idle */
+    );
   };
-  var createMapPalaceBlock = (left, map) => {
+  var createMapPalaceBlock = (left) => {
     const block = document.createElement("div");
     block.classList.add("mapBlock");
     const backgroundImage = document.createElement("img");
@@ -2986,10 +2894,16 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     block.append(backgroundImage);
     block.style.position = "fixed";
     block.style.left = `${left}px`;
-    const slots = document.createElement("div");
-    slots.innerHTML = createItemSlots(map);
-    block.append(slots);
     document.getElementsByTagName("body")[0].append(block);
+    if (left === window.innerWidth) {
+      const golemContainer = document.createElement("div");
+      const golemImg = document.createElement("img");
+      golemImg.id = "golemImage";
+      golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
+      golemContainer.append(golemImg);
+      block.append(golemContainer);
+      animateGolem();
+    }
     return block;
   };
   var moveCamera = (direction) => {
@@ -3009,11 +2923,73 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
+  var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+    ANIMATION_RUNNING_VALUES[animationId]++;
+    launchCharacterAnimation(
+      characterElement,
+      throttleNum,
+      extension,
+      spriteBase,
+      spriteIndex,
+      max,
+      min,
+      loop,
+      animationId
+    );
+  };
+  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+    if (!characterElement) {
+      alert("no el!");
+      return;
+    }
+    if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
+      return;
+    }
+    if (throttleNum < 10) {
+      throttleNum++;
+      return requestAnimationFrame(
+        () => launchCharacterAnimation(
+          characterElement,
+          throttleNum,
+          extension,
+          spriteBase,
+          spriteIndex,
+          max,
+          min,
+          loop,
+          animationId
+        )
+      );
+    }
+    throttleNum = 0;
+    if (spriteIndex === max) {
+      if (loop === false) {
+        return;
+      }
+      spriteIndex = min;
+    } else {
+      spriteIndex++;
+    }
+    characterElement.src = `${spriteBase}/${spriteIndex}.${extension}`;
+    requestAnimationFrame(
+      () => launchCharacterAnimation(
+        characterElement,
+        throttleNum,
+        extension,
+        spriteBase,
+        spriteIndex,
+        max,
+        min,
+        loop,
+        animationId
+      )
+    );
+  };
   var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
     if (ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
       return;
     }
-    if (throttleNum < 10) {
+    if (throttleNum < 5) {
       throttleNum++;
       return requestAnimationFrame(
         () => checkForScreenUpdateFromLeftToRight(throttleNum)
@@ -3050,8 +3026,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     if (lastMapDomElement && lastMapDomElement.getBoundingClientRect().left <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.mapBlocks.length - 1) {
       MAPS.push(
         createMapPalaceBlock(
-          lastMapDomElement.getBoundingClientRect().left + lastMapDomElement.offsetWidth,
-          window.store.getState().localStorage.mapBlocks[currentCacheRightIndex]
+          lastMapDomElement.getBoundingClientRect().left + lastMapDomElement.offsetWidth
         )
       );
       currentCacheRightIndex++;
@@ -3062,7 +3037,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     if (ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
       return;
     }
-    if (throttleNum < 10) {
+    if (throttleNum < 6) {
       throttleNum++;
       return requestAnimationFrame(
         () => checkForScreenUpdateFromRightToLeft(throttleNum)
@@ -3092,8 +3067,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       const newMapBlockData = window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
       MAPS.unshift(
         createMapPalaceBlock(
-          firstMapDomElement.getBoundingClientRect().left - firstMapDomElement.offsetWidth,
-          newMapBlockData
+          firstMapDomElement.getBoundingClientRect().left - firstMapDomElement.offsetWidth
         )
       );
       currentCacheLeftIndex--;
@@ -3104,27 +3078,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       MAPS.pop();
     }
     requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
-  };
-  var updateCurrentSection = () => {
-    const state = window.store.getState();
-    const middleOfScreen = window.innerWidth / 2;
-    let currentSectionName = "No current section";
-    for (const section of state.localStorage.sections) {
-      const beginSlotElement = document.getElementById(section.beginSlotId);
-      const endSlotElement = section.endSlotId ? document.getElementById(section.endSlotId) : null;
-      if (beginSlotElement && endSlotElement) {
-        const beginLeftPos = beginSlotElement.getBoundingClientRect().left + beginSlotElement.offsetWidth / 2;
-        const endLeftPos = endSlotElement.getBoundingClientRect().left + endSlotElement.offsetWidth / 2;
-        if (beginLeftPos < middleOfScreen && endLeftPos > middleOfScreen) {
-          currentSectionName = section.name;
-          break;
-        }
-      }
-    }
-    const currentSectionElement2 = document.getElementById("currentSection");
-    if (currentSectionElement2) {
-      currentSectionElement2.textContent = currentSectionName;
-    }
   };
   var openMenu = (slotId) => {
     selectItem(slotId);
@@ -3138,6 +3091,34 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     menu.style.display = "none";
   };
   window.closeMenu = closeMenu;
+  var launchCharacterMovement = () => {
+    moveCamera(4 /* camera_left_to_right */);
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/hero/walk",
+      1,
+      6,
+      1,
+      true,
+      2 /* walk */
+    );
+  };
+  var launchCharacterMovementLeft = () => {
+    moveCamera(5 /* camera_right_to_left */);
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/hero/walk_left",
+      1,
+      6,
+      1,
+      true,
+      2 /* walk */
+    );
+  };
   document.addEventListener(
     "keydown",
     (event) => {
@@ -3146,15 +3127,14 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         checkForScreenUpdateFromLeftToRight(10);
         if (!isAnimating) {
           isAnimating = true;
-          moveCamera(4 /* camera_left_to_right */);
-          animate(11);
+          launchCharacterMovement();
         }
       }
       if (event.key === "q" && ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
         ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */]++;
         isAnimating = true;
         checkForScreenUpdateFromRightToLeft(10);
-        animate(9);
+        launchCharacterMovementLeft();
         moveCamera(5 /* camera_right_to_left */);
       }
     }
@@ -3167,16 +3147,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     isAnimating = false;
   });
   window.onload = () => {
-    MAPS.push(
-      createMapPalaceBlock(0, window.store.getState().localStorage.mapBlocks[0])
-    );
-    MAPS.push(
-      createMapPalaceBlock(
-        window.innerWidth,
-        window.store.getState().localStorage.mapBlocks[1]
-      )
-    );
-    updateCurrentSection();
+    MAPS.push(createMapPalaceBlock(0));
+    MAPS.push(createMapPalaceBlock(window.innerWidth));
   };
   var searchTimeout;
   searchInput.addEventListener("input", () => {
@@ -3294,44 +3266,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var ctx = canvas.getContext("2d");
   var spriteSheet = new Image();
   spriteSheet.src = "assets/palace/characters/premium.png";
-  var spriteWidth = 64;
-  var spriteHeight = 64;
-  var numCols = 13;
-  var numFrames = 8;
-  var frameIndex = 0;
   var fps = 10;
   var frameDuration = 1e3 / fps;
-  var startCol = 1;
   var isAnimating = false;
-  function drawFrame(frameIndex2, x, y, spriteRow) {
-    const col = (frameIndex2 + startCol) % numCols;
-    const sx = col * spriteWidth;
-    const sy = spriteRow * spriteHeight;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(
-      spriteSheet,
-      sx,
-      sy,
-      spriteWidth,
-      spriteHeight,
-      // Source rectangle
-      x,
-      y,
-      100,
-      100
-      // Destination rectangle
-    );
-  }
-  function animate(spriteRow) {
-    if (!isAnimating) return;
-    setTimeout(() => {
-      frameIndex = (frameIndex + 1) % numFrames;
-      drawFrame(frameIndex, 96, 96, spriteRow);
-      requestAnimationFrame(() => animate(spriteRow));
-    }, frameDuration);
-  }
-  spriteSheet.onload = function() {
-    drawFrame(frameIndex, 96, 96, 11);
-  };
 })();
 //# sourceMappingURL=discovery.js.map

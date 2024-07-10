@@ -65,6 +65,7 @@ enum ANIMATION_ID {
   camera_left_to_right,
   camera_right_to_left,
   character_left_to_right_move,
+  golem_idle,
 }
 
 const ANIMATION_RUNNING_VALUES = {
@@ -75,6 +76,7 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 0,
+  [ANIMATION_ID.golem_idle]: 0,
 };
 
 let pickedSlotId: null | string = null;
@@ -265,148 +267,27 @@ document.body.appendChild(currentSectionElement);
 
 window.openTextContainer = openTextContainer;
 
-const createItemSlots = (slots: Slot[]) => {
-  return `
-        <div class='slotGroup slotsLeft'>
-          <div class='slot' onclick='openTextContainer(event)' id='${
-            slots[0]?.slotId
-          }'>
-                <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-             ${
-               slots[0]?.item
-                 ? `<img class='item' src='${slots[0].item.src}'/>`
-                 : ""
-             }
-          </div>
-          <div class='slot' onclick='openTextContainer(event)' id='${
-            slots[1]?.slotId
-          }'>
-                <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-             ${
-               slots[1]?.item
-                 ? `<img class='item' src='${slots[1].item.src}'/>`
-                 : ""
-             }
-          </div>
-        </div>
-        <div class='slotGroup slotsCenter'>
-        <div class='slot' onclick='openTextContainer(event)' id='${
-          slots[2]?.slotId
-        }'>
-        <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-               </div>
-             ${
-               slots[2]?.item
-                 ? `<img class='item' src='${slots[2].item.src}'/>`
-                 : ""
-             }
-          </div>
-        </div>
-        <div class='slotGroup slotRight'>
-          <div class='slot' onclick='openTextContainer(event)' id='${
-            slots[3]?.slotId
-          }'>
-              <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-                </div>
-             ${
-               slots[3]?.item
-                 ? `<img class='item' src='${slots[3].item.src}'/>`
-                 : ""
-             }
-          </div>
-          <div class='slot' onclick='openTextContainer(event)' id='${
-            slots[4]?.slotId
-          }'>
-               <div class="fire">
-                  <div class="fire-left">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-center">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-right">
-                    <div class="main-fire"></div>
-                    <div class="particle-fire"></div>
-                  </div>
-                  <div class="fire-bottom">
-                    <div class="main-fire"></div>
-                  </div>
-               </div>
-              ${
-                slots[4]?.item
-                  ? `<img class='item' src='${slots[4].item.src}'/>`
-                  : ""
-              }
-          </div>
-        </div>
-      `;
+const animateGolem = () => {
+  const golemImage = document.getElementById("golemImage") as HTMLImageElement;
+
+  if (!golemImage) {
+    console.log("l image du golem n existe pas");
+    return;
+  }
+  launchAnimationAndDeclareItLaunched(
+    golemImage,
+    0,
+    "png",
+    "assets/challenge/characters/neutral/golem",
+    1,
+    8,
+    1,
+    true,
+    ANIMATION_ID.golem_idle
+  );
 };
 
-const createMapPalaceBlock = (left: number, map: Slot[]) => {
+const createMapPalaceBlock = (left: number) => {
   const block = document.createElement("div");
   block.classList.add("mapBlock");
   const backgroundImage = document.createElement("img");
@@ -415,11 +296,20 @@ const createMapPalaceBlock = (left: number, map: Slot[]) => {
   block.style.position = "fixed";
   block.style.left = `${left}px`;
 
-  // Convert the string to DOM elements and append
-  const slots = document.createElement("div");
-  slots.innerHTML = createItemSlots(map);
-  block.append(slots);
   document.getElementsByTagName("body")[0].append(block);
+
+  if (left === window.innerWidth) {
+    const golemContainer = document.createElement("div");
+
+    const golemImg = document.createElement("img") as HTMLImageElement;
+    golemImg.id = "golemImage";
+    golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
+    golemContainer.append(golemImg);
+
+    block.append(golemContainer);
+
+    animateGolem();
+  }
 
   return block;
 };
@@ -503,6 +393,7 @@ const launchCharacterAnimation = (
   animationId: ANIMATION_ID
 ): any => {
   if (!characterElement) {
+    alert("no el!");
     return;
   }
 
@@ -513,7 +404,7 @@ const launchCharacterAnimation = (
     return;
   }
 
-  if (throttleNum < 5) {
+  if (throttleNum < 10) {
     throttleNum++;
     return requestAnimationFrame(() =>
       launchCharacterAnimation(
@@ -582,7 +473,7 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
     return;
   }
 
-  if (throttleNum < 10) {
+  if (throttleNum < 5) {
     throttleNum++;
     return requestAnimationFrame(() =>
       checkForScreenUpdateFromLeftToRight(throttleNum)
@@ -638,8 +529,7 @@ const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
     MAPS.push(
       createMapPalaceBlock(
         lastMapDomElement.getBoundingClientRect().left +
-          lastMapDomElement.offsetWidth,
-        window.store.getState().localStorage.mapBlocks[currentCacheRightIndex]
+          lastMapDomElement.offsetWidth
       )
     );
     currentCacheRightIndex++;
@@ -653,7 +543,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     return;
   }
 
-  if (throttleNum < 10) {
+  if (throttleNum < 6) {
     throttleNum++;
     return requestAnimationFrame(() =>
       checkForScreenUpdateFromRightToLeft(throttleNum)
@@ -699,8 +589,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     MAPS.unshift(
       createMapPalaceBlock(
         firstMapDomElement.getBoundingClientRect().left -
-          firstMapDomElement.offsetWidth,
-        newMapBlockData
+          firstMapDomElement.offsetWidth
       )
     );
     currentCacheLeftIndex--;
@@ -779,7 +668,7 @@ const launchCharacterMovement = () => {
     heroImage,
     0,
     "png",
-    "assets/palace/hero/old_walk",
+    "assets/challenge/characters/hero/walk",
     1,
     6,
     1,
@@ -794,7 +683,7 @@ const launchCharacterMovementLeft = () => {
     heroImage,
     0,
     "png",
-    "assets/palace/hero/walk_left",
+    "assets/challenge/characters/hero/walk_left",
     1,
     6,
     1,
@@ -812,13 +701,11 @@ document.addEventListener(
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0
     ) {
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
-      //launchCharacterMovement();
       checkForScreenUpdateFromLeftToRight(10);
       if (!isAnimating) {
         isAnimating = true;
 
-        moveCamera(ANIMATION_ID.camera_left_to_right);
-        animate(11); // Start animation when "d" is pressed
+        launchCharacterMovement();
       }
     }
 
@@ -830,7 +717,7 @@ document.addEventListener(
       isAnimating = true;
       // launchCharacterMovementLeft();
       checkForScreenUpdateFromRightToLeft(10);
-      animate(9); // Start animation when "d" is pressed
+      launchCharacterMovementLeft();
       moveCamera(ANIMATION_ID.camera_right_to_left);
     }
   }
@@ -845,17 +732,8 @@ document.addEventListener("keyup", () => {
 });
 
 window.onload = () => {
-  MAPS.push(
-    createMapPalaceBlock(0, window.store.getState().localStorage.mapBlocks[0])
-  );
-  MAPS.push(
-    createMapPalaceBlock(
-      window.innerWidth,
-      window.store.getState().localStorage.mapBlocks[1]
-    )
-  );
-
-  updateCurrentSection();
+  MAPS.push(createMapPalaceBlock(0));
+  MAPS.push(createMapPalaceBlock(window.innerWidth));
 };
 
 interface IconFormat {
@@ -1040,7 +918,6 @@ spriteSheet.src = "assets/palace/characters/premium.png"; // Update this to the 
 const spriteWidth = 64; // Width of a single frame
 const spriteHeight = 64; // Height of a single frame
 const numCols = 13; // Number of columns in your sprite sheet
-const spriteRow = 11; // The 11th row (0-indexed) is the walk animation
 const numFrames = 8; // Number of frames in the walk animation
 
 let frameIndex = 0;
@@ -1071,16 +948,3 @@ function drawFrame(
     100 // Destination rectangle
   );
 }
-
-function animate(spriteRow: number) {
-  if (!isAnimating) return; // Stop animation if not animating
-  setTimeout(() => {
-    frameIndex = (frameIndex + 1) % numFrames;
-    drawFrame(frameIndex, 96, 96, spriteRow); // Character stays at (96, 96)
-    requestAnimationFrame(() => animate(spriteRow));
-  }, frameDuration);
-}
-
-spriteSheet.onload = function () {
-  drawFrame(frameIndex, 96, 96, 11); // Draw the initial frame
-};

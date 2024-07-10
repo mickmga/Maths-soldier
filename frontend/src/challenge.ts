@@ -659,7 +659,7 @@ const launchTransformation = () => {
 
   document.getElementById("transformation_background")!.style.display = "flex";
 
-  heroImage.src = "assets/challenge/characters/hero/walk/walk1.png";
+  heroImage.src = "assets/challenge/characters/hero/walk/1.png";
 
   transformed = true;
   transformationOn = true;
