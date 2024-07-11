@@ -10,6 +10,8 @@ const successfulKillsScoreContainer = document.getElementById("killed_score")!;
 const answerDataContainer = document.getElementById("answer_data_container")!;
 const answerDataValue = document.getElementById("answer_data_value")!;
 
+let lifePoints = 4;
+
 let errorScore = 0;
 let successfulKillsScore = 0;
 
@@ -30,6 +32,7 @@ class Answer {
 class Enemy {
   element: HTMLElement;
   answer: Answer;
+  collideable = true;
 
   constructor(element: HTMLElement, answer: Answer) {
     this.element = element;
@@ -137,8 +140,10 @@ enum ANIMATION_ID {
   attack,
   run,
   walk,
+  hurt,
   death,
   opponent_run,
+  opponent_move,
   opponent_death,
   camera_left_to_right,
   camera_right_to_left,
@@ -152,8 +157,10 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.run]: 0,
   [ANIMATION_ID.walk]: 0,
   [ANIMATION_ID.death]: 0,
+  [ANIMATION_ID.hurt]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.opponent_death]: 0,
+  [ANIMATION_ID.opponent_move]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 0,
@@ -166,8 +173,10 @@ const THROTTLE_NUMS = {
   [ANIMATION_ID.run]: 5,
   [ANIMATION_ID.walk]: 5,
   [ANIMATION_ID.death]: 5,
+  [ANIMATION_ID.hurt]: 0,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_death]: 0,
+  [ANIMATION_ID.opponent_move]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 5,
   [ANIMATION_ID.character_left_to_right_move]: 5,
@@ -388,7 +397,7 @@ const launchAttack = () => {
       destroyEnemyAndLaunchNewOne(enemy);
       successfulKillsScore++;
       updateScores();
-    }, 400);
+    }, 200);
   });
 
   setTimeout(() => {
@@ -424,15 +433,16 @@ const launchOpponent = (enemy: Enemy) => {
 };
 
 const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
-  if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.camera_left_to_right]) {
+  if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.opponent_move]) {
     throttleNum++;
+    alert("block");
     return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
   }
 
   throttleNum = 0;
 
   enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - 4
+    enemy.element.getBoundingClientRect().left - 10
   }px`;
 
   requestAnimationFrame(() => moveEnemy(enemy));
@@ -477,13 +487,14 @@ const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
 const detectCollision = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
     if (
-      heroContainer.offsetLeft >
-      enemyOnScreen.element.getBoundingClientRect().left
+      heroContainer.getBoundingClientRect().left +
+        heroContainer.getBoundingClientRect().width >
+        enemyOnScreen.element.getBoundingClientRect().left &&
+      enemyOnScreen.collideable
     ) {
-      errorScore++;
-      updateScores();
+      enemyOnScreen.collideable = false;
 
-      return;
+      launchHeroHurtAnimation();
     }
   });
 
@@ -744,6 +755,8 @@ const launchDeathAnimation = () => {
       false,
       ANIMATION_ID.death
     );
+
+    setTimeout(() => alert("you're dead! The equilibrium is lost!"), 1000);
   };
 
   if (transformed) {
@@ -755,17 +768,50 @@ const launchDeathAnimation = () => {
   setTimeout(killHero, 1000);
 };
 
+const launchHeroHurtAnimation = () => {
+  launchAnimationAndDeclareItLaunched(
+    heroImage,
+    0,
+    "png",
+    "assets/challenge/characters/hero/hurt",
+    1,
+    3,
+    1,
+    false,
+    ANIMATION_ID.hurt
+  );
+
+  initHeroAnimations();
+
+  stopCamera();
+
+  setTimeout(launchRun, 500);
+};
+
+const stopCamera = () => {
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+};
+
+const startCamera = () => {
+  if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] > 0) {
+    console.log("move was already started");
+    return;
+  }
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
+};
+
 const initHeroAnimations = () => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.hurt] = 0;
 };
 
 window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
   launchRun();
-  // detectCollision();
+  detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
   triggerOpponentsApparition();
