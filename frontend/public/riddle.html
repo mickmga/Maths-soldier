@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Math Game - Egyptian Tablet</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #292929;
+            font-family: 'Papyrus', fantasy;
+            color: #ffffff; /* Magical white neon color */
+        }
+        .tablet {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff; /* Magical white neon color */
+            text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 50px #ffffff, 0 0 60px #ffffff;
+        }
+        .question {
+            margin: 10px 0;
+            font-size: 18px;
+            text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 50px #ffffff, 0 0 60px #ffffff;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 5px;
+            margin: 5px 0;
+            border: none;
+            border-bottom: 2px solid #ffffff; /* White neon underline */
+            background: transparent;
+            color: #ffffff;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0% { border-bottom-color: #ffffff; }
+            50% { border-bottom-color: #292929; }
+            100% { border-bottom-color: #ffffff; }
+        }
+    </style>
+</head>
+<body>
+    <div class="tablet">
+        <h1>Calculus Questions</h1>
+        <div class="question">
+            <label for="question1">1. What is the derivative of \( f(x) = x^2 \)?</label>
+            <input type="text" id="question1" name="question1">
+        </div>
+        <div class="question">
+            <label for="question2">2. What is the integral of \( f(x) = 3x^2 \)?</label>
+            <input type="text" id="question2" name="question2">
+        </div>
+        <div class="question">
+            <label for="question3">3. Evaluate \( \lim_{{x \to \infty}} \frac{1}{x} \).</label>
+            <input type="text" id="question3" name="question3">
+        </div>
+        <div class="question">
+            <label for="question4">4. Find the critical points of \( f(x) = x^3 - 3x^2 \).</label>
+            <input type="text" id="question4" name="question4">
+        </div>
+        <div class="question">
+            <label for="question5">5. What is the second derivative of \( f(x) = \sin(x) \)?</label>
+            <input type="text" id="question5" name="question5">
+        </div>
+        <div class="question">
+            <label for="question6">6. Evaluate \( \int_0^1 (4x^3 + 2) \, dx \).</label>
+            <input type="text" id="question6" name="question6">
+        </div>
+        <div class="question">
+            <label for="question7">7. What is the derivative of \( f(x) = e^x \)?</label>
+            <input type="text" id="question7" name="question7">
+        </div>
+        <div class="question">
+            <label for="question8">8. Evaluate \( \lim_{{x \to 0}} \frac{\sin(x)}{x} \).</label>
+            <input type="text" id="question8" name="question8">
+        </div>
+        <div class="question">
+            <label for="question9">9. Find the indefinite integral of \( f(x) = 1/x \).</label>
+            <input type="text" id="question9" name="question9">
+        </div>
+        <div class="question">
+            <label for="question10">10. What is the second derivative of \( f(x) = x^4 \)?</label>
+            <input type="text" id="question10" name="question10">
+        </div>
+    </div>
+</body>
+</html>

@@ -55,6 +55,8 @@ enum ANIMATION_ID {
   character_left_to_right_move,
   golem_idle,
   golem_door_creation,
+  obelisk_idle,
+  obelisk_lightning,
 }
 
 const ANIMATION_RUNNING_VALUES = {
@@ -67,6 +69,8 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.character_left_to_right_move]: 0,
   [ANIMATION_ID.golem_idle]: 0,
   [ANIMATION_ID.golem_door_creation]: 0,
+  [ANIMATION_ID.obelisk_idle]: 0,
+  [ANIMATION_ID.obelisk_lightning]: 0,
 };
 
 let pickedSlotId: null | string = null;
@@ -143,16 +147,32 @@ const createMapPalaceBlock = (left: number) => {
   document.getElementsByTagName("body")[0].append(block);
 
   if (left === window.innerWidth) {
-    const golemContainer = document.createElement("div");
-
     const golemImg = document.createElement("img") as HTMLImageElement;
     golemImg.id = "golemImage";
     golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
-    golemContainer.append(golemImg);
 
-    block.append(golemContainer);
+    block.append(golemImg);
 
     launchGolemIdleAnimation();
+  } else if (left === window.innerWidth * 2) {
+    const obeliskContainer = document.createElement("div");
+    obeliskContainer.id = "obeliskContainer";
+
+    const obeliskLightning = document.createElement("img");
+    obeliskLightning.src = "assets/challenge/items/lightning/1.png";
+    obeliskLightning.id = "obeliskLightning";
+
+    obeliskContainer.append(obeliskLightning);
+
+    const obeliskImg = document.createElement("img") as HTMLImageElement;
+    obeliskImg.id = "obeliskImage";
+    obeliskImg.src = "assets/challenge/items/obelisk/1.png";
+    obeliskContainer.append(obeliskImg);
+
+    block.append(obeliskContainer);
+
+    launchObeliskAnimation();
+    setTimeout(launchObeliskLightningAnimation, 10000);
   }
 
   return block;
@@ -592,6 +612,7 @@ document.addEventListener("keyup", () => {
 window.onload = () => {
   MAPS.push(createMapPalaceBlock(0));
   MAPS.push(createMapPalaceBlock(window.innerWidth));
+  MAPS.push(createMapPalaceBlock(window.innerWidth * 2));
 };
 
 interface IconFormat {
@@ -697,3 +718,38 @@ const spriteSheet = new Image();
 spriteSheet.src = "assets/palace/characters/premium.png"; // Update this to the correct path
 
 let isAnimating = false; // Animation state
+
+const launchObeliskLightningAnimation = () => {
+  const obeliskLightning = document.getElementById(
+    "obeliskLightning"
+  )! as HTMLImageElement;
+
+  launchAnimationAndDeclareItLaunched(
+    obeliskLightning,
+    0,
+    "png",
+    "assets/challenge/items/lightning",
+    1,
+    16,
+    1,
+    true,
+    ANIMATION_ID.obelisk_lightning
+  );
+};
+
+const launchObeliskAnimation = () => {
+  const obeliskImage = document.getElementById(
+    "obeliskImage"
+  )! as HTMLImageElement;
+  launchAnimationAndDeclareItLaunched(
+    obeliskImage,
+    0,
+    "png",
+    "assets/challenge/items/obelisk",
+    1,
+    13,
+    1,
+    true,
+    ANIMATION_ID.obelisk_idle
+  );
+};

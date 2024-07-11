@@ -281,3 +281,27 @@
   width: auto;
   z-index: 2;
 }
+
+#obeliskContainer {
+  position: absolute;
+  left: 50vw;
+  height: 25vh;
+  top: 50vh;
+  width: auto;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#obeliskImage {
+  height: 100%;
+  width: auto;
+}
+
+#obeliskLightning {
+  height: 300%;
+  position: absolute;
+  left: -17.5vw;
+  width: auto;
+}
