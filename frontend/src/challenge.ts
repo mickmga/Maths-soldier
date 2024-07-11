@@ -150,6 +150,7 @@ enum ANIMATION_ID {
   character_left_to_right_move,
   transformation_pre_run,
   transformation_run,
+  transformation_hurt,
 }
 
 const ANIMATION_RUNNING_VALUES = {
@@ -166,6 +167,7 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.character_left_to_right_move]: 0,
   [ANIMATION_ID.transformation_pre_run]: 0,
   [ANIMATION_ID.transformation_run]: 0,
+  [ANIMATION_ID.transformation_hurt]: 0,
 };
 
 const THROTTLE_NUMS = {
@@ -182,6 +184,7 @@ const THROTTLE_NUMS = {
   [ANIMATION_ID.character_left_to_right_move]: 5,
   [ANIMATION_ID.transformation_pre_run]: 5,
   [ANIMATION_ID.transformation_run]: 5,
+  [ANIMATION_ID.transformation_hurt]: 0,
 };
 
 const createMapBlock = (left: number) => {
@@ -502,10 +505,6 @@ const detectCollision = () => {
 };
 
 const checkForScreenUpdateFromLeftToRight = (throttleNum: number): any => {
-  if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0) {
-    return;
-  }
-
   if (throttleNum < 10) {
     throttleNum++;
     return requestAnimationFrame(() =>
@@ -586,18 +585,20 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 };
 
 const launchRun = () => {
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
+  startCamera();
   moveCamera(ANIMATION_ID.camera_left_to_right);
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
     "png",
-    "assets/challenge/characters/hero/run",
+    `assets/challenge/characters/${
+      transformed ? "transformed_hero" : "hero"
+    }/run`,
     1,
-    8,
+    transformed ? 6 : 8,
     1,
     true,
-    ANIMATION_ID.run
+    transformed ? ANIMATION_ID.transformation_run : ANIMATION_ID.run
   );
 };
 
@@ -773,12 +774,14 @@ const launchHeroHurtAnimation = () => {
     heroImage,
     0,
     "png",
-    "assets/challenge/characters/hero/hurt",
+    transformed
+      ? "assets/challenge/characters/transformed_hero/hurt"
+      : "assets/challenge/characters/hero/hurt",
     1,
-    3,
+    transformed ? 5 : 3,
     1,
     false,
-    ANIMATION_ID.hurt
+    transformed ? ANIMATION_ID.transformation_hurt : ANIMATION_ID.hurt
   );
 
   initHeroAnimations();

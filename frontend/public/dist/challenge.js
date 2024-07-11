@@ -89,7 +89,8 @@
     [9 /* camera_right_to_left */]: 0,
     [10 /* character_left_to_right_move */]: 0,
     [11 /* transformation_pre_run */]: 0,
-    [12 /* transformation_run */]: 0
+    [12 /* transformation_run */]: 0,
+    [13 /* transformation_hurt */]: 0
   };
   var THROTTLE_NUMS = {
     [0 /* attack */]: 0,
@@ -104,7 +105,8 @@
     [9 /* camera_right_to_left */]: 5,
     [10 /* character_left_to_right_move */]: 5,
     [11 /* transformation_pre_run */]: 5,
-    [12 /* transformation_run */]: 5
+    [12 /* transformation_run */]: 5,
+    [13 /* transformation_hurt */]: 0
   };
   var createMapBlock = (left) => {
     const block = document.createElement("div");
@@ -318,9 +320,6 @@
     requestAnimationFrame(detectCollision);
   };
   var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
-    if (ANIMATION_RUNNING_VALUES[8 /* camera_left_to_right */] === 0) {
-      return;
-    }
     if (throttleNum < 10) {
       throttleNum++;
       return requestAnimationFrame(
@@ -344,18 +343,18 @@
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
   var launchRun = () => {
-    ANIMATION_RUNNING_VALUES[8 /* camera_left_to_right */]++;
+    startCamera();
     moveCamera(8 /* camera_left_to_right */);
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/hero/run",
+      `assets/challenge/characters/${transformed ? "transformed_hero" : "hero"}/run`,
       1,
-      8,
+      transformed ? 6 : 8,
       1,
       true,
-      1 /* run */
+      transformed ? 12 /* transformation_run */ : 1 /* run */
     );
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
@@ -468,12 +467,12 @@
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/hero/hurt",
+      transformed ? "assets/challenge/characters/transformed_hero/hurt" : "assets/challenge/characters/hero/hurt",
       1,
-      3,
+      transformed ? 5 : 3,
       1,
       false,
-      3 /* hurt */
+      transformed ? 13 /* transformation_hurt */ : 3 /* hurt */
     );
     initHeroAnimations();
     stopCamera();
@@ -481,6 +480,13 @@
   };
   var stopCamera = () => {
     ANIMATION_RUNNING_VALUES[8 /* camera_left_to_right */] = 0;
+  };
+  var startCamera = () => {
+    if (ANIMATION_RUNNING_VALUES[8 /* camera_left_to_right */] > 0) {
+      console.log("move was already started");
+      return;
+    }
+    ANIMATION_RUNNING_VALUES[8 /* camera_left_to_right */]++;
   };
   var initHeroAnimations = () => {
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
