@@ -12,8 +12,6 @@
   var successfulKillsScore = 0;
   var ennemiesOnScreen = [];
   var transformed = false;
-  var enemyMoveMultiplicator = 12;
-  var cameraMoveMultiplicator = 4;
   var Answer = class {
     constructor(data, good) {
       this.data = data;
@@ -95,7 +93,7 @@
     [2 /* walk */]: 5,
     [3 /* opponent_run */]: 5,
     [4 /* opponent_death */]: 0,
-    [5 /* camera_left_to_right */]: 5,
+    [5 /* camera_left_to_right */]: 0,
     [6 /* camera_right_to_left */]: 5,
     [7 /* character_left_to_right_move */]: 5,
     [8 /* transformation_pre_run */]: 5,
@@ -114,16 +112,23 @@
   };
   var slowTime = (multiplicator) => {
     const runMultiplicatorBase = THROTTLE_NUMS[1 /* run */] ? THROTTLE_NUMS[1 /* run */] : 1;
-    THROTTLE_NUMS[1 /* run */] = runMultiplicatorBase * multiplicator;
-    cameraMoveMultiplicator /= 4;
-    enemyMoveMultiplicator /= 4;
+    THROTTLE_NUMS[1 /* run */] = runMultiplicatorBase * multiplicator * 1.5 * 1.5;
+    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[5 /* camera_left_to_right */] ? THROTTLE_NUMS[5 /* camera_left_to_right */] : 1;
+    THROTTLE_NUMS[5 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
+    const opponentRunMultiplicatorBase = THROTTLE_NUMS[3 /* opponent_run */] ? THROTTLE_NUMS[3 /* opponent_run */] : 1;
+    THROTTLE_NUMS[3 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
   };
   var moveCamera = (direction, throttleNum = 0) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
+    if (throttleNum < THROTTLE_NUMS[5 /* camera_left_to_right */]) {
+      throttleNum++;
+      return requestAnimationFrame(() => moveCamera(direction, throttleNum));
+    }
+    throttleNum = 0;
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 5 /* camera_left_to_right */ ? -1 : 1) * cameraMoveMultiplicator}px`
+      (map) => map.style.left = `${map.offsetLeft + (direction === 5 /* camera_left_to_right */ ? -1 : 1) * 4}px`
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
@@ -255,8 +260,13 @@
     );
     moveEnemy(enemy);
   };
-  var moveEnemy = (enemy) => {
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 1 * enemyMoveMultiplicator}px`;
+  var moveEnemy = (enemy, throttleNum = 0) => {
+    if (throttleNum < THROTTLE_NUMS[5 /* camera_left_to_right */]) {
+      throttleNum++;
+      return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
+    }
+    throttleNum = 0;
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 4}px`;
     requestAnimationFrame(() => moveEnemy(enemy));
   };
   var destroyEnemy = (enemy) => {
@@ -343,7 +353,7 @@
       launchTransformation();
     }
     if (event.key === "v") {
-      slowTime(4);
+      slowTime(10);
     }
   });
   var checkForOpponentsClearance = () => {

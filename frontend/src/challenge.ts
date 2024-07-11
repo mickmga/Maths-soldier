@@ -17,9 +17,6 @@ const ennemiesOnScreen: Enemy[] = [];
 
 let transformed = false;
 
-let enemyMoveMultiplicator = 12;
-let cameraMoveMultiplicator = 4;
-
 class Answer {
   data: string;
   good: boolean;
@@ -168,7 +165,7 @@ const THROTTLE_NUMS = {
   [ANIMATION_ID.walk]: 5,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_death]: 0,
-  [ANIMATION_ID.camera_left_to_right]: 5,
+  [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 5,
   [ANIMATION_ID.character_left_to_right_move]: 5,
   [ANIMATION_ID.transformation_pre_run]: 5,
@@ -193,13 +190,25 @@ const slowTime = (multiplicator: number) => {
   const runMultiplicatorBase = THROTTLE_NUMS[ANIMATION_ID.run]
     ? THROTTLE_NUMS[ANIMATION_ID.run]
     : 1;
-  THROTTLE_NUMS[ANIMATION_ID.run] = runMultiplicatorBase * multiplicator;
+  THROTTLE_NUMS[ANIMATION_ID.run] =
+    runMultiplicatorBase * multiplicator * 1.5 * 1.5;
 
-  cameraMoveMultiplicator /= 4;
-  enemyMoveMultiplicator /= 4;
+  const cameraMoveMultiplicatorBase = THROTTLE_NUMS[
+    ANIMATION_ID.camera_left_to_right
+  ]
+    ? THROTTLE_NUMS[ANIMATION_ID.camera_left_to_right]
+    : 1;
+  THROTTLE_NUMS[ANIMATION_ID.camera_left_to_right] =
+    cameraMoveMultiplicatorBase * multiplicator * 1.5;
+
+  const opponentRunMultiplicatorBase = THROTTLE_NUMS[ANIMATION_ID.opponent_run]
+    ? THROTTLE_NUMS[ANIMATION_ID.opponent_run]
+    : 1;
+  THROTTLE_NUMS[ANIMATION_ID.opponent_run] =
+    opponentRunMultiplicatorBase * multiplicator;
 };
 
-const moveCamera = (direction: ANIMATION_ID, throttleNum = 0) => {
+const moveCamera = (direction: ANIMATION_ID, throttleNum = 0): any => {
   if (
     ANIMATION_RUNNING_VALUES[direction] === 0 ||
     ANIMATION_RUNNING_VALUES[direction] > 1
@@ -207,12 +216,18 @@ const moveCamera = (direction: ANIMATION_ID, throttleNum = 0) => {
     return;
   }
 
+  if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.camera_left_to_right]) {
+    throttleNum++;
+    return requestAnimationFrame(() => moveCamera(direction, throttleNum));
+  }
+
+  throttleNum = 0;
+
   MAPS.forEach(
     (map) =>
       (map.style.left = `${
         map.offsetLeft +
-        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) *
-          cameraMoveMultiplicator
+        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * 4
       }px`)
   );
 
@@ -405,9 +420,16 @@ const launchOpponent = (enemy: Enemy) => {
   moveEnemy(enemy);
 };
 
-const moveEnemy = (enemy: Enemy) => {
+const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
+  if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.camera_left_to_right]) {
+    throttleNum++;
+    return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
+  }
+
+  throttleNum = 0;
+
   enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - 1 * enemyMoveMultiplicator
+    enemy.element.getBoundingClientRect().left - 4
   }px`;
 
   requestAnimationFrame(() => moveEnemy(enemy));
@@ -608,7 +630,7 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "v") {
-    slowTime(4);
+    slowTime(10);
   }
 });
 
