@@ -79,25 +79,27 @@
     [0 /* attack */]: 0,
     [1 /* run */]: 0,
     [2 /* walk */]: 0,
-    [3 /* opponent_run */]: 0,
-    [4 /* opponent_death */]: 0,
-    [5 /* camera_left_to_right */]: 0,
-    [6 /* camera_right_to_left */]: 0,
-    [7 /* character_left_to_right_move */]: 0,
-    [8 /* transformation_pre_run */]: 0,
-    [9 /* transformation_run */]: 0
+    [3 /* death */]: 0,
+    [4 /* opponent_run */]: 0,
+    [5 /* opponent_death */]: 0,
+    [6 /* camera_left_to_right */]: 0,
+    [7 /* camera_right_to_left */]: 0,
+    [8 /* character_left_to_right_move */]: 0,
+    [9 /* transformation_pre_run */]: 0,
+    [10 /* transformation_run */]: 0
   };
   var THROTTLE_NUMS = {
     [0 /* attack */]: 0,
     [1 /* run */]: 5,
     [2 /* walk */]: 5,
-    [3 /* opponent_run */]: 5,
-    [4 /* opponent_death */]: 0,
-    [5 /* camera_left_to_right */]: 0,
-    [6 /* camera_right_to_left */]: 5,
-    [7 /* character_left_to_right_move */]: 5,
-    [8 /* transformation_pre_run */]: 5,
-    [9 /* transformation_run */]: 5
+    [3 /* death */]: 5,
+    [4 /* opponent_run */]: 5,
+    [5 /* opponent_death */]: 0,
+    [6 /* camera_left_to_right */]: 0,
+    [7 /* camera_right_to_left */]: 5,
+    [8 /* character_left_to_right_move */]: 5,
+    [9 /* transformation_pre_run */]: 5,
+    [10 /* transformation_run */]: 5
   };
   var createMapBlock = (left) => {
     const block = document.createElement("div");
@@ -113,22 +115,22 @@
   var slowTime = (multiplicator) => {
     const runMultiplicatorBase = THROTTLE_NUMS[1 /* run */] ? THROTTLE_NUMS[1 /* run */] : 1;
     THROTTLE_NUMS[1 /* run */] = runMultiplicatorBase * multiplicator * 1.5 * 1.5;
-    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[5 /* camera_left_to_right */] ? THROTTLE_NUMS[5 /* camera_left_to_right */] : 1;
-    THROTTLE_NUMS[5 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
-    const opponentRunMultiplicatorBase = THROTTLE_NUMS[3 /* opponent_run */] ? THROTTLE_NUMS[3 /* opponent_run */] : 1;
-    THROTTLE_NUMS[3 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
+    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[6 /* camera_left_to_right */] ? THROTTLE_NUMS[6 /* camera_left_to_right */] : 1;
+    THROTTLE_NUMS[6 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
+    const opponentRunMultiplicatorBase = THROTTLE_NUMS[4 /* opponent_run */] ? THROTTLE_NUMS[4 /* opponent_run */] : 1;
+    THROTTLE_NUMS[4 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
   };
   var moveCamera = (direction, throttleNum = 0) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
-    if (throttleNum < THROTTLE_NUMS[5 /* camera_left_to_right */]) {
+    if (throttleNum < THROTTLE_NUMS[6 /* camera_left_to_right */]) {
       throttleNum++;
       return requestAnimationFrame(() => moveCamera(direction, throttleNum));
     }
     throttleNum = 0;
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 5 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+      (map) => map.style.left = `${map.offsetLeft + (direction === 6 /* camera_left_to_right */ ? -1 : 1) * 4}px`
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
@@ -198,7 +200,7 @@
   };
   var launchAttack = () => {
     if (transformed) {
-      ANIMATION_RUNNING_VALUES[9 /* transformation_run */] = 0;
+      ANIMATION_RUNNING_VALUES[10 /* transformation_run */] = 0;
     } else {
       ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     }
@@ -242,7 +244,7 @@
         transformed ? 6 : 8,
         1,
         true,
-        transformed ? 9 /* transformation_run */ : 1 /* run */
+        transformed ? 10 /* transformation_run */ : 1 /* run */
       );
     }, 200);
   };
@@ -256,12 +258,12 @@
       9,
       1,
       true,
-      3 /* opponent_run */
+      4 /* opponent_run */
     );
     moveEnemy(enemy);
   };
   var moveEnemy = (enemy, throttleNum = 0) => {
-    if (throttleNum < THROTTLE_NUMS[5 /* camera_left_to_right */]) {
+    if (throttleNum < THROTTLE_NUMS[6 /* camera_left_to_right */]) {
       throttleNum++;
       return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
     }
@@ -280,12 +282,12 @@
         10,
         1,
         false,
-        4 /* opponent_death */
+        5 /* opponent_death */
       );
     };
     clearAndHideAnswerDataContainer();
     setTimeout(() => {
-      ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
+      ANIMATION_RUNNING_VALUES[4 /* opponent_run */] = 0;
       enemy.element.remove();
       triggerOpponentsApparition();
     }, 300);
@@ -298,10 +300,10 @@
   };
   var destroyEnemyAndLaunchNewOne = (enemy) => {
     destroyEnemy(enemy);
-    ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
+    ANIMATION_RUNNING_VALUES[4 /* opponent_run */] = 0;
   };
   var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
-    if (ANIMATION_RUNNING_VALUES[5 /* camera_left_to_right */] === 0) {
+    if (ANIMATION_RUNNING_VALUES[6 /* camera_left_to_right */] === 0) {
       return;
     }
     if (throttleNum < 10) {
@@ -327,8 +329,8 @@
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
   var launchRun = () => {
-    ANIMATION_RUNNING_VALUES[5 /* camera_left_to_right */]++;
-    moveCamera(5 /* camera_left_to_right */);
+    ANIMATION_RUNNING_VALUES[6 /* camera_left_to_right */]++;
+    moveCamera(6 /* camera_left_to_right */);
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -354,6 +356,9 @@
     }
     if (event.key === "v") {
       slowTime(10);
+    }
+    if (event.key === "y") {
+      launchDeathAnimation();
     }
   });
   var checkForOpponentsClearance = () => {
@@ -385,14 +390,14 @@
         9,
         1,
         true,
-        8 /* transformation_pre_run */
+        9 /* transformation_pre_run */
       );
       clearAllOponentsAndTimeouts();
-      ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
+      ANIMATION_RUNNING_VALUES[4 /* opponent_run */] = 0;
       setTimeout(() => {
         triggerOpponentsApparition();
         document.getElementById("transformation_background").style.display = "none";
-        ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
+        ANIMATION_RUNNING_VALUES[9 /* transformation_pre_run */] = 0;
         launchAnimationAndDeclareItLaunched(
           heroImage,
           0,
@@ -402,7 +407,7 @@
           6,
           1,
           true,
-          9 /* transformation_run */
+          10 /* transformation_run */
         );
       }, 2e3);
     }, 500);
@@ -419,6 +424,33 @@
   var clearAndHideAnswerDataContainer = () => {
     answerDataContainer.style.opacity = "0.3";
     answerDataValue.innerHTML = "";
+  };
+  var launchDeathAnimation = () => {
+    initHeroAnimations();
+    ANIMATION_RUNNING_VALUES[6 /* camera_left_to_right */] = 0;
+    const killHero = () => {
+      launchAnimationAndDeclareItLaunched(
+        heroImage,
+        0,
+        "png",
+        "assets/challenge/characters/hero/death",
+        1,
+        6,
+        1,
+        false,
+        3 /* death */
+      );
+    };
+    if (transformed) {
+      transformed = false;
+    }
+    heroImage.src = "assets/challenge/characters/hero/death/1.png";
+    setTimeout(killHero, 1e3);
+  };
+  var initHeroAnimations = () => {
+    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    ANIMATION_RUNNING_VALUES[9 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[10 /* transformation_run */] = 0;
   };
   window.onload = () => {
     MAPS.push(createMapBlock(0));

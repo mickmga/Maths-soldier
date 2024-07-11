@@ -15,86 +15,152 @@
         .tablet {
             width: 100%;
             height: 100vh;
+            padding-top: 200px;
+            padding-bottom: 200px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            justify-content: flex-start;
             box-sizing: border-box;
+            position: relative;
         }
-        h1 {
-            text-align: center;
-            color: #ffffff; /* Magical white neon color */
-            text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 50px #ffffff, 0 0 60px #ffffff;
-        }
-        .question {
+        .question-container {
+            width: 100%;
+            max-width: 600px;
             margin: 10px 0;
+        }
+        .question-label {
             font-size: 18px;
-            text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 50px #ffffff, 0 0 60px #ffffff;
+            text-shadow: 0 0 3px #ffffff, 0 0 5px #ffffff, 0 0 7px #ffffff, 0 0 10px #ffffff;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-container {
+            position: relative;
+            width: 100%;
         }
         input[type="text"] {
-            width: calc(100% - 20px);
+            width: 100%;
             padding: 5px;
-            margin: 5px 0;
             border: none;
             border-bottom: 2px solid #ffffff; /* White neon underline */
             background: transparent;
             color: #ffffff;
             font-size: 18px;
-            text-align: center;
             outline: none;
-            animation: blink 1.5s infinite;
+            text-align: left;
+            padding-left: 20px; /* Space for the blinking cursor */
+            caret-color: transparent; /* Hide the default caret */
+        }
+        .blinking-cursor {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 1.5em;
+            background-color: #ffffff;
+            animation: blink 1s infinite;
         }
         @keyframes blink {
-            0% { border-bottom-color: #ffffff; }
-            50% { border-bottom-color: #292929; }
-            100% { border-bottom-color: #ffffff; }
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .elfic-symbols {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            font-size: 24px;
+            text-shadow: 0 0 3px #ffffff, 0 0 5px #ffffff, 0 0 7px #ffffff, 0 0 10px #ffffff;
+            white-space: pre-wrap;
+        }
+        .validate-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #292929;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            text-shadow: none;
+            align-self: flex-end;
         }
     </style>
 </head>
 <body>
     <div class="tablet">
-        <h1>Calculus Questions</h1>
-        <div class="question">
-            <label for="question1">1. What is the derivative of \( f(x) = x^2 \)?</label>
-            <input type="text" id="question1" name="question1">
+        <div class="elfic-symbols">ᚠᛇᚻ ᛗᚫᚱᚹ ᚢᛏ ᛝᚾᛇᛗ ᚪᚾᛞ ᚹᚾᛋᛇᚱᛇᛞ ᚠᚹᛗᚫᛏᛋᚢᚱᛞ</div>
+        <div class="question-container">
+            <div class="question-label">1. What is the derivative of \( f(x) = x^2 \)?</div>
+            <div class="input-container">
+                <input type="text" id="question1" name="question1">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question2">2. What is the integral of \( f(x) = 3x^2 \)?</label>
-            <input type="text" id="question2" name="question2">
+        <div class="question-container">
+            <div class="question-label">2. What is the integral of \( f(x) = 3x^2 \)?</div>
+            <div class="input-container">
+                <input type="text" id="question2" name="question2">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question3">3. Evaluate \( \lim_{{x \to \infty}} \frac{1}{x} \).</label>
-            <input type="text" id="question3" name="question3">
+        <div class="question-container">
+            <div class="question-label">3. Evaluate \( \lim_{{x \to \infty}} \frac{1}{x} \).</div>
+            <div class="input-container">
+                <input type="text" id="question3" name="question3">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question4">4. Find the critical points of \( f(x) = x^3 - 3x^2 \).</label>
-            <input type="text" id="question4" name="question4">
+        <div class="question-container">
+            <div class="question-label">4. Find the critical points of \( f(x) = x^3 - 3x^2 \).</div>
+            <div class="input-container">
+                <input type="text" id="question4" name="question4">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question5">5. What is the second derivative of \( f(x) = \sin(x) \)?</label>
-            <input type="text" id="question5" name="question5">
+        <div class="question-container">
+            <div class="question-label">5. What is the second derivative of \( f(x) = \sin(x) \)?</div>
+            <div class="input-container">
+                <input type="text" id="question5" name="question5">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question6">6. Evaluate \( \int_0^1 (4x^3 + 2) \, dx \).</label>
-            <input type="text" id="question6" name="question6">
+        <div class="question-container">
+            <div class="question-label">6. Evaluate \( \int_0^1 (4x^3 + 2) \, dx \).</div>
+            <div class="input-container">
+                <input type="text" id="question6" name="question6">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question7">7. What is the derivative of \( f(x) = e^x \)?</label>
-            <input type="text" id="question7" name="question7">
+        <div class="question-container">
+            <div class="question-label">7. What is the derivative of \( f(x) = e^x \)?</div>
+            <div class="input-container">
+                <input type="text" id="question7" name="question7">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question8">8. Evaluate \( \lim_{{x \to 0}} \frac{\sin(x)}{x} \).</label>
-            <input type="text" id="question8" name="question8">
+        <div class="question-container">
+            <div class="question-label">8. Evaluate \( \lim_{{x \to 0}} \frac{\sin(x)}{x} \).</div>
+            <div class="input-container">
+                <input type="text" id="question8" name="question8">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question9">9. Find the indefinite integral of \( f(x) = 1/x \).</label>
-            <input type="text" id="question9" name="question9">
+        <div class="question-container">
+            <div class="question-label">9. Find the indefinite integral of \( f(x) = 1/x \).</div>
+            <div class="input-container">
+                <input type="text" id="question9" name="question9">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
-        <div class="question">
-            <label for="question10">10. What is the second derivative of \( f(x) = x^4 \)?</label>
-            <input type="text" id="question10" name="question10">
+        <div class="question-container">
+            <div class="question-label">10. What is the second derivative of \( f(x) = x^4 \)?</div>
+            <div class="input-container">
+                <input type="text" id="question10" name="question10">
+                <div class="blinking-cursor"></div>
+            </div>
         </div>
+        <button class="validate-button">Validate</button>
     </div>
 </body>
 </html>

@@ -137,6 +137,7 @@ enum ANIMATION_ID {
   attack,
   run,
   walk,
+  death,
   opponent_run,
   opponent_death,
   camera_left_to_right,
@@ -150,6 +151,7 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.attack]: 0,
   [ANIMATION_ID.run]: 0,
   [ANIMATION_ID.walk]: 0,
+  [ANIMATION_ID.death]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
@@ -163,6 +165,7 @@ const THROTTLE_NUMS = {
   [ANIMATION_ID.attack]: 0,
   [ANIMATION_ID.run]: 5,
   [ANIMATION_ID.walk]: 5,
+  [ANIMATION_ID.death]: 5,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
@@ -632,6 +635,10 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "v") {
     slowTime(10);
   }
+
+  if (event.key === "y") {
+    launchDeathAnimation();
+  }
 });
 
 const checkForOpponentsClearance = () => {
@@ -719,6 +726,39 @@ const lightUpAnswerDataContainer = () => {
 const clearAndHideAnswerDataContainer = () => {
   answerDataContainer.style.opacity = "0.3";
   answerDataValue.innerHTML = "";
+};
+
+const launchDeathAnimation = () => {
+  initHeroAnimations();
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+
+  const killHero = () => {
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/hero/death",
+      1,
+      6,
+      1,
+      false,
+      ANIMATION_ID.death
+    );
+  };
+
+  if (transformed) {
+    transformed = false;
+  }
+
+  heroImage.src = "assets/challenge/characters/hero/death/1.png";
+
+  setTimeout(killHero, 1000);
+};
+
+const initHeroAnimations = () => {
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 };
 
 window.onload = () => {

@@ -488,53 +488,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
   requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
 };
 
-const updateCurrentSection = () => {
-  const state = window.store.getState();
-  const middleOfScreen = window.innerWidth / 2;
-
-  let currentSectionName = "No current section";
-
-  for (const section of state.localStorage.sections) {
-    const beginSlotElement = document.getElementById(section.beginSlotId);
-    const endSlotElement = section.endSlotId
-      ? document.getElementById(section.endSlotId)
-      : null;
-
-    if (beginSlotElement && endSlotElement) {
-      const beginLeftPos =
-        beginSlotElement.getBoundingClientRect().left +
-        beginSlotElement.offsetWidth / 2;
-      const endLeftPos =
-        endSlotElement.getBoundingClientRect().left +
-        endSlotElement.offsetWidth / 2;
-
-      if (beginLeftPos < middleOfScreen && endLeftPos > middleOfScreen) {
-        currentSectionName = section.name;
-        break;
-      }
-    }
-  }
-
-  const currentSectionElement = document.getElementById("currentSection");
-  if (currentSectionElement) {
-    currentSectionElement.textContent = currentSectionName;
-  }
-};
-
-//CHALLENGE.TS ENDING
-
-const openMenu = (slotId: string) => {
-  selectItem(slotId);
-  // Close the text container if it is open
-  const textContainer = document.getElementById("textContainer");
-  if (textContainer) {
-    document.body.removeChild(textContainer);
-  }
-
-  // Open the icon menu
-  menu.style.display = "flex";
-};
-
 const closeMenu = () => {
   menu.style.display = "none";
 };

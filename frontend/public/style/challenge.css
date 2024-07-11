@@ -21,7 +21,7 @@ body {
 #hero_container {
   position: fixed;
   top: 60vh;
-  left: 40vw;
+  left: 20vw;
   height: 15vh;
   z-index: 5;
 }
