@@ -2693,14 +2693,11 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var store_default = store;
 
   // src/discovery.ts
-  var isSettingSectionStart = false;
   window.store = store_default;
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
   var heroImage = document.getElementById("heroImg");
-  var enemy = document.getElementById("enemyImg");
   var enemyContainer = document.getElementsByClassName("enemy_container")[0];
-  var errorScoreContainer = document.getElementById("error_score");
   var successfulKillsScoreContainer = document.getElementById("killed_score");
   var menu = document.getElementById("menu");
   var searchInput = document.getElementById("searchInput");
@@ -2727,10 +2724,10 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     [4 /* camera_left_to_right */]: 0,
     [5 /* camera_right_to_left */]: 0,
     [6 /* character_left_to_right_move */]: 0,
-    [7 /* golem_idle */]: 0
+    [7 /* golem_idle */]: 0,
+    [8 /* golem_door_creation */]: 0
   };
   var pickedSlotId = null;
-  var newSectionName = "";
   var updateCurrentSectionDisplay = () => {
     const state = window.store.getState();
     const middleOfScreen = window.innerWidth / 2;
@@ -2759,7 +2756,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   currentSectionElement.style.left = "50%";
   currentSectionElement.style.transform = "translateX(-50%)";
   document.body.appendChild(currentSectionElement);
-  var animateGolem = () => {
+  var launchGolemIdleAnimation = () => {
     const golemImage = document.getElementById("golemImage");
     if (!golemImage) {
       console.log("l image du golem n existe pas");
@@ -2793,7 +2790,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
       golemContainer.append(golemImg);
       block.append(golemContainer);
-      animateGolem();
+      launchGolemIdleAnimation();
     }
     return block;
   };
@@ -2980,7 +2977,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/hero/walk",
+      "assets/palace/hero/old_walk",
       1,
       6,
       1,
@@ -2994,7 +2991,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       heroImage,
       0,
       "png",
-      "assets/challenge/characters/hero/walk_left",
+      "assets/palace/hero/walk_left",
       1,
       6,
       1,
@@ -3093,64 +3090,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     }
     return null;
   };
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-    if (target.classList.contains("slot")) {
-      if (isSettingSectionStart) {
-        console.log("is setting section start after click >");
-        console.log(isSettingSectionStart);
-        const slotId = target.id;
-        const state = window.store.getState();
-        const existingSection = state.localStorage.sections.find(
-          (section) => section.beginSlotId === slotId
-        );
-        if (existingSection) {
-          const confirmation = confirm(
-            `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
-          );
-          if (confirmation) {
-            window.store.dispatch(removeSection(existingSection));
-          } else {
-            return;
-          }
-        }
-        setSectionStart(slotId);
-      } else {
-        openTextContainer(event);
-      }
-    }
-  });
-  var setSectionStart = (slotId) => {
-    const state = window.store.getState();
-    const sections = state.localStorage.sections;
-    if (sections.length > 0) {
-      const lastSection = sections[sections.length - 1];
-      const mapBlocks = state.localStorage.mapBlocks.flat();
-      const newSectionStartIndex = mapBlocks.findIndex(
-        (slot) => slot.slotId === slotId
-      );
-      const previousSlot = newSectionStartIndex > 0 ? mapBlocks[newSectionStartIndex - 1] : null;
-      if (previousSlot) {
-        window.store.dispatch(
-          updateSection(__spreadProps(__spreadValues({}, lastSection), {
-            endSlotId: previousSlot.slotId
-          }))
-        );
-      }
-    }
-    const newSection = {
-      name: newSectionName,
-      beginSlotId: slotId
-    };
-    window.store.dispatch(addSection(newSection));
-    isSettingSectionStart = false;
-  };
-  var canvas = document.getElementById("spriteCanvas");
-  var ctx = canvas.getContext("2d");
   var spriteSheet = new Image();
   spriteSheet.src = "assets/palace/characters/premium.png";
-  var fps = 10;
-  var frameDuration = 1e3 / fps;
   var isAnimating = false;
 })();
 //# sourceMappingURL=discovery.js.map

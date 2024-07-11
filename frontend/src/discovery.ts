@@ -1,16 +1,6 @@
-import store, {
-  RootState,
-  Slot,
-  Section,
-  addSection,
-  updateSection,
-  removeSection,
-  updateItem,
-} from "./store";
+import store, { RootState, Section, updateItem } from "./store";
 
 import { Store } from "redux";
-
-let isSettingSectionStart = false;
 
 // Declare global variables
 declare global {
@@ -28,9 +18,7 @@ window.store = store;
 const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
 const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
-const enemy = document.getElementById("enemyImg")! as HTMLImageElement;
 const enemyContainer = document.getElementsByClassName("enemy_container")[0]!;
-const errorScoreContainer = document.getElementById("error_score")!;
 const successfulKillsScoreContainer = document.getElementById("killed_score")!;
 const menu = document.getElementById("menu")!;
 const searchInput = document.getElementById("searchInput")! as HTMLInputElement;
@@ -82,9 +70,6 @@ const ANIMATION_RUNNING_VALUES = {
 };
 
 let pickedSlotId: null | string = null;
-
-let isSettingSection = false;
-let newSectionName = "";
 
 const selectItem = (slotId: string): void => {
   pickedSlotId = slotId;
@@ -230,7 +215,6 @@ const moveCamera = (direction: ANIMATION_ID) => {
 };
 
 const updateScores = () => {
-  errorScoreContainer.innerHTML = "Erreurs: " + errorScore.toString();
   successfulKillsScoreContainer.innerHTML =
     "Bonnes réponses: " + successfulKillsScore.toString();
 };
@@ -328,10 +312,6 @@ const launchCharacterAnimation = (
       animationId
     )
   );
-};
-
-const initAnimation = (animationId: ANIMATION_ID) => {
-  ANIMATION_RUNNING_VALUES[animationId] = 0;
 };
 
 const detectCollision = () => {
@@ -523,8 +503,6 @@ const updateCurrentSection = () => {
 
 //CHALLENGE.TS ENDING
 
-const initHero = () => {};
-
 const openMenu = (slotId: string) => {
   selectItem(slotId);
   // Close the text container if it is open
@@ -548,7 +526,7 @@ const launchCharacterMovement = () => {
     heroImage,
     0,
     "png",
-    "assets/challenge/characters/hero/walk",
+    "assets/palace/hero/old_walk",
     1,
     6,
     1,
@@ -563,7 +541,7 @@ const launchCharacterMovementLeft = () => {
     heroImage,
     0,
     "png",
-    "assets/challenge/characters/hero/walk_left",
+    "assets/palace/hero/walk_left",
     1,
     6,
     1,
@@ -711,120 +689,11 @@ const getFirstImageById = (elementId: string): HTMLImageElement | null => {
       }
     }
   }
-
   // Return null if no <img> element is found
   return null;
 };
 
-document.addEventListener("click", (event) => {
-  const target = event.target as HTMLElement;
-
-  if (target.classList.contains("slot")) {
-    if (isSettingSectionStart) {
-      console.log("is setting section start after click >");
-      console.log(isSettingSectionStart);
-      const slotId = target.id;
-      // Check if the section already exists at this slot
-      const state = window.store.getState();
-      const existingSection = state.localStorage.sections.find(
-        (section) => section.beginSlotId === slotId
-      );
-
-      if (existingSection) {
-        const confirmation = confirm(
-          `The section "${existingSection.name}" already starts here. Do you want to destroy it?`
-        );
-        if (confirmation) {
-          window.store.dispatch(removeSection(existingSection));
-        } else {
-          return; // Exit the function if the user does not want to destroy the existing section
-        }
-      }
-
-      // Set the section start
-      setSectionStart(slotId);
-    } else {
-      openTextContainer(event);
-    }
-  }
-});
-const setSectionStart = (slotId: string) => {
-  const state = window.store.getState();
-  const sections = state.localStorage.sections;
-
-  if (sections.length > 0) {
-    const lastSection = sections[sections.length - 1];
-
-    // Get the index of the slot just before the new section's start slot
-    const mapBlocks = state.localStorage.mapBlocks.flat();
-    const newSectionStartIndex = mapBlocks.findIndex(
-      (slot) => slot.slotId === slotId
-    );
-    const previousSlot =
-      newSectionStartIndex > 0 ? mapBlocks[newSectionStartIndex - 1] : null;
-
-    if (previousSlot) {
-      // Update the end of the last section to be the slot just before the new section's start slot
-      window.store.dispatch(
-        updateSection({
-          ...lastSection,
-          endSlotId: previousSlot.slotId,
-        })
-      );
-    }
-  }
-
-  const newSection = {
-    name: newSectionName,
-    beginSlotId: slotId,
-  };
-
-  window.store.dispatch(addSection(newSection));
-  isSettingSectionStart = false;
-};
-
-const openMap = () => {
-  document.getElementById("palaceMap")!.style.display = "flex";
-};
-
-//choice.ts
-
-const canvas = document.getElementById("spriteCanvas")! as HTMLCanvasElement;
-const ctx = canvas.getContext("2d")!;
-
 const spriteSheet = new Image();
 spriteSheet.src = "assets/palace/characters/premium.png"; // Update this to the correct path
 
-const spriteWidth = 64; // Width of a single frame
-const spriteHeight = 64; // Height of a single frame
-const numCols = 13; // Number of columns in your sprite sheet
-const numFrames = 8; // Number of frames in the walk animation
-
-let frameIndex = 0;
-const fps = 10;
-const frameDuration = 1000 / fps;
-const startCol = 1; // Start from the second column (0-indexed)
 let isAnimating = false; // Animation state
-
-function drawFrame(
-  frameIndex: number,
-  x: number,
-  y: number,
-  spriteRow: number
-) {
-  const col = (frameIndex + startCol) % numCols;
-  const sx = col * spriteWidth;
-  const sy = spriteRow * spriteHeight;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(
-    spriteSheet,
-    sx,
-    sy,
-    spriteWidth,
-    spriteHeight, // Source rectangle
-    x,
-    y,
-    100,
-    100 // Destination rectangle
-  );
-}

@@ -6,11 +6,14 @@
   var heroImage = document.getElementById("heroImg");
   var errorScoreContainer = document.getElementById("error_score");
   var successfulKillsScoreContainer = document.getElementById("killed_score");
+  var answerDataContainer = document.getElementById("answer_data_container");
+  var answerDataValue = document.getElementById("answer_data_value");
   var errorScore = 0;
   var successfulKillsScore = 0;
   var ennemiesOnScreen = [];
   var transformed = false;
-  var transformationOn = false;
+  var enemyMoveMultiplicator = 12;
+  var cameraMoveMultiplicator = 4;
   var Answer = class {
     constructor(data, good) {
       this.data = data;
@@ -24,9 +27,9 @@
     }
   };
   var CAPITALS = {
-    title: "Capitals of the world",
-    good: [new Answer("Paris", true), new Answer("London", true)],
-    bad: [new Answer("Chicago", false), new Answer("Monaco", false)]
+    title: "Additions",
+    good: [new Answer("10+4=14", true), new Answer("10=10=20", true)],
+    bad: [new Answer("3+6=10", false), new Answer("2+3=7", false)]
   };
   var getNextAnswer = () => {
     const randVal = Math.random() > 0.5;
@@ -61,6 +64,8 @@
     if (!enemy) {
       return;
     }
+    lightUpAnswerDataContainer();
+    answerDataValue.innerHTML = enemy.answer.data;
     launchOpponent(enemy);
   };
   var triggerOpponentsApparition = () => {
@@ -107,12 +112,18 @@
     document.getElementsByTagName("body")[0].append(block);
     return block;
   };
-  var moveCamera = (direction) => {
+  var slowTime = (multiplicator) => {
+    const runMultiplicatorBase = THROTTLE_NUMS[1 /* run */] ? THROTTLE_NUMS[1 /* run */] : 1;
+    THROTTLE_NUMS[1 /* run */] = runMultiplicatorBase * multiplicator;
+    cameraMoveMultiplicator /= 4;
+    enemyMoveMultiplicator /= 4;
+  };
+  var moveCamera = (direction, throttleNum = 0) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 5 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+      (map) => map.style.left = `${map.offsetLeft + (direction === 5 /* camera_left_to_right */ ? -1 : 1) * cameraMoveMultiplicator}px`
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
@@ -245,7 +256,7 @@
     moveEnemy(enemy);
   };
   var moveEnemy = (enemy) => {
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 10}px`;
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 1 * enemyMoveMultiplicator}px`;
     requestAnimationFrame(() => moveEnemy(enemy));
   };
   var destroyEnemy = (enemy) => {
@@ -262,6 +273,7 @@
         4 /* opponent_death */
       );
     };
+    clearAndHideAnswerDataContainer();
     setTimeout(() => {
       ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
       enemy.element.remove();
@@ -330,6 +342,9 @@
     if (event.key === "b") {
       launchTransformation();
     }
+    if (event.key === "v") {
+      slowTime(4);
+    }
   });
   var checkForOpponentsClearance = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
@@ -350,7 +365,6 @@
     document.getElementById("transformation_background").style.display = "flex";
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     transformed = true;
-    transformationOn = true;
     setTimeout(() => {
       launchAnimationAndDeclareItLaunched(
         heroImage,
@@ -366,7 +380,6 @@
       clearAllOponentsAndTimeouts();
       ANIMATION_RUNNING_VALUES[3 /* opponent_run */] = 0;
       setTimeout(() => {
-        transformationOn = false;
         triggerOpponentsApparition();
         document.getElementById("transformation_background").style.display = "none";
         ANIMATION_RUNNING_VALUES[8 /* transformation_pre_run */] = 0;
@@ -389,6 +402,13 @@
       enemy.element.remove();
       ennemiesOnScreen.splice(index, 1);
     });
+  };
+  var lightUpAnswerDataContainer = () => {
+    answerDataContainer.style.opacity = "1";
+  };
+  var clearAndHideAnswerDataContainer = () => {
+    answerDataContainer.style.opacity = "0.3";
+    answerDataValue.innerHTML = "";
   };
   window.onload = () => {
     MAPS.push(createMapBlock(0));

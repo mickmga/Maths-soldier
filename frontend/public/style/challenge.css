@@ -43,13 +43,24 @@ body {
   width: auto;
 }
 
-#error_score {
+#lifePointsContainer {
   position: absolute;
   top: 2vh;
   left: 2vw;
   z-index: 3;
   font-size: large;
   color: white;
+  height: 10vh;
+  width: 10vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.lifePointContainer {
+  width: 20%;
+  aspect-ratio: 1/1;
+  background: red;
 }
 
 #killed_score {

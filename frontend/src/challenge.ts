@@ -6,13 +6,19 @@ const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
 
 const errorScoreContainer = document.getElementById("error_score")!;
 const successfulKillsScoreContainer = document.getElementById("killed_score")!;
+
+const answerDataContainer = document.getElementById("answer_data_container")!;
+const answerDataValue = document.getElementById("answer_data_value")!;
+
 let errorScore = 0;
 let successfulKillsScore = 0;
 
 const ennemiesOnScreen: Enemy[] = [];
 
 let transformed = false;
-let transformationOn = false;
+
+let enemyMoveMultiplicator = 12;
+let cameraMoveMultiplicator = 4;
 
 class Answer {
   data: string;
@@ -23,12 +29,6 @@ class Answer {
     this.good = good;
   }
 }
-
-type Topic = {
-  title: string;
-  good: Answer[];
-  bad: Answer[];
-};
 
 class Enemy {
   element: HTMLElement;
@@ -41,12 +41,10 @@ class Enemy {
 }
 
 const CAPITALS = {
-  title: "Capitals of the world",
-  good: [new Answer("Paris", true), new Answer("London", true)],
-  bad: [new Answer("Chicago", false), new Answer("Monaco", false)],
+  title: "Additions",
+  good: [new Answer("10+4=14", true), new Answer("10=10=20", true)],
+  bad: [new Answer("3+6=10", false), new Answer("2+3=7", false)],
 };
-
-let topics: Topic[] = [CAPITALS];
 
 //local storage
 
@@ -106,6 +104,9 @@ const buildAndLaunchEnemy = (answer: Answer) => {
   if (!enemy) {
     return;
   }
+  lightUpAnswerDataContainer();
+
+  answerDataValue.innerHTML = enemy.answer.data;
 
   launchOpponent(enemy);
 };
@@ -188,7 +189,17 @@ const createMapBlock = (left: number) => {
   return block;
 };
 
-const moveCamera = (direction: ANIMATION_ID) => {
+const slowTime = (multiplicator: number) => {
+  const runMultiplicatorBase = THROTTLE_NUMS[ANIMATION_ID.run]
+    ? THROTTLE_NUMS[ANIMATION_ID.run]
+    : 1;
+  THROTTLE_NUMS[ANIMATION_ID.run] = runMultiplicatorBase * multiplicator;
+
+  cameraMoveMultiplicator /= 4;
+  enemyMoveMultiplicator /= 4;
+};
+
+const moveCamera = (direction: ANIMATION_ID, throttleNum = 0) => {
   if (
     ANIMATION_RUNNING_VALUES[direction] === 0 ||
     ANIMATION_RUNNING_VALUES[direction] > 1
@@ -200,7 +211,8 @@ const moveCamera = (direction: ANIMATION_ID) => {
     (map) =>
       (map.style.left = `${
         map.offsetLeft +
-        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * 4
+        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) *
+          cameraMoveMultiplicator
       }px`)
   );
 
@@ -395,7 +407,7 @@ const launchOpponent = (enemy: Enemy) => {
 
 const moveEnemy = (enemy: Enemy) => {
   enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - 10
+    enemy.element.getBoundingClientRect().left - 1 * enemyMoveMultiplicator
   }px`;
 
   requestAnimationFrame(() => moveEnemy(enemy));
@@ -415,6 +427,7 @@ const destroyEnemy = (enemy: Enemy) => {
       ANIMATION_ID.opponent_death
     );
   };
+  clearAndHideAnswerDataContainer();
 
   setTimeout(() => {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
@@ -526,8 +539,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     );
   }
 
-  //deletion
-
   const lastMapDomElement = MAPS[MAPS.length - 1];
 
   if (lastMapDomElement && lastMapDomElement.offsetLeft > window.innerWidth) {
@@ -536,40 +547,6 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
   }
 
   requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
-};
-
-//CHALLENGE.TS ENDING
-
-const initHero = () => {};
-
-const launchCharacterMovement = () => {
-  moveCamera(ANIMATION_ID.camera_left_to_right);
-  launchAnimationAndDeclareItLaunched(
-    heroImage,
-    0,
-    "png",
-    "assets/palace/hero/old_walk",
-    1,
-    6,
-    1,
-    true,
-    ANIMATION_ID.walk
-  );
-};
-
-const launchCharacterMovementLeft = () => {
-  moveCamera(ANIMATION_ID.camera_right_to_left);
-  launchAnimationAndDeclareItLaunched(
-    heroImage,
-    0,
-    "png",
-    "assets/palace/hero/walk_left",
-    1,
-    6,
-    1,
-    true,
-    ANIMATION_ID.walk
-  );
 };
 
 const launchRun = () => {
@@ -629,6 +606,10 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "b") {
     launchTransformation();
   }
+
+  if (event.key === "v") {
+    slowTime(4);
+  }
 });
 
 const checkForOpponentsClearance = () => {
@@ -662,7 +643,6 @@ const launchTransformation = () => {
   heroImage.src = "assets/challenge/characters/hero/walk/1.png";
 
   transformed = true;
-  transformationOn = true;
 
   setTimeout(() => {
     launchAnimationAndDeclareItLaunched(
@@ -681,7 +661,6 @@ const launchTransformation = () => {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
 
     setTimeout(() => {
-      transformationOn = false;
       triggerOpponentsApparition();
 
       document.getElementById("transformation_background")!.style.display =
@@ -709,6 +688,15 @@ const clearAllOponentsAndTimeouts = () => {
     enemy.element.remove();
     ennemiesOnScreen.splice(index, 1);
   });
+};
+
+const lightUpAnswerDataContainer = () => {
+  answerDataContainer.style.opacity = "1";
+};
+
+const clearAndHideAnswerDataContainer = () => {
+  answerDataContainer.style.opacity = "0.3";
+  answerDataValue.innerHTML = "";
 };
 
 window.onload = () => {
