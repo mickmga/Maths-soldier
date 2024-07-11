@@ -11,6 +11,9 @@ const answerDataContainer = document.getElementById("answer_data_container")!;
 const answerDataValue = document.getElementById("answer_data_value")!;
 
 let lifePoints = 4;
+let INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
+
+let invisible = false;
 
 let errorScore = 0;
 let successfulKillsScore = 0;
@@ -352,7 +355,16 @@ const initAnimation = (animationId: ANIMATION_ID) => {
   ANIMATION_RUNNING_VALUES[animationId] = 0;
 };
 
+const turnHeroTransformationOff = () => {
+  transformed = false;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
+  launchHeroRunAnimation();
+};
+
 const launchAttack = () => {
+  if (invisible) {
+    return;
+  }
   if (transformed) {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
   } else {
@@ -387,36 +399,14 @@ const launchAttack = () => {
 
   ennemiesOnScreen.forEach((enemy) => {
     if (!enemyCanBeHit(enemy)) {
-      console.log("Enemy can't be hit. Opponent left >");
-      console.log(
-        enemy.element.getBoundingClientRect().left +
-          heroContainer.getBoundingClientRect().width
-      );
-      console.log(", hero left > ");
-      console.log(heroContainer.getBoundingClientRect().left);
       return;
     }
-    setTimeout(() => {
-      destroyEnemyAndLaunchNewOne(enemy);
-      successfulKillsScore++;
-      updateScores();
-    }, 200);
+    destroyEnemyAndLaunchNewOne(enemy);
+    successfulKillsScore++;
   });
 
   setTimeout(() => {
-    launchAnimationAndDeclareItLaunched(
-      heroImage,
-      0,
-      "png",
-      `assets/challenge/characters/${
-        transformed ? "transformed_hero" : "hero"
-      }/run`,
-      1,
-      transformed ? 6 : 8,
-      1,
-      true,
-      transformed ? ANIMATION_ID.transformation_run : ANIMATION_ID.run
-    );
+    launchHeroRunAnimation();
   }, 200);
 };
 
@@ -497,7 +487,9 @@ const detectCollision = () => {
     ) {
       enemyOnScreen.collideable = false;
 
-      launchHeroHurtAnimation();
+      if (!invisible) {
+        launchHeroHurtAnimation();
+      }
     }
   });
 
@@ -584,9 +576,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
   requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
 };
 
-const launchRun = () => {
-  startCamera();
-  moveCamera(ANIMATION_ID.camera_left_to_right);
+const launchHeroRunAnimation = () => {
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
@@ -600,6 +590,12 @@ const launchRun = () => {
     true,
     transformed ? ANIMATION_ID.transformation_run : ANIMATION_ID.run
   );
+};
+
+const launchRun = () => {
+  startCamera();
+  moveCamera(ANIMATION_ID.camera_left_to_right);
+  launchHeroRunAnimation();
 };
 
 const heroInitialTop = heroContainer.getBoundingClientRect().top;
@@ -635,7 +631,7 @@ const launchFly = (jumpingForward = true) => {
 };
 document.addEventListener("keydown", (event) => {
   if (event.key === " ") {
-    turnInvisible();
+    launchInvisibilityToggle();
   }
   if (event.key === "w") {
     launchAttack();
@@ -670,10 +666,16 @@ const checkForOpponentsClearance = () => {
   requestAnimationFrame(checkForOpponentsClearance);
 };
 
-const turnInvisible = () => {
-  heroContainer.style.opacity = "0.3";
+const launchInvisibilityToggle = () => {
+  invisible = !invisible;
 
-  setTimeout(() => (heroContainer.style.opacity = "1"), 2000);
+  heroContainer.style.opacity = invisible ? "0.3" : "1";
+
+  if (!invisible) {
+    return;
+  }
+
+  setTimeout(launchInvisibilityToggle, INVISIBILITY_DURATION_IN_MILLISECONDS);
 };
 
 const launchTransformation = () => {
@@ -720,6 +722,8 @@ const launchTransformation = () => {
         true,
         ANIMATION_ID.transformation_run
       );
+
+      setTimeout(turnHeroTransformationOff, 5000);
     }, 2000);
   }, 500);
 };

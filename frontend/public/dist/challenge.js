@@ -8,7 +8,8 @@
   var successfulKillsScoreContainer = document.getElementById("killed_score");
   var answerDataContainer = document.getElementById("answer_data_container");
   var answerDataValue = document.getElementById("answer_data_value");
-  var errorScore = 0;
+  var INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
+  var invisible = false;
   var successfulKillsScore = 0;
   var ennemiesOnScreen = [];
   var transformed = false;
@@ -141,10 +142,6 @@
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
-  var updateScores = () => {
-    errorScoreContainer.innerHTML = "Erreurs: " + errorScore.toString();
-    successfulKillsScoreContainer.innerHTML = "Bonnes r\xE9ponses: " + successfulKillsScore.toString();
-  };
   var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
     ANIMATION_RUNNING_VALUES[animationId]++;
     launchCharacterAnimation(
@@ -205,7 +202,15 @@
       )
     );
   };
+  var turnHeroTransformationOff = () => {
+    transformed = false;
+    ANIMATION_RUNNING_VALUES[12 /* transformation_run */] = 0;
+    launchHeroRunAnimation();
+  };
   var launchAttack = () => {
+    if (invisible) {
+      return;
+    }
     if (transformed) {
       ANIMATION_RUNNING_VALUES[12 /* transformation_run */] = 0;
     } else {
@@ -227,32 +232,13 @@
     };
     ennemiesOnScreen.forEach((enemy) => {
       if (!enemyCanBeHit(enemy)) {
-        console.log("Enemy can't be hit. Opponent left >");
-        console.log(
-          enemy.element.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
-        );
-        console.log(", hero left > ");
-        console.log(heroContainer.getBoundingClientRect().left);
         return;
       }
-      setTimeout(() => {
-        destroyEnemyAndLaunchNewOne(enemy);
-        successfulKillsScore++;
-        updateScores();
-      }, 200);
+      destroyEnemyAndLaunchNewOne(enemy);
+      successfulKillsScore++;
     });
     setTimeout(() => {
-      launchAnimationAndDeclareItLaunched(
-        heroImage,
-        0,
-        "png",
-        `assets/challenge/characters/${transformed ? "transformed_hero" : "hero"}/run`,
-        1,
-        transformed ? 6 : 8,
-        1,
-        true,
-        transformed ? 12 /* transformation_run */ : 1 /* run */
-      );
+      launchHeroRunAnimation();
     }, 200);
   };
   var launchOpponent = (enemy) => {
@@ -314,7 +300,9 @@
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width > enemyOnScreen.element.getBoundingClientRect().left && enemyOnScreen.collideable) {
         enemyOnScreen.collideable = false;
-        launchHeroHurtAnimation();
+        if (!invisible) {
+          launchHeroHurtAnimation();
+        }
       }
     });
     requestAnimationFrame(detectCollision);
@@ -342,9 +330,7 @@
     }
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
-  var launchRun = () => {
-    startCamera();
-    moveCamera(8 /* camera_left_to_right */);
+  var launchHeroRunAnimation = () => {
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -357,10 +343,15 @@
       transformed ? 12 /* transformation_run */ : 1 /* run */
     );
   };
+  var launchRun = () => {
+    startCamera();
+    moveCamera(8 /* camera_left_to_right */);
+    launchHeroRunAnimation();
+  };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
     if (event.key === " ") {
-      turnInvisible();
+      launchInvisibilityToggle();
     }
     if (event.key === "w") {
       launchAttack();
@@ -385,9 +376,13 @@
     });
     requestAnimationFrame(checkForOpponentsClearance);
   };
-  var turnInvisible = () => {
-    heroContainer.style.opacity = "0.3";
-    setTimeout(() => heroContainer.style.opacity = "1", 2e3);
+  var launchInvisibilityToggle = () => {
+    invisible = !invisible;
+    heroContainer.style.opacity = invisible ? "0.3" : "1";
+    if (!invisible) {
+      return;
+    }
+    setTimeout(launchInvisibilityToggle, INVISIBILITY_DURATION_IN_MILLISECONDS);
   };
   var launchTransformation = () => {
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
@@ -423,6 +418,7 @@
           true,
           12 /* transformation_run */
         );
+        setTimeout(turnHeroTransformationOff, 5e3);
       }, 2e3);
     }, 500);
   };
