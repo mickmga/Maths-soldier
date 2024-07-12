@@ -4,23 +4,35 @@ const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
 const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
 
-const errorScoreContainer = document.getElementById("error_score")!;
-const successfulKillsScoreContainer = document.getElementById("killed_score")!;
+const scoreContainer = document.getElementById("score_value")!;
 
 const answerDataContainer = document.getElementById("answer_data_container")!;
 const answerDataValue = document.getElementById("answer_data_value")!;
+
+const scoreMalusContainer = document.getElementById("score_malus_container")!;
+const scoreMalusDetail = document.getElementById("score_malus_detail")!;
+
+const scoreRewardContainer = document.getElementById("score_reward_container")!;
+
+const scoreRewardDetail = document.getElementById("score_reward_detail")!;
+
+const TRANSFORMED_BONUS_RATIO = 5;
+const KILLED_ENEMY_REWARD = 30;
+const HERO_HURT_MALUS = 30;
+
+let score = 0;
 
 const lifePoints = { max: 4, value: 4 };
 let INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
 
 let invisible = false;
 
-let errorScore = 0;
-let successfulKillsScore = 0;
-
 const ennemiesOnScreen: Enemy[] = [];
 
 let transformed = false;
+
+let currentMalusContainerTimeout: ReturnType<typeof setTimeout> | null = null;
+let currentRewardContainerTimeout: ReturnType<typeof setTimeout> | null = null;
 
 class Answer {
   data: string;
@@ -278,12 +290,6 @@ const moveCamera = (direction: ANIMATION_ID, throttleNum = 0): any => {
   requestAnimationFrame(() => moveCamera(direction));
 };
 
-const updateScores = () => {
-  errorScoreContainer.innerHTML = "Erreurs: " + errorScore.toString();
-  successfulKillsScoreContainer.innerHTML =
-    "Bonnes réponses: " + successfulKillsScore.toString();
-};
-
 export const launchAnimationAndDeclareItLaunched = (
   characterElement: HTMLImageElement,
   throttleNum: number,
@@ -427,8 +433,11 @@ const launchAttack = () => {
     if (!enemyCanBeHit(enemy)) {
       return;
     }
-    destroyEnemyAndLaunchNewOne(enemy);
-    successfulKillsScore++;
+    if (!enemy.answer.good) {
+      killWrongEnemy(enemy);
+    } else {
+      killRightEnemyAndUpdateScore(enemy);
+    }
   });
 
   setTimeout(() => {
@@ -466,7 +475,77 @@ const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
   requestAnimationFrame(() => moveEnemy(enemy));
 };
 
-const destroyEnemy = (enemy: Enemy) => {
+const killRightEnemyAndUpdateScore = (enemy: Enemy) => {
+  killEnemy(enemy);
+
+  const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
+
+  score += bonus_ratio * KILLED_ENEMY_REWARD;
+  updateScoreDisplay();
+
+  displayReward("Congrats! You destroyed a good answer!");
+};
+
+const updateScoreDisplay = () => {
+  scoreContainer.innerHTML = score.toString();
+};
+
+const killWrongEnemy = (enemy: Enemy) => {
+  scoreMalusContainer.style.display = "flex";
+
+  killEnemy(enemy);
+
+  displayMalus("MALUS! Wrong enemy killed!");
+
+  score -= HERO_HURT_MALUS;
+  updateScoreDisplay();
+};
+
+const displayMalus = (content: string) => {
+  if (currentMalusContainerTimeout) {
+    clearTimeout(currentMalusContainerTimeout);
+    currentMalusContainerTimeout = null;
+  }
+
+  // scoreMalusDetail.innerHTML = content;
+  scoreMalusContainer.style.display = "flex";
+
+  currentMalusContainerTimeout = setTimeout(() => {
+    scoreMalusDetail.innerHTML = "";
+    scoreMalusContainer.style.display = "none";
+  }, 2000);
+};
+
+const hideMalus = () => {
+  hideReward();
+  if (currentMalusContainerTimeout) {
+    clearTimeout(currentMalusContainerTimeout);
+    currentMalusContainerTimeout = null;
+  }
+
+  scoreMalusDetail.innerHTML = "";
+  scoreMalusContainer.style.display = "none";
+};
+
+const displayReward = (content: string) => {
+  hideMalus();
+  if (currentRewardContainerTimeout) {
+    clearTimeout(currentRewardContainerTimeout);
+    currentRewardContainerTimeout = null;
+  }
+
+  //  scoreRewardDetail.innerHTML = content;
+  scoreRewardContainer.style.display = "flex";
+
+  currentRewardContainerTimeout = setTimeout(() => {
+    scoreRewardDetail.innerHTML = "";
+    scoreRewardContainer.style.display = "none";
+  }, 2000);
+};
+
+const hideReward = () => {};
+
+const killEnemy = (enemy: Enemy) => {
   const launchExplosion = () => {
     launchAnimationAndDeclareItLaunched(
       enemy.element.firstChild as HTMLImageElement,
@@ -480,6 +559,13 @@ const destroyEnemy = (enemy: Enemy) => {
       ANIMATION_ID.opponent_death
     );
   };
+
+  launchExplosion();
+
+  destroyEnemyAndLaunchNewOne(enemy);
+};
+
+const destroyEnemy = (enemy: Enemy) => {
   clearAndHideAnswerDataContainer();
 
   setTimeout(() => {
@@ -487,8 +573,6 @@ const destroyEnemy = (enemy: Enemy) => {
     enemy.element.remove();
     triggerOpponentsApparition();
   }, 300);
-
-  launchExplosion();
 
   ennemiesOnScreen.forEach((enemyOnScreen, index) => {
     if (enemy === enemyOnScreen) {
@@ -504,8 +588,13 @@ const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
 
 const hurtHero = () => {
   lifePoints.value--;
+  if (score >= HERO_HURT_MALUS) {
+    score -= HERO_HURT_MALUS;
+    updateScoreDisplay();
+  }
   updateLifePointsDisplay();
   launchHeroHurtAnimation();
+  displayMalus("Malus! You were hurt!");
 };
 
 const detectCollision = () => {
@@ -689,7 +778,10 @@ const checkForOpponentsClearance = () => {
       enemyOnScreen.element.getBoundingClientRect().left
     ) {
     }
-    if (enemyOnScreen.element.getBoundingClientRect().left < 0) {
+    if (
+      enemyOnScreen.element.getBoundingClientRect().left <
+      0 - window.innerWidth * 0.05
+    ) {
       destroyEnemyAndLaunchNewOne(enemyOnScreen);
     }
   });
@@ -848,10 +940,11 @@ const initHeroAnimations = () => {
 window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
+  updateLifePointsDisplay();
+  updateScoreDisplay();
   launchRun();
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
   triggerOpponentsApparition();
-  updateLifePointsDisplay();
 };

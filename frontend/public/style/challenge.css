@@ -70,13 +70,27 @@ body {
   width: auto;
 }
 
-#killed_score {
+#score {
   position: absolute;
   top: 2vh;
   left: 88vw;
+  height: 10vh;
+  width: 7vw;
   z-index: 3;
   font-size: medium;
-  color: red;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#score img {
+  height: 70%;
+  width: auto;
+}
+
+#score_value {
+  font-size: x-large;
+  color: gold;
 }
 
 #answer_data_container {
@@ -123,4 +137,26 @@ body {
   width: 100vw;
   z-index: 4;
   display: none;
+}
+
+#score_malus_container {
+  position: absolute;
+  top: 50vh;
+  left: 60vw;
+  display: none;
+  flex-direction: column;
+  z-index: 10;
+  font-size: large;
+  color: red;
+}
+
+#score_reward_container {
+  position: absolute;
+  top: 50vh;
+  left: 60vw;
+  display: none;
+  flex-direction: column;
+  z-index: 10;
+  font-size: large;
+  color: green;
 }

@@ -4,16 +4,24 @@
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
   var heroImage = document.getElementById("heroImg");
-  var errorScoreContainer = document.getElementById("error_score");
-  var successfulKillsScoreContainer = document.getElementById("killed_score");
+  var scoreContainer = document.getElementById("score_value");
   var answerDataContainer = document.getElementById("answer_data_container");
   var answerDataValue = document.getElementById("answer_data_value");
+  var scoreMalusContainer = document.getElementById("score_malus_container");
+  var scoreMalusDetail = document.getElementById("score_malus_detail");
+  var scoreRewardContainer = document.getElementById("score_reward_container");
+  var scoreRewardDetail = document.getElementById("score_reward_detail");
+  var TRANSFORMED_BONUS_RATIO = 5;
+  var KILLED_ENEMY_REWARD = 30;
+  var HERO_HURT_MALUS = 30;
+  var score = 0;
   var lifePoints = { max: 4, value: 4 };
   var INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
   var invisible = false;
-  var successfulKillsScore = 0;
   var ennemiesOnScreen = [];
   var transformed = false;
+  var currentMalusContainerTimeout = null;
+  var currentRewardContainerTimeout = null;
   var Answer = class {
     constructor(data, good) {
       this.data = data;
@@ -249,8 +257,11 @@
       if (!enemyCanBeHit(enemy)) {
         return;
       }
-      destroyEnemyAndLaunchNewOne(enemy);
-      successfulKillsScore++;
+      if (!enemy.answer.good) {
+        killWrongEnemy(enemy);
+      } else {
+        killRightEnemyAndUpdateScore(enemy);
+      }
     });
     setTimeout(() => {
       launchHeroRunAnimation();
@@ -279,7 +290,58 @@
     enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 10}px`;
     requestAnimationFrame(() => moveEnemy(enemy));
   };
-  var destroyEnemy = (enemy) => {
+  var killRightEnemyAndUpdateScore = (enemy) => {
+    killEnemy(enemy);
+    const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
+    score += bonus_ratio * KILLED_ENEMY_REWARD;
+    updateScoreDisplay();
+    displayReward("Congrats! You destroyed a good answer!");
+  };
+  var updateScoreDisplay = () => {
+    scoreContainer.innerHTML = score.toString();
+  };
+  var killWrongEnemy = (enemy) => {
+    scoreMalusContainer.style.display = "flex";
+    killEnemy(enemy);
+    displayMalus("MALUS! Wrong enemy killed!");
+    score -= HERO_HURT_MALUS;
+    updateScoreDisplay();
+  };
+  var displayMalus = (content) => {
+    if (currentMalusContainerTimeout) {
+      clearTimeout(currentMalusContainerTimeout);
+      currentMalusContainerTimeout = null;
+    }
+    scoreMalusContainer.style.display = "flex";
+    currentMalusContainerTimeout = setTimeout(() => {
+      scoreMalusDetail.innerHTML = "";
+      scoreMalusContainer.style.display = "none";
+    }, 2e3);
+  };
+  var hideMalus = () => {
+    hideReward();
+    if (currentMalusContainerTimeout) {
+      clearTimeout(currentMalusContainerTimeout);
+      currentMalusContainerTimeout = null;
+    }
+    scoreMalusDetail.innerHTML = "";
+    scoreMalusContainer.style.display = "none";
+  };
+  var displayReward = (content) => {
+    hideMalus();
+    if (currentRewardContainerTimeout) {
+      clearTimeout(currentRewardContainerTimeout);
+      currentRewardContainerTimeout = null;
+    }
+    scoreRewardContainer.style.display = "flex";
+    currentRewardContainerTimeout = setTimeout(() => {
+      scoreRewardDetail.innerHTML = "";
+      scoreRewardContainer.style.display = "none";
+    }, 2e3);
+  };
+  var hideReward = () => {
+  };
+  var killEnemy = (enemy) => {
     const launchExplosion = () => {
       launchAnimationAndDeclareItLaunched(
         enemy.element.firstChild,
@@ -293,13 +355,16 @@
         8 /* opponent_death */
       );
     };
+    launchExplosion();
+    destroyEnemyAndLaunchNewOne(enemy);
+  };
+  var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
     setTimeout(() => {
       ANIMATION_RUNNING_VALUES[6 /* opponent_run */] = 0;
       enemy.element.remove();
       triggerOpponentsApparition();
     }, 300);
-    launchExplosion();
     ennemiesOnScreen.forEach((enemyOnScreen, index) => {
       if (enemy === enemyOnScreen) {
         ennemiesOnScreen.splice(index, 1);
@@ -312,8 +377,13 @@
   };
   var hurtHero = () => {
     lifePoints.value--;
+    if (score >= HERO_HURT_MALUS) {
+      score -= HERO_HURT_MALUS;
+      updateScoreDisplay();
+    }
     updateLifePointsDisplay();
     launchHeroHurtAnimation();
+    displayMalus("Malus! You were hurt!");
   };
   var detectCollision = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
@@ -389,7 +459,7 @@
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyOnScreen.element.getBoundingClientRect().left) {
       }
-      if (enemyOnScreen.element.getBoundingClientRect().left < 0) {
+      if (enemyOnScreen.element.getBoundingClientRect().left < 0 - window.innerWidth * 0.05) {
         destroyEnemyAndLaunchNewOne(enemyOnScreen);
       }
     });
@@ -512,12 +582,13 @@
   window.onload = () => {
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
+    updateLifePointsDisplay();
+    updateScoreDisplay();
     launchRun();
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
     triggerOpponentsApparition();
-    updateLifePointsDisplay();
   };
 
   // src/boss.ts
