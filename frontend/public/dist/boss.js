@@ -77,26 +77,6 @@
     }
   };
   var backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
-  var ANIMATION_ID = /* @__PURE__ */ ((ANIMATION_ID2) => {
-    ANIMATION_ID2[ANIMATION_ID2["attack"] = 0] = "attack";
-    ANIMATION_ID2[ANIMATION_ID2["run"] = 1] = "run";
-    ANIMATION_ID2[ANIMATION_ID2["walk"] = 2] = "walk";
-    ANIMATION_ID2[ANIMATION_ID2["hurt"] = 3] = "hurt";
-    ANIMATION_ID2[ANIMATION_ID2["death"] = 4] = "death";
-    ANIMATION_ID2[ANIMATION_ID2["idle"] = 5] = "idle";
-    ANIMATION_ID2[ANIMATION_ID2["opponent_run"] = 6] = "opponent_run";
-    ANIMATION_ID2[ANIMATION_ID2["opponent_move"] = 7] = "opponent_move";
-    ANIMATION_ID2[ANIMATION_ID2["opponent_death"] = 8] = "opponent_death";
-    ANIMATION_ID2[ANIMATION_ID2["camera_left_to_right"] = 9] = "camera_left_to_right";
-    ANIMATION_ID2[ANIMATION_ID2["camera_right_to_left"] = 10] = "camera_right_to_left";
-    ANIMATION_ID2[ANIMATION_ID2["character_left_to_right_move"] = 11] = "character_left_to_right_move";
-    ANIMATION_ID2[ANIMATION_ID2["transformation_pre_run"] = 12] = "transformation_pre_run";
-    ANIMATION_ID2[ANIMATION_ID2["transformation_run"] = 13] = "transformation_run";
-    ANIMATION_ID2[ANIMATION_ID2["transformation_hurt"] = 14] = "transformation_hurt";
-    ANIMATION_ID2[ANIMATION_ID2["boss_idle"] = 15] = "boss_idle";
-    ANIMATION_ID2[ANIMATION_ID2["boss_attack"] = 16] = "boss_attack";
-    return ANIMATION_ID2;
-  })(ANIMATION_ID || {});
   var ANIMATION_RUNNING_VALUES = {
     [0 /* attack */]: 0,
     [1 /* run */]: 0,
@@ -525,5 +505,56 @@
     checkForOpponentsClearance();
     triggerOpponentsApparition();
   };
+
+  // src/boss.ts
+  var heroImage2 = document.getElementById("heroImage");
+  var bossImage = document.getElementById("bossImage");
+  var launcHeroIdle = () => {
+    launchAnimationAndDeclareItLaunched(
+      heroImage2,
+      0,
+      "png",
+      "assets/challenge/characters/hero/idle",
+      1,
+      7,
+      1,
+      true,
+      5 /* idle */
+    );
+  };
+  var launchBossIdle = () => {
+    launchAnimationAndDeclareItLaunched(
+      bossImage,
+      0,
+      "png",
+      "assets/challenge/characters/bosses/ctuluhu/idle",
+      1,
+      15,
+      1,
+      true,
+      15 /* boss_idle */
+    );
+  };
+  var launchBossAttack = () => {
+    launchAnimationAndDeclareItLaunched(
+      bossImage,
+      0,
+      "png",
+      "assets/challenge/characters/bosses/ctuluhu/attack",
+      1,
+      17,
+      1,
+      false,
+      16 /* boss_attack */
+    );
+  };
+  window.onload = () => {
+    launcHeroIdle();
+    launchBossIdle();
+    setTimeout(() => {
+      ANIMATION_RUNNING_VALUES[15 /* boss_idle */] = 0;
+      launchBossAttack();
+    }, 1e3);
+  };
 })();
-//# sourceMappingURL=challenge.js.map
+//# sourceMappingURL=boss.js.map

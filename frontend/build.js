@@ -7,6 +7,7 @@ build({
     path.join("src", "notebook.ts"),
     path.join("src", "challenge.ts"),
     path.join("src", "discovery.ts"),
+    path.join("src", "boss.ts"),
   ],
   bundle: true,
   minify: false,

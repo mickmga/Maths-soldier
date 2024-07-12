@@ -1,0 +1,49 @@
+html,
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#background {
+  position: absolute;
+  height: 90vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+}
+
+#ground {
+  position: absolute;
+  height: 10vh;
+  top: 90vh;
+  left: 0;
+  width: 100vw;
+  background: #0c0324;
+}
+
+#hero_container {
+  position: absolute;
+  top: 70vh;
+  left: 20vw;
+  height: 20vh;
+  width: auto;
+}
+
+#boss_container {
+  position: absolute;
+  top: 30vh;
+  right: 15vw;
+  height: 60vh;
+  width: auto;
+}
+
+#hero_container img,
+#boss_container img {
+  height: 100%;
+  width: auto;
+}

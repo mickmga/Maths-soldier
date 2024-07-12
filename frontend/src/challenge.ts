@@ -139,12 +139,13 @@ const makeId = (length: number) => {
   return result;
 };
 
-enum ANIMATION_ID {
+export enum ANIMATION_ID {
   attack,
   run,
   walk,
   hurt,
   death,
+  idle,
   opponent_run,
   opponent_move,
   opponent_death,
@@ -154,14 +155,17 @@ enum ANIMATION_ID {
   transformation_pre_run,
   transformation_run,
   transformation_hurt,
+  boss_idle,
+  boss_attack,
 }
 
-const ANIMATION_RUNNING_VALUES = {
+export const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.attack]: 0,
   [ANIMATION_ID.run]: 0,
   [ANIMATION_ID.walk]: 0,
   [ANIMATION_ID.death]: 0,
   [ANIMATION_ID.hurt]: 0,
+  [ANIMATION_ID.idle]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.opponent_move]: 0,
@@ -171,14 +175,17 @@ const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.transformation_pre_run]: 0,
   [ANIMATION_ID.transformation_run]: 0,
   [ANIMATION_ID.transformation_hurt]: 0,
+  [ANIMATION_ID.boss_idle]: 0,
+  [ANIMATION_ID.boss_attack]: 0,
 };
 
-const THROTTLE_NUMS = {
+export const THROTTLE_NUMS = {
   [ANIMATION_ID.attack]: 0,
   [ANIMATION_ID.run]: 5,
   [ANIMATION_ID.walk]: 5,
   [ANIMATION_ID.death]: 5,
   [ANIMATION_ID.hurt]: 0,
+  [ANIMATION_ID.idle]: 20,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.opponent_move]: 0,
@@ -188,6 +195,8 @@ const THROTTLE_NUMS = {
   [ANIMATION_ID.transformation_pre_run]: 5,
   [ANIMATION_ID.transformation_run]: 5,
   [ANIMATION_ID.transformation_hurt]: 0,
+  [ANIMATION_ID.boss_idle]: 15,
+  [ANIMATION_ID.boss_attack]: 10,
 };
 
 const createMapBlock = (left: number) => {
@@ -258,7 +267,7 @@ const updateScores = () => {
     "Bonnes réponses: " + successfulKillsScore.toString();
 };
 
-const launchAnimationAndDeclareItLaunched = (
+export const launchAnimationAndDeclareItLaunched = (
   characterElement: HTMLImageElement,
   throttleNum: number,
   extension: string,
