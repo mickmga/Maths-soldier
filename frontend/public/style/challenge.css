@@ -95,11 +95,11 @@ body {
 
 #answer_data_container {
   height: 20vh;
-  width: 45vw;
+  width: 70vw;
   border-radius: 12px;
   background: grey;
   position: absolute;
-  left: 20vw;
+  left: 15vw;
   top: 80vh;
   z-index: 3;
   display: flex;
@@ -112,10 +112,10 @@ body {
 
 #answer_data_container div {
   height: 100%;
-  width: 40%;
+  width: auto;
   display: flex;
   align-items: center;
-  font-size: large;
+  font-size: x-large;
 }
 
 #answer_data_container_left_logo_container {

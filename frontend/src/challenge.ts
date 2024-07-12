@@ -66,7 +66,10 @@ class Enemy {
 
 const CAPITALS = {
   title: "Additions",
-  good: [new Answer("10+3=6*8", true), new Answer("10+10=20", true)],
+  good: [
+    new Answer("10+3=6*8", true),
+    new Answer(" the derivative of 'f(x) = 1963' is 1963 ", true),
+  ],
   bad: [new Answer("3+6=10", false), new Answer("2+3=7", false)],
 };
 
@@ -139,7 +142,7 @@ const buildAndLaunchEnemy = (answer: Answer) => {
   }
   lightUpAnswerDataContainer();
 
-  answerDataValue.innerHTML = enemy.answer.data;
+  //answerDataValue.innerHTML = enemy.answer.data;
 
   launchOpponent(enemy);
 };
