@@ -94,13 +94,13 @@ body {
 }
 
 #answer_data_container {
-  height: 10vh;
-  width: 25vw;
+  height: 20vh;
+  width: 45vw;
   border-radius: 12px;
   background: grey;
   position: absolute;
-  left: 35vw;
-  top: 85vh;
+  left: 20vw;
+  top: 80vh;
   z-index: 3;
   display: flex;
   justify-content: space-between;
@@ -159,4 +159,15 @@ body {
   z-index: 10;
   font-size: large;
   color: green;
+}
+
+#transformed_hero_bonus_reward_container {
+  position: absolute;
+  top: 50vh;
+  left: 60vw;
+  display: none;
+  flex-direction: column;
+  z-index: 10;
+  font-size: xx-large;
+  color: red;
 }

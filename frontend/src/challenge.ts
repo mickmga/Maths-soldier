@@ -20,7 +20,13 @@ const TRANSFORMED_BONUS_RATIO = 5;
 const KILLED_ENEMY_REWARD = 30;
 const HERO_HURT_MALUS = 30;
 
+const REWARD_TIMEOUT_DURATION = 2000;
+
+let timeStoped = false;
+
 let score = 0;
+
+let heroIsAlive = true;
 
 const lifePoints = { max: 4, value: 4 };
 let INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
@@ -33,6 +39,9 @@ let transformed = false;
 
 let currentMalusContainerTimeout: ReturnType<typeof setTimeout> | null = null;
 let currentRewardContainerTimeout: ReturnType<typeof setTimeout> | null = null;
+let currentTransformationRewardContainerTimeout: ReturnType<
+  typeof setTimeout
+> | null = null;
 
 class Answer {
   data: string;
@@ -57,7 +66,7 @@ class Enemy {
 
 const CAPITALS = {
   title: "Additions",
-  good: [new Answer("10+4=14", true), new Answer("10=10=20", true)],
+  good: [new Answer("10+3=6*8", true), new Answer("10+10=20", true)],
   bad: [new Answer("3+6=10", false), new Answer("2+3=7", false)],
 };
 
@@ -167,6 +176,8 @@ export enum ANIMATION_ID {
   hurt,
   death,
   idle,
+  stop_time,
+  cancel_stop_time,
   opponent_run,
   opponent_move,
   opponent_death,
@@ -187,6 +198,8 @@ export const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.death]: 0,
   [ANIMATION_ID.hurt]: 0,
   [ANIMATION_ID.idle]: 0,
+  [ANIMATION_ID.stop_time]: 0,
+  [ANIMATION_ID.cancel_stop_time]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.opponent_move]: 0,
@@ -207,6 +220,8 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.death]: 5,
   [ANIMATION_ID.hurt]: 0,
   [ANIMATION_ID.idle]: 20,
+  [ANIMATION_ID.stop_time]: 5,
+  [ANIMATION_ID.cancel_stop_time]: 5,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.opponent_move]: 0,
@@ -387,6 +402,25 @@ const initAnimation = (animationId: ANIMATION_ID) => {
   ANIMATION_RUNNING_VALUES[animationId] = 0;
 };
 
+const initAllAnimations = () => {
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.attack] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.death] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.hurt] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.idle] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_death] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.character_left_to_right_move] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_hurt] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.boss_idle] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.boss_attack] = 0;
+};
+
 const turnHeroTransformationOff = () => {
   transformed = false;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
@@ -461,6 +495,9 @@ const launchOpponent = (enemy: Enemy) => {
 };
 
 const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
+  if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] !== 1) {
+    return;
+  }
   if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.opponent_move]) {
     throttleNum++;
     return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
@@ -484,6 +521,12 @@ const killRightEnemyAndUpdateScore = (enemy: Enemy) => {
   updateScoreDisplay();
 
   displayReward("Congrats! You destroyed a good answer!");
+
+  if (transformed) {
+    displayTransformationKillReward(
+      `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
+    );
+  }
 };
 
 const updateScoreDisplay = () => {
@@ -543,6 +586,23 @@ const displayReward = (content: string) => {
   }, 2000);
 };
 
+const displayTransformationKillReward = (content: string) => {
+  const transformationRewardContainer = document.getElementById(
+    "transformed_hero_bonus_reward_container"
+  )!;
+  transformationRewardContainer.innerHTML = content;
+  transformationRewardContainer.style.display = "flex";
+
+  if (currentTransformationRewardContainerTimeout) {
+    clearTimeout(currentTransformationRewardContainerTimeout);
+    currentTransformationRewardContainerTimeout = null;
+  }
+
+  currentRewardContainerTimeout = setTimeout(() => {
+    transformationRewardContainer.style.display = "none";
+  }, REWARD_TIMEOUT_DURATION);
+};
+
 const hideReward = () => {};
 
 const killEnemy = (enemy: Enemy) => {
@@ -588,6 +648,8 @@ const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
 
 const hurtHero = () => {
   lifePoints.value--;
+  checkForHerosDeath();
+
   if (score >= HERO_HURT_MALUS) {
     score -= HERO_HURT_MALUS;
     updateScoreDisplay();
@@ -595,6 +657,17 @@ const hurtHero = () => {
   updateLifePointsDisplay();
   launchHeroHurtAnimation();
   displayMalus("Malus! You were hurt!");
+};
+
+const checkForHerosDeath = () => {
+  if (lifePoints.value === 0) {
+    killHero();
+  }
+};
+
+const killHero = () => {
+  heroIsAlive = false;
+  launchDeathAnimation();
 };
 
 const detectCollision = () => {
@@ -713,6 +786,9 @@ const launchHeroRunAnimation = () => {
 };
 
 const launchRun = () => {
+  if (timeStoped) {
+    return;
+  }
   startCamera();
   moveCamera(ANIMATION_ID.camera_left_to_right);
   launchHeroRunAnimation();
@@ -741,7 +817,6 @@ const launchFly = (jumpingForward = true) => {
     // Check if the hero has returned to the initial position
     if (newTop >= heroInitialTop) {
       heroContainer.style.top = `${heroInitialTop}px`;
-      //launchRun(); // Restart the run animation
       return;
     }
   }
@@ -767,7 +842,69 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "y") {
     launchDeathAnimation();
   }
+
+  if (event.key === "s") {
+    if (timeStoped) {
+      cancelStopTimeSpell();
+    } else {
+      stopTime();
+    }
+  }
 });
+
+const stopTime = () => {
+  timeStoped = true;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.attack] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.death] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.hurt] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.idle] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_death] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.character_left_to_right_move] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_hurt] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.boss_idle] = 0;
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.boss_attack] = 0;
+
+  launchAnimationAndDeclareItLaunched(
+    heroImage,
+    0,
+    "png",
+    "assets/challenge/characters/hero/stop_time",
+    1,
+    4,
+    1,
+    false,
+    ANIMATION_ID.stop_time
+  );
+};
+
+const cancelStopTimeSpell = () => {
+  timeStoped = false;
+
+  launchAnimationAndDeclareItLaunched(
+    heroImage,
+    0,
+    "png",
+    "assets/challenge/characters/hero/cancel_stop_time",
+    1,
+    4,
+    1,
+    false,
+    ANIMATION_ID.cancel_stop_time
+  );
+
+  setTimeout(() => {
+    initAllAnimations();
+    launchRun();
+    ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+  }, 1000);
+};
 
 const checkForOpponentsClearance = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
@@ -915,7 +1052,11 @@ const launchHeroHurtAnimation = () => {
 
   stopCamera();
 
-  setTimeout(launchRun, 500);
+  setTimeout(() => {
+    if (heroIsAlive) {
+      launchRun();
+    }
+  }, 500);
 };
 
 const stopCamera = () => {
@@ -924,7 +1065,6 @@ const stopCamera = () => {
 
 const startCamera = () => {
   if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] > 0) {
-    console.log("move was already started");
     return;
   }
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;

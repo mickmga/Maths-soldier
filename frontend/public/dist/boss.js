@@ -14,7 +14,10 @@
   var TRANSFORMED_BONUS_RATIO = 5;
   var KILLED_ENEMY_REWARD = 30;
   var HERO_HURT_MALUS = 30;
+  var REWARD_TIMEOUT_DURATION = 2e3;
+  var timeStoped = false;
   var score = 0;
+  var heroIsAlive = true;
   var lifePoints = { max: 4, value: 4 };
   var INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
   var invisible = false;
@@ -22,6 +25,7 @@
   var transformed = false;
   var currentMalusContainerTimeout = null;
   var currentRewardContainerTimeout = null;
+  var currentTransformationRewardContainerTimeout = null;
   var Answer = class {
     constructor(data, good) {
       this.data = data;
@@ -37,7 +41,7 @@
   };
   var CAPITALS = {
     title: "Additions",
-    good: [new Answer("10+4=14", true), new Answer("10=10=20", true)],
+    good: [new Answer("10+3=6*8", true), new Answer("10+10=20", true)],
     bad: [new Answer("3+6=10", false), new Answer("2+3=7", false)]
   };
   var getNextAnswer = () => {
@@ -99,17 +103,19 @@
     [4 /* death */]: 0,
     [3 /* hurt */]: 0,
     [5 /* idle */]: 0,
-    [6 /* opponent_run */]: 0,
-    [8 /* opponent_death */]: 0,
-    [7 /* opponent_move */]: 0,
-    [9 /* camera_left_to_right */]: 0,
-    [10 /* camera_right_to_left */]: 0,
-    [11 /* character_left_to_right_move */]: 0,
-    [12 /* transformation_pre_run */]: 0,
-    [13 /* transformation_run */]: 0,
-    [14 /* transformation_hurt */]: 0,
-    [15 /* boss_idle */]: 0,
-    [16 /* boss_attack */]: 0
+    [6 /* stop_time */]: 0,
+    [7 /* cancel_stop_time */]: 0,
+    [8 /* opponent_run */]: 0,
+    [10 /* opponent_death */]: 0,
+    [9 /* opponent_move */]: 0,
+    [11 /* camera_left_to_right */]: 0,
+    [12 /* camera_right_to_left */]: 0,
+    [13 /* character_left_to_right_move */]: 0,
+    [14 /* transformation_pre_run */]: 0,
+    [15 /* transformation_run */]: 0,
+    [16 /* transformation_hurt */]: 0,
+    [17 /* boss_idle */]: 0,
+    [18 /* boss_attack */]: 0
   };
   var THROTTLE_NUMS = {
     [0 /* attack */]: 0,
@@ -118,17 +124,19 @@
     [4 /* death */]: 5,
     [3 /* hurt */]: 0,
     [5 /* idle */]: 20,
-    [6 /* opponent_run */]: 5,
-    [8 /* opponent_death */]: 0,
-    [7 /* opponent_move */]: 0,
-    [9 /* camera_left_to_right */]: 0,
-    [10 /* camera_right_to_left */]: 5,
-    [11 /* character_left_to_right_move */]: 5,
-    [12 /* transformation_pre_run */]: 5,
-    [13 /* transformation_run */]: 5,
-    [14 /* transformation_hurt */]: 0,
-    [15 /* boss_idle */]: 15,
-    [16 /* boss_attack */]: 10
+    [6 /* stop_time */]: 5,
+    [7 /* cancel_stop_time */]: 5,
+    [8 /* opponent_run */]: 5,
+    [10 /* opponent_death */]: 0,
+    [9 /* opponent_move */]: 0,
+    [11 /* camera_left_to_right */]: 0,
+    [12 /* camera_right_to_left */]: 5,
+    [13 /* character_left_to_right_move */]: 5,
+    [14 /* transformation_pre_run */]: 5,
+    [15 /* transformation_run */]: 5,
+    [16 /* transformation_hurt */]: 0,
+    [17 /* boss_idle */]: 15,
+    [18 /* boss_attack */]: 10
   };
   var createMapBlock = (left) => {
     const block = document.createElement("div");
@@ -144,24 +152,24 @@
   var slowTime = (multiplicator) => {
     const runMultiplicatorBase = THROTTLE_NUMS[1 /* run */] ? THROTTLE_NUMS[1 /* run */] : 1;
     THROTTLE_NUMS[1 /* run */] = runMultiplicatorBase * multiplicator * 1.5 * 1.5;
-    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[9 /* camera_left_to_right */] ? THROTTLE_NUMS[9 /* camera_left_to_right */] : 1;
-    THROTTLE_NUMS[9 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
-    const opponentRunMultiplicatorBase = THROTTLE_NUMS[6 /* opponent_run */] ? THROTTLE_NUMS[6 /* opponent_run */] : 1;
-    THROTTLE_NUMS[6 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
-    const opponentMoveMultiplicatorBase = THROTTLE_NUMS[7 /* opponent_move */] ? THROTTLE_NUMS[7 /* opponent_move */] : 1;
-    THROTTLE_NUMS[7 /* opponent_move */] = opponentMoveMultiplicatorBase * multiplicator * 2;
+    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[11 /* camera_left_to_right */] ? THROTTLE_NUMS[11 /* camera_left_to_right */] : 1;
+    THROTTLE_NUMS[11 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
+    const opponentRunMultiplicatorBase = THROTTLE_NUMS[8 /* opponent_run */] ? THROTTLE_NUMS[8 /* opponent_run */] : 1;
+    THROTTLE_NUMS[8 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
+    const opponentMoveMultiplicatorBase = THROTTLE_NUMS[9 /* opponent_move */] ? THROTTLE_NUMS[9 /* opponent_move */] : 1;
+    THROTTLE_NUMS[9 /* opponent_move */] = opponentMoveMultiplicatorBase * multiplicator * 2;
   };
   var moveCamera = (direction, throttleNum = 0) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
-    if (throttleNum < THROTTLE_NUMS[9 /* camera_left_to_right */]) {
+    if (throttleNum < THROTTLE_NUMS[11 /* camera_left_to_right */]) {
       throttleNum++;
       return requestAnimationFrame(() => moveCamera(direction, throttleNum));
     }
     throttleNum = 0;
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 9 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+      (map) => map.style.left = `${map.offsetLeft + (direction === 11 /* camera_left_to_right */ ? -1 : 1) * 4}px`
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
@@ -225,9 +233,27 @@
       )
     );
   };
+  var initAllAnimations = () => {
+    ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
+    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    ANIMATION_RUNNING_VALUES[4 /* death */] = 0;
+    ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[5 /* idle */] = 0;
+    ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
+    ANIMATION_RUNNING_VALUES[10 /* opponent_death */] = 0;
+    ANIMATION_RUNNING_VALUES[9 /* opponent_move */] = 0;
+    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[12 /* camera_right_to_left */] = 0;
+    ANIMATION_RUNNING_VALUES[13 /* character_left_to_right_move */] = 0;
+    ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* boss_idle */] = 0;
+    ANIMATION_RUNNING_VALUES[18 /* boss_attack */] = 0;
+  };
   var turnHeroTransformationOff = () => {
     transformed = false;
-    ANIMATION_RUNNING_VALUES[13 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
   var launchAttack = () => {
@@ -235,7 +261,7 @@
       return;
     }
     if (transformed) {
-      ANIMATION_RUNNING_VALUES[13 /* transformation_run */] = 0;
+      ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
     } else {
       ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     }
@@ -277,12 +303,15 @@
       9,
       1,
       true,
-      6 /* opponent_run */
+      8 /* opponent_run */
     );
     moveEnemy(enemy);
   };
   var moveEnemy = (enemy, throttleNum = 0) => {
-    if (throttleNum < THROTTLE_NUMS[7 /* opponent_move */]) {
+    if (ANIMATION_RUNNING_VALUES[8 /* opponent_run */] !== 1) {
+      return;
+    }
+    if (throttleNum < THROTTLE_NUMS[9 /* opponent_move */]) {
       throttleNum++;
       return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
     }
@@ -296,6 +325,11 @@
     score += bonus_ratio * KILLED_ENEMY_REWARD;
     updateScoreDisplay();
     displayReward("Congrats! You destroyed a good answer!");
+    if (transformed) {
+      displayTransformationKillReward(
+        `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
+      );
+    }
   };
   var updateScoreDisplay = () => {
     scoreContainer.innerHTML = score.toString();
@@ -339,6 +373,20 @@
       scoreRewardContainer.style.display = "none";
     }, 2e3);
   };
+  var displayTransformationKillReward = (content) => {
+    const transformationRewardContainer = document.getElementById(
+      "transformed_hero_bonus_reward_container"
+    );
+    transformationRewardContainer.innerHTML = content;
+    transformationRewardContainer.style.display = "flex";
+    if (currentTransformationRewardContainerTimeout) {
+      clearTimeout(currentTransformationRewardContainerTimeout);
+      currentTransformationRewardContainerTimeout = null;
+    }
+    currentRewardContainerTimeout = setTimeout(() => {
+      transformationRewardContainer.style.display = "none";
+    }, REWARD_TIMEOUT_DURATION);
+  };
   var hideReward = () => {
   };
   var killEnemy = (enemy) => {
@@ -352,7 +400,7 @@
         10,
         1,
         false,
-        8 /* opponent_death */
+        10 /* opponent_death */
       );
     };
     launchExplosion();
@@ -361,7 +409,7 @@
   var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
     setTimeout(() => {
-      ANIMATION_RUNNING_VALUES[6 /* opponent_run */] = 0;
+      ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
       enemy.element.remove();
       triggerOpponentsApparition();
     }, 300);
@@ -373,10 +421,11 @@
   };
   var destroyEnemyAndLaunchNewOne = (enemy) => {
     destroyEnemy(enemy);
-    ANIMATION_RUNNING_VALUES[6 /* opponent_run */] = 0;
+    ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
   };
   var hurtHero = () => {
     lifePoints.value--;
+    checkForHerosDeath();
     if (score >= HERO_HURT_MALUS) {
       score -= HERO_HURT_MALUS;
       updateScoreDisplay();
@@ -384,6 +433,15 @@
     updateLifePointsDisplay();
     launchHeroHurtAnimation();
     displayMalus("Malus! You were hurt!");
+  };
+  var checkForHerosDeath = () => {
+    if (lifePoints.value === 0) {
+      killHero();
+    }
+  };
+  var killHero = () => {
+    heroIsAlive = false;
+    launchDeathAnimation();
   };
   var detectCollision = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
@@ -429,12 +487,15 @@
       transformed ? 6 : 8,
       1,
       true,
-      transformed ? 13 /* transformation_run */ : 1 /* run */
+      transformed ? 15 /* transformation_run */ : 1 /* run */
     );
   };
   var launchRun = () => {
+    if (timeStoped) {
+      return;
+    }
     startCamera();
-    moveCamera(9 /* camera_left_to_right */);
+    moveCamera(11 /* camera_left_to_right */);
     launchHeroRunAnimation();
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
@@ -454,7 +515,63 @@
     if (event.key === "y") {
       launchDeathAnimation();
     }
+    if (event.key === "s") {
+      if (timeStoped) {
+        cancelStopTimeSpell();
+      } else {
+        stopTime();
+      }
+    }
   });
+  var stopTime = () => {
+    timeStoped = true;
+    ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
+    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    ANIMATION_RUNNING_VALUES[4 /* death */] = 0;
+    ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[5 /* idle */] = 0;
+    ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
+    ANIMATION_RUNNING_VALUES[10 /* opponent_death */] = 0;
+    ANIMATION_RUNNING_VALUES[9 /* opponent_move */] = 0;
+    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[12 /* camera_right_to_left */] = 0;
+    ANIMATION_RUNNING_VALUES[13 /* character_left_to_right_move */] = 0;
+    ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* boss_idle */] = 0;
+    ANIMATION_RUNNING_VALUES[18 /* boss_attack */] = 0;
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/hero/stop_time",
+      1,
+      4,
+      1,
+      false,
+      6 /* stop_time */
+    );
+  };
+  var cancelStopTimeSpell = () => {
+    timeStoped = false;
+    launchAnimationAndDeclareItLaunched(
+      heroImage,
+      0,
+      "png",
+      "assets/challenge/characters/hero/cancel_stop_time",
+      1,
+      4,
+      1,
+      false,
+      7 /* cancel_stop_time */
+    );
+    setTimeout(() => {
+      initAllAnimations();
+      launchRun();
+      ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+    }, 1e3);
+  };
   var checkForOpponentsClearance = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyOnScreen.element.getBoundingClientRect().left) {
@@ -488,14 +605,14 @@
         9,
         1,
         true,
-        12 /* transformation_pre_run */
+        14 /* transformation_pre_run */
       );
       clearAllOponentsAndTimeouts();
-      ANIMATION_RUNNING_VALUES[6 /* opponent_run */] = 0;
+      ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
       setTimeout(() => {
         triggerOpponentsApparition();
         document.getElementById("transformation_background").style.display = "none";
-        ANIMATION_RUNNING_VALUES[12 /* transformation_pre_run */] = 0;
+        ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
         launchAnimationAndDeclareItLaunched(
           heroImage,
           0,
@@ -505,7 +622,7 @@
           6,
           1,
           true,
-          13 /* transformation_run */
+          15 /* transformation_run */
         );
         setTimeout(turnHeroTransformationOff, 5e3);
       }, 2e3);
@@ -526,8 +643,8 @@
   };
   var launchDeathAnimation = () => {
     initHeroAnimations();
-    ANIMATION_RUNNING_VALUES[9 /* camera_left_to_right */] = 0;
-    const killHero = () => {
+    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
+    const killHero2 = () => {
       launchAnimationAndDeclareItLaunched(
         heroImage,
         0,
@@ -545,7 +662,7 @@
       transformed = false;
     }
     heroImage.src = "assets/challenge/characters/hero/death/1.png";
-    setTimeout(killHero, 1e3);
+    setTimeout(killHero2, 1e3);
   };
   var launchHeroHurtAnimation = () => {
     launchAnimationAndDeclareItLaunched(
@@ -557,26 +674,29 @@
       transformed ? 5 : 3,
       1,
       false,
-      transformed ? 14 /* transformation_hurt */ : 3 /* hurt */
+      transformed ? 16 /* transformation_hurt */ : 3 /* hurt */
     );
     initHeroAnimations();
     stopCamera();
-    setTimeout(launchRun, 500);
+    setTimeout(() => {
+      if (heroIsAlive) {
+        launchRun();
+      }
+    }, 500);
   };
   var stopCamera = () => {
-    ANIMATION_RUNNING_VALUES[9 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
   };
   var startCamera = () => {
-    if (ANIMATION_RUNNING_VALUES[9 /* camera_left_to_right */] > 0) {
-      console.log("move was already started");
+    if (ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] > 0) {
       return;
     }
-    ANIMATION_RUNNING_VALUES[9 /* camera_left_to_right */]++;
+    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */]++;
   };
   var initHeroAnimations = () => {
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[12 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[13 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
     ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
   };
   window.onload = () => {
@@ -617,7 +737,7 @@
       15,
       1,
       true,
-      15 /* boss_idle */
+      17 /* boss_idle */
     );
   };
   var launchBossAttack = () => {
@@ -630,14 +750,14 @@
       17,
       1,
       false,
-      16 /* boss_attack */
+      18 /* boss_attack */
     );
   };
   window.onload = () => {
     launcHeroIdle();
     launchBossIdle();
     setTimeout(() => {
-      ANIMATION_RUNNING_VALUES[15 /* boss_idle */] = 0;
+      ANIMATION_RUNNING_VALUES[17 /* boss_idle */] = 0;
       launchBossAttack();
     }, 1e3);
   };
