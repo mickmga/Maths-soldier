@@ -60,7 +60,14 @@ body {
 .lifePointContainer {
   width: 20%;
   aspect-ratio: 1/1;
-  background: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lifePointContainer img {
+  height: 80%;
+  width: auto;
 }
 
 #killed_score {

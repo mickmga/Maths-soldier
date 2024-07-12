@@ -8,6 +8,7 @@
   var successfulKillsScoreContainer = document.getElementById("killed_score");
   var answerDataContainer = document.getElementById("answer_data_container");
   var answerDataValue = document.getElementById("answer_data_value");
+  var lifePoints = { max: 4, value: 4 };
   var INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
   var invisible = false;
   var successfulKillsScore = 0;
@@ -37,6 +38,12 @@
       return CAPITALS.good.length ? CAPITALS.good.pop() : CAPITALS.bad.length ? CAPITALS.bad.pop() : "done";
     } else {
       return CAPITALS.bad.length ? CAPITALS.bad.pop() : CAPITALS.good.length ? CAPITALS.good.pop() : "done";
+    }
+  };
+  var updateLifePointsDisplay = () => {
+    for (let i = 1; i <= lifePoints.max; i++) {
+      const lifePointOpacity = i <= lifePoints.value ? "1" : "0.3";
+      document.getElementById(`lifePointContainer_${i}`).style.opacity = lifePointOpacity;
     }
   };
   var buildEnemyElement = () => {
@@ -153,6 +160,8 @@
     THROTTLE_NUMS[9 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
     const opponentRunMultiplicatorBase = THROTTLE_NUMS[6 /* opponent_run */] ? THROTTLE_NUMS[6 /* opponent_run */] : 1;
     THROTTLE_NUMS[6 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
+    const opponentMoveMultiplicatorBase = THROTTLE_NUMS[7 /* opponent_move */] ? THROTTLE_NUMS[7 /* opponent_move */] : 1;
+    THROTTLE_NUMS[7 /* opponent_move */] = opponentMoveMultiplicatorBase * multiplicator * 2;
   };
   var moveCamera = (direction, throttleNum = 0) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
@@ -284,7 +293,6 @@
   var moveEnemy = (enemy, throttleNum = 0) => {
     if (throttleNum < THROTTLE_NUMS[7 /* opponent_move */]) {
       throttleNum++;
-      alert("block");
       return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
     }
     throttleNum = 0;
@@ -322,12 +330,17 @@
     destroyEnemy(enemy);
     ANIMATION_RUNNING_VALUES[6 /* opponent_run */] = 0;
   };
+  var hurtHero = () => {
+    lifePoints.value--;
+    updateLifePointsDisplay();
+    launchHeroHurtAnimation();
+  };
   var detectCollision = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width > enemyOnScreen.element.getBoundingClientRect().left && enemyOnScreen.collideable) {
         enemyOnScreen.collideable = false;
         if (!invisible) {
-          launchHeroHurtAnimation();
+          hurtHero();
         }
       }
     });
@@ -524,6 +537,7 @@
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
     triggerOpponentsApparition();
+    updateLifePointsDisplay();
   };
 })();
 //# sourceMappingURL=challenge.js.map

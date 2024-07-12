@@ -2784,6 +2784,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     block.append(backgroundImage);
     block.style.position = "fixed";
     block.style.left = `${left}px`;
+    block.style.top = `0px`;
     document.getElementsByTagName("body")[0].append(block);
     if (left === window.innerWidth) {
       const golemImg = document.createElement("img");

@@ -305,3 +305,13 @@
   left: -17.5vw;
   width: auto;
 }
+
+#ground {
+  position: fixed;
+  top: 80%;
+  width: 100%;
+  height: 20%;
+  left: 0;
+  background: #1c7dbf;
+  z-index: 10;
+}

@@ -10,7 +10,7 @@ const successfulKillsScoreContainer = document.getElementById("killed_score")!;
 const answerDataContainer = document.getElementById("answer_data_container")!;
 const answerDataValue = document.getElementById("answer_data_value")!;
 
-let lifePoints = 4;
+const lifePoints = { max: 4, value: 4 };
 let INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
 
 let invisible = false;
@@ -66,6 +66,15 @@ const getNextAnswer = () => {
       : CAPITALS.good.length
       ? CAPITALS.good.pop()
       : "done";
+  }
+};
+
+const updateLifePointsDisplay = () => {
+  for (let i = 1; i <= lifePoints.max; i++) {
+    const lifePointOpacity = i <= lifePoints.value ? "1" : "0.3";
+
+    document.getElementById(`lifePointContainer_${i}`)!.style.opacity =
+      lifePointOpacity;
   }
 };
 
@@ -233,6 +242,14 @@ const slowTime = (multiplicator: number) => {
     : 1;
   THROTTLE_NUMS[ANIMATION_ID.opponent_run] =
     opponentRunMultiplicatorBase * multiplicator;
+
+  const opponentMoveMultiplicatorBase = THROTTLE_NUMS[
+    ANIMATION_ID.opponent_move
+  ]
+    ? THROTTLE_NUMS[ANIMATION_ID.opponent_move]
+    : 1;
+  THROTTLE_NUMS[ANIMATION_ID.opponent_move] =
+    opponentMoveMultiplicatorBase * multiplicator * 2;
 };
 
 const moveCamera = (direction: ANIMATION_ID, throttleNum = 0): any => {
@@ -437,7 +454,6 @@ const launchOpponent = (enemy: Enemy) => {
 const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
   if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.opponent_move]) {
     throttleNum++;
-    alert("block");
     return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
   }
 
@@ -486,6 +502,12 @@ const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
 };
 
+const hurtHero = () => {
+  lifePoints.value--;
+  updateLifePointsDisplay();
+  launchHeroHurtAnimation();
+};
+
 const detectCollision = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
     if (
@@ -497,7 +519,7 @@ const detectCollision = () => {
       enemyOnScreen.collideable = false;
 
       if (!invisible) {
-        launchHeroHurtAnimation();
+        hurtHero();
       }
     }
   });
@@ -831,4 +853,5 @@ window.onload = () => {
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
   triggerOpponentsApparition();
+  updateLifePointsDisplay();
 };

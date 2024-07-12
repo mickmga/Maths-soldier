@@ -143,6 +143,7 @@ const createMapPalaceBlock = (left: number) => {
   block.append(backgroundImage);
   block.style.position = "fixed";
   block.style.left = `${left}px`;
+  block.style.top = `0px`;
 
   document.getElementsByTagName("body")[0].append(block);
 
