@@ -67,10 +67,29 @@ class Enemy {
 const CAPITALS = {
   title: "Additions",
   good: [
-    new Answer("10+3=6*8", true),
-    new Answer(" the derivative of 'f(x) = 1963' is 1963 ", true),
+    new Answer("10+5=15", true),
+    new Answer("6X6=36", true),
+    new Answer("10X2=20", true),
+    new Answer("10+12=22", true),
+    new Answer("10-4=6", true),
+    new Answer("6x3=18", true),
+    new Answer("10-2=2x2x2", true),
+    new Answer("10X3=15x2", true),
+    new Answer("8+8=4X4", true),
+    new Answer("10X5=25X2", true),
   ],
-  bad: [new Answer("3+6=10", false), new Answer("2+3=7", false)],
+  bad: [
+    new Answer("10+15=20", false),
+    new Answer("6X3=21", false),
+    new Answer("10x60=6000", false),
+    new Answer("12x12.5=250", false),
+    new Answer("15x2=20", false),
+    new Answer("6x4=20", false),
+    new Answer("10-5=20", false),
+    new Answer("100X2=400", false),
+    new Answer("8+22=40", false),
+    new Answer("10X3=1000/100", false),
+  ],
 };
 
 //local storage
@@ -142,7 +161,7 @@ const buildAndLaunchEnemy = (answer: Answer) => {
   }
   lightUpAnswerDataContainer();
 
-  //answerDataValue.innerHTML = enemy.answer.data;
+  answerDataValue.innerHTML = enemy.answer.data;
 
   launchOpponent(enemy);
 };
@@ -153,11 +172,17 @@ const triggerOpponentsApparition = () => {
   if (newAnswer && newAnswer !== "done") {
     buildAndLaunchEnemy(newAnswer);
   } else {
-    console.log("we re done");
+    alert("game over!");
   }
 };
 
 let backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
+
+const calculateChallengeScore = () => {};
+
+const launchEndOfChallenge = () => {
+  alert("congratulations, level over");
+};
 
 const makeId = (length: number) => {
   let result = "";
@@ -542,9 +567,6 @@ const killWrongEnemy = (enemy: Enemy) => {
   killEnemy(enemy);
 
   displayMalus("MALUS! Wrong enemy killed!");
-
-  score -= HERO_HURT_MALUS;
-  updateScoreDisplay();
 };
 
 const displayMalus = (content: string) => {
@@ -653,10 +675,6 @@ const hurtHero = () => {
   lifePoints.value--;
   checkForHerosDeath();
 
-  if (score >= HERO_HURT_MALUS) {
-    score -= HERO_HURT_MALUS;
-    updateScoreDisplay();
-  }
   updateLifePointsDisplay();
   launchHeroHurtAnimation();
   displayMalus("Malus! You were hurt!");
@@ -683,7 +701,7 @@ const detectCollision = () => {
     ) {
       enemyOnScreen.collideable = false;
 
-      if (!invisible) {
+      if (!invisible || enemyOnScreen.answer.good) {
         hurtHero();
       }
     }
@@ -1004,7 +1022,7 @@ const lightUpAnswerDataContainer = () => {
 
 const clearAndHideAnswerDataContainer = () => {
   answerDataContainer.style.opacity = "0.3";
-  //answerDataValue.innerHTML = "";
+  answerDataValue.innerHTML = "";
 };
 
 const launchDeathAnimation = () => {
