@@ -663,7 +663,6 @@
   };
   var clearAndHideAnswerDataContainer = () => {
     answerDataContainer.style.opacity = "0.3";
-    answerDataValue.innerHTML = "";
   };
   var launchDeathAnimation = () => {
     initHeroAnimations();

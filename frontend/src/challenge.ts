@@ -1004,7 +1004,7 @@ const lightUpAnswerDataContainer = () => {
 
 const clearAndHideAnswerDataContainer = () => {
   answerDataContainer.style.opacity = "0.3";
-  answerDataValue.innerHTML = "";
+  //answerDataValue.innerHTML = "";
 };
 
 const launchDeathAnimation = () => {
