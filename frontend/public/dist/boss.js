@@ -11,11 +11,13 @@
   var scoreMalusDetail = document.getElementById("score_malus_detail");
   var scoreRewardContainer = document.getElementById("score_reward_container");
   var scoreRewardDetail = document.getElementById("score_reward_detail");
-  var TRANSFORMED_BONUS_RATIO = 5;
-  var KILLED_ENEMY_REWARD = 30;
+  var TRANSFORMED_BONUS_RATIO = 2;
+  var REWARD_UNIT = 1;
   var REWARD_TIMEOUT_DURATION = 2e3;
+  var KILLED_ENEMY_REWARD = 30;
   var timeStoped = false;
   var score = 0;
+  var heroHurt = false;
   var heroIsAlive = true;
   var lifePoints = { max: 4, value: 4 };
   var INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
@@ -37,6 +39,10 @@
       this.element = element;
       this.answer = answer;
     }
+  };
+  var GAME_TIMEOUTS = {
+    [0 /* HERO */]: [],
+    [1 /* ENEMY */]: []
   };
   var CAPITALS = {
     title: "Additions",
@@ -72,6 +78,16 @@
     } else {
       return CAPITALS.bad.length ? CAPITALS.bad.pop() : CAPITALS.good.length ? CAPITALS.good.pop() : "done";
     }
+  };
+  var Grades = {
+    D: [0, 1, 2, 3, 4, 5],
+    C: [6, 7, 8, 9, 10],
+    B: [11, 12, 13, 14],
+    A: [15, 16, 17],
+    S: [18, 19, 20]
+  };
+  var getChallengeGrade = () => {
+    return Grades.D.includes(score) ? "D" : Grades.C.includes(score) ? "C" : Grades.B.includes(score) ? "B" : Grades.A.includes(score) ? "A" : Grades.S.includes(score) ? "S" : null;
   };
   var updateLifePointsDisplay = () => {
     for (let i = 1; i <= lifePoints.max; i++) {
@@ -113,10 +129,14 @@
     if (newAnswer && newAnswer !== "done") {
       buildAndLaunchEnemy(newAnswer);
     } else {
-      alert("game over!");
+      launchEndOfChallenge();
     }
   };
   var backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
+  var launchEndOfChallenge = () => {
+    alert("congratulations, level over");
+    alert("here is your grade >" + getChallengeGrade());
+  };
   var ANIMATION_RUNNING_VALUES = {
     [0 /* attack */]: 0,
     [1 /* run */]: 0,
@@ -310,9 +330,16 @@
         killRightEnemyAndUpdateScore(enemy);
       }
     });
-    setTimeout(() => {
-      launchHeroRunAnimation();
-    }, 200);
+    clearTimeoutAndLaunchNewOne(
+      0 /* HERO */,
+      setTimeout(() => {
+        launchHeroRunAnimation();
+      }, 200)
+    );
+  };
+  var clearTimeoutAndLaunchNewOne = (timeoutId, timeout) => {
+    GAME_TIMEOUTS[timeoutId].forEach((gameTimout) => clearTimeout(gameTimout));
+    GAME_TIMEOUTS[timeoutId] = [timeout];
   };
   var launchOpponent = (enemy) => {
     launchAnimationAndDeclareItLaunched(
@@ -342,8 +369,11 @@
   };
   var killRightEnemyAndUpdateScore = (enemy) => {
     killEnemy(enemy);
+    rewardHero();
+  };
+  var rewardHero = () => {
     const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
-    score += bonus_ratio * KILLED_ENEMY_REWARD;
+    score += bonus_ratio * REWARD_UNIT;
     updateScoreDisplay();
     displayReward("Congrats! You destroyed a good answer!");
     if (transformed) {
@@ -353,7 +383,7 @@
     }
   };
   var updateScoreDisplay = () => {
-    scoreContainer.innerHTML = score.toString();
+    scoreContainer.innerHTML = (score * KILLED_ENEMY_REWARD).toString();
   };
   var killWrongEnemy = (enemy) => {
     scoreMalusContainer.style.display = "flex";
@@ -443,6 +473,7 @@
     ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
   };
   var hurtHero = () => {
+    heroHurt = true;
     lifePoints.value--;
     checkForHerosDeath();
     updateLifePointsDisplay();
@@ -464,6 +495,8 @@
         enemyOnScreen.collideable = false;
         if (!invisible || enemyOnScreen.answer.good) {
           hurtHero();
+        } else if (invisible && !enemyOnScreen.answer.good) {
+          rewardHero();
         }
       }
     });
@@ -515,7 +548,10 @@
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
-    if (event.key === " ") {
+    if (heroHurt) {
+      return;
+    }
+    if (event.key === " " && !invisible) {
       launchInvisibilityToggle();
     }
     if (event.key === "w") {
@@ -540,6 +576,10 @@
   });
   var stopTime = () => {
     timeStoped = true;
+    GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => clearTimeout(timeout));
+    GAME_TIMEOUTS[0 /* HERO */] = [];
+    GAME_TIMEOUTS[1 /* ENEMY */].forEach((timeout) => clearTimeout(timeout));
+    GAME_TIMEOUTS[1 /* ENEMY */] = [];
     ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     ANIMATION_RUNNING_VALUES[4 /* death */] = 0;
@@ -581,11 +621,14 @@
       false,
       7 /* cancel_stop_time */
     );
-    setTimeout(() => {
-      initAllAnimations();
-      launchRun();
-      ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
-    }, 1e3);
+    clearTimeoutAndLaunchNewOne(
+      0 /* HERO */,
+      setTimeout(() => {
+        initAllAnimations();
+        launchRun();
+        ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+      }, 1e3)
+    );
   };
   var checkForOpponentsClearance = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
@@ -610,38 +653,47 @@
     document.getElementById("transformation_background").style.display = "flex";
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     transformed = true;
-    setTimeout(() => {
-      launchAnimationAndDeclareItLaunched(
-        heroImage,
-        0,
-        "png",
-        "assets/challenge/characters/transformed_hero/pre_run",
-        1,
-        9,
-        1,
-        true,
-        14 /* transformation_pre_run */
-      );
-      clearAllOponentsAndTimeouts();
-      ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
+    clearAllOponentsAndTimeouts();
+    clearTimeoutAndLaunchNewOne(
+      0 /* HERO */,
       setTimeout(() => {
-        triggerOpponentsApparition();
-        document.getElementById("transformation_background").style.display = "none";
-        ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
         launchAnimationAndDeclareItLaunched(
           heroImage,
           0,
           "png",
-          "assets/challenge/characters/transformed_hero/run",
+          "assets/challenge/characters/transformed_hero/pre_run",
           1,
-          6,
+          9,
           1,
           true,
-          15 /* transformation_run */
+          14 /* transformation_pre_run */
         );
-        setTimeout(turnHeroTransformationOff, 5e3);
-      }, 2e3);
-    }, 500);
+        ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
+        clearTimeoutAndLaunchNewOne(
+          0 /* HERO */,
+          setTimeout(() => {
+            triggerOpponentsApparition();
+            document.getElementById("transformation_background").style.display = "none";
+            ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
+            launchAnimationAndDeclareItLaunched(
+              heroImage,
+              0,
+              "png",
+              "assets/challenge/characters/transformed_hero/run",
+              1,
+              6,
+              1,
+              true,
+              15 /* transformation_run */
+            );
+            clearTimeoutAndLaunchNewOne(
+              0 /* HERO */,
+              setTimeout(turnHeroTransformationOff, 5e3)
+            );
+          }, 2e3)
+        );
+      }, 500)
+    );
   };
   var clearAllOponentsAndTimeouts = () => {
     ennemiesOnScreen.forEach((enemy, index) => {
@@ -693,11 +745,15 @@
     );
     initHeroAnimations();
     stopCamera();
-    setTimeout(() => {
-      if (heroIsAlive) {
-        launchRun();
-      }
-    }, 500);
+    clearTimeoutAndLaunchNewOne(
+      0 /* HERO */,
+      setTimeout(() => {
+        heroHurt = false;
+        if (heroIsAlive) {
+          launchRun();
+        }
+      }, 500)
+    );
   };
   var stopCamera = () => {
     ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;

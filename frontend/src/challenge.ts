@@ -16,15 +16,17 @@ const scoreRewardContainer = document.getElementById("score_reward_container")!;
 
 const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
-const TRANSFORMED_BONUS_RATIO = 5;
-const KILLED_ENEMY_REWARD = 30;
-const HERO_HURT_MALUS = 30;
+const TRANSFORMED_BONUS_RATIO = 2;
+const REWARD_UNIT = 1;
 
 const REWARD_TIMEOUT_DURATION = 2000;
+const KILLED_ENEMY_REWARD = 30;
 
 let timeStoped = false;
 
 let score = 0;
+
+let heroHurt = false;
 
 let heroIsAlive = true;
 
@@ -63,6 +65,21 @@ class Enemy {
     this.answer = answer;
   }
 }
+
+enum TimeoutId {
+  HERO,
+  ENEMY,
+}
+
+type GameTimeouts = {
+  [TimeoutId.HERO]: ReturnType<typeof setTimeout>[];
+  [TimeoutId.ENEMY]: ReturnType<typeof setTimeout>[];
+};
+
+const GAME_TIMEOUTS: GameTimeouts = {
+  [TimeoutId.HERO]: [],
+  [TimeoutId.ENEMY]: [],
+};
 
 const CAPITALS = {
   title: "Additions",
@@ -112,6 +129,27 @@ const getNextAnswer = () => {
   }
 };
 
+const Grades = {
+  D: [0, 1, 2, 3, 4, 5],
+  C: [6, 7, 8, 9, 10],
+  B: [11, 12, 13, 14],
+  A: [15, 16, 17],
+  S: [18, 19, 20],
+};
+
+const getChallengeGrade = () => {
+  return Grades.D.includes(score)
+    ? "D"
+    : Grades.C.includes(score)
+    ? "C"
+    : Grades.B.includes(score)
+    ? "B"
+    : Grades.A.includes(score)
+    ? "A"
+    : Grades.S.includes(score)
+    ? "S"
+    : null;
+};
 const updateLifePointsDisplay = () => {
   for (let i = 1; i <= lifePoints.max; i++) {
     const lifePointOpacity = i <= lifePoints.value ? "1" : "0.3";
@@ -172,7 +210,7 @@ const triggerOpponentsApparition = () => {
   if (newAnswer && newAnswer !== "done") {
     buildAndLaunchEnemy(newAnswer);
   } else {
-    alert("game over!");
+    launchEndOfChallenge();
   }
 };
 
@@ -182,6 +220,7 @@ const calculateChallengeScore = () => {};
 
 const launchEndOfChallenge = () => {
   alert("congratulations, level over");
+  alert("here is your grade >" + getChallengeGrade());
 };
 
 const makeId = (length: number) => {
@@ -502,9 +541,21 @@ const launchAttack = () => {
     }
   });
 
-  setTimeout(() => {
-    launchHeroRunAnimation();
-  }, 200);
+  clearTimeoutAndLaunchNewOne(
+    TimeoutId.HERO,
+    setTimeout(() => {
+      launchHeroRunAnimation();
+    }, 200)
+  );
+};
+
+const clearTimeoutAndLaunchNewOne = (
+  timeoutId: TimeoutId,
+  timeout: ReturnType<typeof setTimeout>
+) => {
+  GAME_TIMEOUTS[timeoutId].forEach((gameTimout) => clearTimeout(gameTimout));
+
+  GAME_TIMEOUTS[timeoutId] = [timeout];
 };
 
 const launchOpponent = (enemy: Enemy) => {
@@ -543,9 +594,13 @@ const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
 const killRightEnemyAndUpdateScore = (enemy: Enemy) => {
   killEnemy(enemy);
 
+  rewardHero();
+};
+
+const rewardHero = () => {
   const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
 
-  score += bonus_ratio * KILLED_ENEMY_REWARD;
+  score += bonus_ratio * REWARD_UNIT;
   updateScoreDisplay();
 
   displayReward("Congrats! You destroyed a good answer!");
@@ -558,7 +613,7 @@ const killRightEnemyAndUpdateScore = (enemy: Enemy) => {
 };
 
 const updateScoreDisplay = () => {
-  scoreContainer.innerHTML = score.toString();
+  scoreContainer.innerHTML = (score * KILLED_ENEMY_REWARD).toString();
 };
 
 const killWrongEnemy = (enemy: Enemy) => {
@@ -672,6 +727,7 @@ const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
 };
 
 const hurtHero = () => {
+  heroHurt = true;
   lifePoints.value--;
   checkForHerosDeath();
 
@@ -703,6 +759,8 @@ const detectCollision = () => {
 
       if (!invisible || enemyOnScreen.answer.good) {
         hurtHero();
+      } else if (invisible && !enemyOnScreen.answer.good) {
+        rewardHero();
       }
     }
   });
@@ -846,7 +904,10 @@ const launchFly = (jumpingForward = true) => {
   requestAnimationFrame(() => launchFly(jumpingForward));
 };
 document.addEventListener("keydown", (event) => {
-  if (event.key === " ") {
+  if (heroHurt) {
+    return;
+  }
+  if (event.key === " " && !invisible) {
     launchInvisibilityToggle();
   }
   if (event.key === "w") {
@@ -875,6 +936,13 @@ document.addEventListener("keydown", (event) => {
 
 const stopTime = () => {
   timeStoped = true;
+
+  GAME_TIMEOUTS[TimeoutId.HERO].forEach((timeout) => clearTimeout(timeout));
+  GAME_TIMEOUTS[TimeoutId.HERO] = [];
+
+  GAME_TIMEOUTS[TimeoutId.ENEMY].forEach((timeout) => clearTimeout(timeout));
+  GAME_TIMEOUTS[TimeoutId.ENEMY] = [];
+
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.attack] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.death] = 0;
@@ -920,11 +988,14 @@ const cancelStopTimeSpell = () => {
     ANIMATION_ID.cancel_stop_time
   );
 
-  setTimeout(() => {
-    initAllAnimations();
-    launchRun();
-    ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
-  }, 1000);
+  clearTimeoutAndLaunchNewOne(
+    TimeoutId.HERO,
+    setTimeout(() => {
+      initAllAnimations();
+      launchRun();
+      ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+    }, 1000)
+  );
 };
 
 const checkForOpponentsClearance = () => {
@@ -968,45 +1039,55 @@ const launchTransformation = () => {
 
   transformed = true;
 
-  setTimeout(() => {
-    launchAnimationAndDeclareItLaunched(
-      heroImage,
-      0,
-      "png",
-      "assets/challenge/characters/transformed_hero/pre_run",
-      1,
-      9,
-      1,
-      true,
-      ANIMATION_ID.transformation_pre_run
-    );
+  clearAllOponentsAndTimeouts();
 
-    clearAllOponentsAndTimeouts();
-    ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
-
+  clearTimeoutAndLaunchNewOne(
+    TimeoutId.HERO,
     setTimeout(() => {
-      triggerOpponentsApparition();
-
-      document.getElementById("transformation_background")!.style.display =
-        "none";
-
-      ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
-
       launchAnimationAndDeclareItLaunched(
         heroImage,
         0,
         "png",
-        "assets/challenge/characters/transformed_hero/run",
+        "assets/challenge/characters/transformed_hero/pre_run",
         1,
-        6,
+        9,
         1,
         true,
-        ANIMATION_ID.transformation_run
+        ANIMATION_ID.transformation_pre_run
       );
 
-      setTimeout(turnHeroTransformationOff, 5000);
-    }, 2000);
-  }, 500);
+      ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+
+      clearTimeoutAndLaunchNewOne(
+        TimeoutId.HERO,
+        setTimeout(() => {
+          triggerOpponentsApparition();
+
+          document.getElementById("transformation_background")!.style.display =
+            "none";
+
+          ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
+
+          launchAnimationAndDeclareItLaunched(
+            heroImage,
+            0,
+            "png",
+            "assets/challenge/characters/transformed_hero/run",
+            1,
+            6,
+            1,
+            true,
+            ANIMATION_ID.transformation_run
+          );
+
+          clearTimeoutAndLaunchNewOne(
+            TimeoutId.HERO,
+            setTimeout(turnHeroTransformationOff, 5000)
+          );
+        }, 2000)
+      );
+    }, 500)
+  );
 };
 
 const clearAllOponentsAndTimeouts = () => {
@@ -1073,11 +1154,15 @@ const launchHeroHurtAnimation = () => {
 
   stopCamera();
 
-  setTimeout(() => {
-    if (heroIsAlive) {
-      launchRun();
-    }
-  }, 500);
+  clearTimeoutAndLaunchNewOne(
+    TimeoutId.HERO,
+    setTimeout(() => {
+      heroHurt = false;
+      if (heroIsAlive) {
+        launchRun();
+      }
+    }, 500)
+  );
 };
 
 const stopCamera = () => {
