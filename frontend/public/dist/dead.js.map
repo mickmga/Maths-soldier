@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/dead.ts"],
+  "sourcesContent": ["const deadMessage = () => {\r\n  console.log(\"Game over! Try again?\");\r\n};\r\n\r\ndeadMessage();\r\n"],
+  "mappings": ";;;AAAA,MAAM,cAAc,MAAM;AACxB,YAAQ,IAAI,uBAAuB;AAAA,EACrC;AAEA,cAAY;",
+  "names": []
+}

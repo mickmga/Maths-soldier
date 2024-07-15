@@ -15,6 +15,8 @@
   var REWARD_UNIT = 1;
   var REWARD_TIMEOUT_DURATION = 2e3;
   var KILLED_ENEMY_REWARD = 30;
+  var rewardStreak = 0;
+  var preTransformed = false;
   var timeStoped = false;
   var score = 0;
   var heroHurt = false;
@@ -320,7 +322,7 @@
     launchHeroRunAnimation();
   };
   var launchAttack = () => {
-    if (invisible) {
+    if (invisible || !heroIsAlive) {
       return;
     }
     if (transformed) {
@@ -395,6 +397,7 @@
   };
   var rewardHero = () => {
     const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
+    rewardStreak++;
     score += bonus_ratio * REWARD_UNIT;
     updateScoreDisplay();
     displayReward("Congrats! You destroyed a good answer!");
@@ -402,6 +405,10 @@
       displayTransformationKillReward(
         `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
       );
+    }
+    if (rewardStreak >= 3 && !transformed && !preTransformed) {
+      rewardStreak = 0;
+      launchTransformation();
     }
   };
   var updateScoreDisplay = () => {
@@ -570,7 +577,7 @@
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
-    if (heroHurt) {
+    if (heroHurt || preTransformed) {
       return;
     }
     if (event.key === " " && !invisible) {
@@ -578,9 +585,6 @@
     }
     if (event.key === "w") {
       launchAttack();
-    }
-    if (event.key === "b") {
-      launchTransformation();
     }
     if (event.key === "v") {
       slowTime(10);
@@ -656,7 +660,7 @@
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyOnScreen.element.getBoundingClientRect().left) {
       }
-      if (enemyOnScreen.element.getBoundingClientRect().left < 0 - window.innerWidth * 0.05) {
+      if (enemyOnScreen.element.getBoundingClientRect().left < 0 - window.innerWidth * 0.2) {
         destroyEnemyAndLaunchNewOne(enemyOnScreen);
       }
     });
@@ -671,14 +675,18 @@
     setTimeout(launchInvisibilityToggle, INVISIBILITY_DURATION_IN_MILLISECONDS);
   };
   var launchTransformation = () => {
+    if (timeStoped) {
+      return;
+    }
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     document.getElementById("transformation_background").style.display = "flex";
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
-    transformed = true;
+    preTransformed = true;
     clearAllOponentsAndTimeouts();
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
       setTimeout(() => {
+        alert("pre run on");
         launchAnimationAndDeclareItLaunched(
           heroImage,
           0,
@@ -697,6 +705,8 @@
             triggerOpponentsApparition();
             document.getElementById("transformation_background").style.display = "none";
             ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
+            transformed = true;
+            preTransformed = false;
             launchAnimationAndDeclareItLaunched(
               heroImage,
               0,
@@ -708,10 +718,7 @@
               true,
               15 /* transformation_run */
             );
-            clearTimeoutAndLaunchNewOne(
-              0 /* HERO */,
-              setTimeout(turnHeroTransformationOff, 5e3)
-            );
+            setTimeout(turnHeroTransformationOff, 5e3);
           }, 2e3)
         );
       }, 500)
@@ -745,7 +752,12 @@
         false,
         4 /* death */
       );
-      setTimeout(() => alert("you're dead! The equilibrium is lost!"), 1e3);
+      GAME_TIMEOUTS[1 /* ENEMY */].forEach((timeout) => clearTimeout(timeout));
+      GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => clearTimeout(timeout));
+      setTimeout(
+        () => window.location.href = "http://localhost:3001/dead",
+        1e3
+      );
     };
     if (transformed) {
       transformed = false;

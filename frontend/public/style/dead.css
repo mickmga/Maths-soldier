@@ -1,0 +1,38 @@
+*,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Garamond", serif;
+  text-align: center;
+}
+
+#gameOverContainer {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gameOverContainer img {
+  height: 100%;
+  width: 100%;
+}
+
+#gameOverContainer button {
+  position: absolute;
+  width: 10%;
+  height: 10vh;
+  left: 45vw;
+  top: 70vh;
+  z-index: 2;
+  border-radius: 12px;
+  border: none;
+  background: none;
+}
+
+#sword {
+  height: 50%;
+  width: auto;
+  cursor: pointer;
+}
