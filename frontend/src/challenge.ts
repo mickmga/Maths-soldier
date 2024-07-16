@@ -625,7 +625,7 @@ const rewardHero = () => {
       `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
     );
   }
-  if (rewardStreak >= 1000 && !transformed && !preTransformed) {
+  if (rewardStreak >= 5 && !transformed && !preTransformed) {
     rewardStreak = 0;
     launchTransformation();
   }
@@ -1118,7 +1118,7 @@ const launchTransformation = () => {
             ANIMATION_ID.transformation_run
           );
 
-          setTimeout(turnHeroTransformationOff, 10000);
+          setTimeout(turnHeroTransformationOff, 5000);
         }, 2000)
       );
     }, 500)

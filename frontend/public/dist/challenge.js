@@ -403,7 +403,7 @@
         `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
       );
     }
-    if (rewardStreak >= 1e3 && !transformed && !preTransformed) {
+    if (rewardStreak >= 1 && !transformed && !preTransformed) {
       rewardStreak = 0;
       launchTransformation();
     }
@@ -724,7 +724,7 @@
               true,
               15 /* transformation_run */
             );
-            setTimeout(turnHeroTransformationOff, 1e4);
+            setTimeout(turnHeroTransformationOff, 1e5);
           }, 2e3)
         );
       }, 500)
