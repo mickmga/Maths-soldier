@@ -559,7 +559,10 @@ const launchAttack = () => {
 
   clearTimeoutAndLaunchNewOne(
     TimeoutId.HERO,
-    setTimeout(launchHeroRunAnimation, 200)
+    setTimeout(() => {
+      if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] === 0)
+        launchHeroRunAnimation();
+    }, 200)
   );
 };
 
@@ -1198,7 +1201,7 @@ const launchHeroHurtAnimation = () => {
     TimeoutId.HERO,
     setTimeout(() => {
       heroHurt = false;
-      if (heroIsAlive) {
+      if (heroIsAlive && ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] === 0) {
         launchRun();
       }
     }, 500)

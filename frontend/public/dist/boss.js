@@ -333,7 +333,10 @@
     }
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
-      setTimeout(launchHeroRunAnimation, 200)
+      setTimeout(() => {
+        if (ANIMATION_RUNNING_VALUES[1 /* run */] === 0)
+          launchHeroRunAnimation();
+      }, 200)
     );
   };
   var clearTimeoutAndLaunchNewOne = (timeoutId, timeout) => {
@@ -381,7 +384,7 @@
         `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
       );
     }
-    if (rewardStreak >= 1 && !transformed && !preTransformed) {
+    if (rewardStreak >= 5 && !transformed && !preTransformed) {
       rewardStreak = 0;
       launchTransformation();
     }
@@ -702,7 +705,7 @@
               true,
               15 /* transformation_run */
             );
-            setTimeout(turnHeroTransformationOff, 1e5);
+            setTimeout(turnHeroTransformationOff, 5e3);
           }, 2e3)
         );
       }, 500)
@@ -766,7 +769,7 @@
       0 /* HERO */,
       setTimeout(() => {
         heroHurt = false;
-        if (heroIsAlive) {
+        if (heroIsAlive && ANIMATION_RUNNING_VALUES[1 /* run */] === 0) {
           launchRun();
         }
       }, 500)
