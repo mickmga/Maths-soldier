@@ -17,6 +17,7 @@
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 0;
   var preTransformed = false;
+  var gameFinished = false;
   var timeStoped = false;
   var score = 0;
   var heroHurt = false;
@@ -81,16 +82,6 @@
       return CAPITALS.bad.length ? CAPITALS.bad.pop() : CAPITALS.good.length ? CAPITALS.good.pop() : "done";
     }
   };
-  var Grades = {
-    D: [0, 1, 2, 3, 4, 5],
-    C: [6, 7, 8, 9, 10],
-    B: [11, 12, 13, 14],
-    A: [15, 16, 17],
-    S: [18, 19, 20]
-  };
-  var getChallengeGrade = () => {
-    return Grades.D.includes(score) ? "D" : Grades.C.includes(score) ? "C" : Grades.B.includes(score) ? "B" : Grades.A.includes(score) ? "A" : Grades.S.includes(score) ? "S" : null;
-  };
   var updateLifePointsDisplay = () => {
     for (let i = 1; i <= lifePoints.max; i++) {
       const lifePointOpacity = i <= lifePoints.value ? "1" : "0.3";
@@ -136,8 +127,11 @@
   };
   var backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
   var launchEndOfChallenge = () => {
-    alert("congratulations, level over");
-    alert("here is your grade >" + getChallengeGrade());
+    gameFinished = true;
+    clearGameTimeouts();
+    initAllAnimations();
+    heroImage.src = "assets/challenge/charcters/hero/run/1.png";
+    document.getElementById("transformation_background").style.display = "none";
   };
   var ANIMATION_RUNNING_VALUES = {
     [0 /* attack */]: 0,
@@ -231,7 +225,9 @@
     );
   };
   var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
-    if (!characterElement) alert("no element no more!");
+    if (gameFinished) {
+      return;
+    }
     if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
       return;
     }
@@ -332,11 +328,12 @@
         killRightEnemyAndUpdateScore(enemy);
       }
     });
+    if (preTransformed || !heroIsAlive) {
+      return;
+    }
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
-      setTimeout(() => {
-        launchHeroRunAnimation();
-      }, 200)
+      setTimeout(launchHeroRunAnimation, 200)
     );
   };
   var clearTimeoutAndLaunchNewOne = (timeoutId, timeout) => {
@@ -384,7 +381,7 @@
         `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
       );
     }
-    if (rewardStreak >= 3 && !transformed && !preTransformed) {
+    if (rewardStreak >= 1e3 && !transformed && !preTransformed) {
       rewardStreak = 0;
       launchTransformation();
     }
@@ -394,6 +391,9 @@
   };
   var killWrongEnemy = (enemy) => {
     scoreMalusContainer.style.display = "flex";
+    lifePoints.value--;
+    checkForHerosDeath();
+    updateLifePointsDisplay();
     killEnemy(enemy);
     displayMalus("MALUS! Wrong enemy killed!");
   };
@@ -480,6 +480,10 @@
     ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
   };
   var hurtHero = () => {
+    if (!heroIsAlive) {
+      return;
+    }
+    rewardStreak = 0;
     heroHurt = true;
     lifePoints.value--;
     checkForHerosDeath();
@@ -578,12 +582,15 @@
       }
     }
   });
-  var stopTime = () => {
-    timeStoped = true;
+  var clearGameTimeouts = () => {
     GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => clearTimeout(timeout));
     GAME_TIMEOUTS[0 /* HERO */] = [];
     GAME_TIMEOUTS[1 /* ENEMY */].forEach((timeout) => clearTimeout(timeout));
     GAME_TIMEOUTS[1 /* ENEMY */] = [];
+  };
+  var stopTime = () => {
+    timeStoped = true;
+    clearGameTimeouts();
     ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     ANIMATION_RUNNING_VALUES[4 /* death */] = 0;
@@ -664,7 +671,6 @@
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
       setTimeout(() => {
-        alert("pre run on");
         launchAnimationAndDeclareItLaunched(
           heroImage,
           0,
@@ -696,7 +702,7 @@
               true,
               15 /* transformation_run */
             );
-            setTimeout(turnHeroTransformationOff, 5e3);
+            setTimeout(turnHeroTransformationOff, 1e4);
           }, 2e3)
         );
       }, 500)
@@ -730,8 +736,7 @@
         false,
         4 /* death */
       );
-      GAME_TIMEOUTS[1 /* ENEMY */].forEach((timeout) => clearTimeout(timeout));
-      GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => clearTimeout(timeout));
+      clearGameTimeouts();
       setTimeout(
         () => window.location.href = "http://localhost:3001/dead",
         1e3

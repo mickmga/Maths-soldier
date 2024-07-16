@@ -26,6 +26,8 @@ let rewardStreak = 0;
 
 let preTransformed = false;
 
+let gameFinished = false;
+
 let timeStoped = false;
 
 let score = 0;
@@ -223,8 +225,11 @@ let backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
 const calculateChallengeScore = () => {};
 
 const launchEndOfChallenge = () => {
-  alert("congratulations, level over");
-  alert("here is your grade >" + getChallengeGrade());
+  gameFinished = true;
+  clearGameTimeouts();
+  initAllAnimations();
+  heroImage.src = "assets/challenge/charcters/hero/run/1.png";
+  document.getElementById("transformation_background")!.style.display = "none";
 };
 
 const makeId = (length: number) => {
@@ -413,7 +418,9 @@ const launchCharacterAnimation = (
   loop: boolean,
   animationId: ANIMATION_ID
 ): any => {
-  if (!characterElement) alert("no element no more!");
+  if (gameFinished) {
+    return;
+  }
 
   if (
     !ANIMATION_RUNNING_VALUES[animationId] ||
@@ -546,11 +553,13 @@ const launchAttack = () => {
     }
   });
 
+  if (preTransformed || !heroIsAlive) {
+    return;
+  }
+
   clearTimeoutAndLaunchNewOne(
     TimeoutId.HERO,
-    setTimeout(() => {
-      launchHeroRunAnimation();
-    }, 200)
+    setTimeout(launchHeroRunAnimation, 200)
   );
 };
 
@@ -616,7 +625,7 @@ const rewardHero = () => {
       `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
     );
   }
-  if (rewardStreak >= 3 && !transformed && !preTransformed) {
+  if (rewardStreak >= 1000 && !transformed && !preTransformed) {
     rewardStreak = 0;
     launchTransformation();
   }
@@ -628,6 +637,11 @@ const updateScoreDisplay = () => {
 
 const killWrongEnemy = (enemy: Enemy) => {
   scoreMalusContainer.style.display = "flex";
+
+  lifePoints.value--;
+  checkForHerosDeath();
+
+  updateLifePointsDisplay();
 
   killEnemy(enemy);
 
@@ -737,6 +751,11 @@ const destroyEnemyAndLaunchNewOne = (enemy: Enemy) => {
 };
 
 const hurtHero = () => {
+  if (!heroIsAlive) {
+    return;
+  }
+  rewardStreak = 0;
+
   heroHurt = true;
   lifePoints.value--;
   checkForHerosDeath();
@@ -941,14 +960,18 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-const stopTime = () => {
-  timeStoped = true;
-
+const clearGameTimeouts = () => {
   GAME_TIMEOUTS[TimeoutId.HERO].forEach((timeout) => clearTimeout(timeout));
   GAME_TIMEOUTS[TimeoutId.HERO] = [];
 
   GAME_TIMEOUTS[TimeoutId.ENEMY].forEach((timeout) => clearTimeout(timeout));
   GAME_TIMEOUTS[TimeoutId.ENEMY] = [];
+};
+
+const stopTime = () => {
+  timeStoped = true;
+
+  clearGameTimeouts();
 
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.attack] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
@@ -1095,7 +1118,7 @@ const launchTransformation = () => {
             ANIMATION_ID.transformation_run
           );
 
-          setTimeout(turnHeroTransformationOff, 5000);
+          setTimeout(turnHeroTransformationOff, 10000);
         }, 2000)
       );
     }, 500)
@@ -1135,8 +1158,7 @@ const launchDeathAnimation = () => {
       ANIMATION_ID.death
     );
 
-    GAME_TIMEOUTS[TimeoutId.ENEMY].forEach((timeout) => clearTimeout(timeout));
-    GAME_TIMEOUTS[TimeoutId.HERO].forEach((timeout) => clearTimeout(timeout));
+    clearGameTimeouts();
 
     setTimeout(
       () => (window.location.href = "http://localhost:3001/dead"),
