@@ -19,10 +19,12 @@ const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 const TRANSFORMED_BONUS_RATIO = 2;
 const REWARD_UNIT = 1;
 
-const REWARD_TIMEOUT_DURATION = 2000;
+const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 0;
+
+let TRANSFORMATION_TRESHOLD = 1;
 
 let preTransformed = false;
 
@@ -228,7 +230,7 @@ const launchEndOfChallenge = () => {
   gameFinished = true;
   clearGameTimeouts();
   initAllAnimations();
-  heroImage.src = "assets/challenge/charcters/hero/run/1.png";
+  heroImage.src = "assets/challenge/characters/hero/run/1.png";
   document.getElementById("transformation_background")!.style.display = "none";
 };
 
@@ -628,7 +630,11 @@ const rewardHero = () => {
       `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
     );
   }
-  if (rewardStreak >= 5 && !transformed && !preTransformed) {
+  if (
+    rewardStreak >= TRANSFORMATION_TRESHOLD &&
+    !transformed &&
+    !preTransformed
+  ) {
     rewardStreak = 0;
     launchTransformation();
   }
@@ -697,7 +703,6 @@ const displayTransformationKillReward = (content: string) => {
   const transformationRewardContainer = document.getElementById(
     "transformed_hero_bonus_reward_container"
   )!;
-  transformationRewardContainer.innerHTML = content;
   transformationRewardContainer.style.display = "flex";
 
   if (currentTransformationRewardContainerTimeout) {
