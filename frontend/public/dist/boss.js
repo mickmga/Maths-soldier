@@ -13,10 +13,11 @@
   var scoreRewardDetail = document.getElementById("score_reward_detail");
   var TRANSFORMED_BONUS_RATIO = 2;
   var REWARD_UNIT = 1;
+  var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 0;
-  var TRANSFORMATION_TRESHOLD = 1;
+  var TRANSFORMATION_THRESHOLD = 4;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -83,6 +84,16 @@
       return CAPITALS.bad.length ? CAPITALS.bad.pop() : CAPITALS.good.length ? CAPITALS.good.pop() : "done";
     }
   };
+  var Grades = {
+    D: [0, 1, 2, 3, 4, 5],
+    C: [6, 7, 8, 9, 10],
+    B: [11, 12, 13, 14],
+    A: [15, 16, 17],
+    S: [18, 19, 20]
+  };
+  var getChallengeGrade = () => {
+    return Grades.D.includes(score) ? "D" : Grades.C.includes(score) ? "C" : Grades.B.includes(score) ? "B" : Grades.A.includes(score) ? "A" : Grades.S.includes(score) ? "S" : null;
+  };
   var updateLifePointsDisplay = () => {
     for (let i = 1; i <= lifePoints.max; i++) {
       const lifePointOpacity = i <= lifePoints.value ? "1" : "0.3";
@@ -101,7 +112,6 @@
   var buildEnemy = (answer) => {
     const enemyElement = buildEnemyElement();
     if (!enemyElement) {
-      console.log("error");
       return;
     }
     document.getElementsByTagName("body")[0].append();
@@ -129,10 +139,22 @@
   var backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
   var launchEndOfChallenge = () => {
     gameFinished = true;
+    document.getElementById("endOfGameInterface").style.display = "flex";
     clearGameTimeouts();
     initAllAnimations();
     heroImage.src = "assets/challenge/characters/hero/run/1.png";
     document.getElementById("transformation_background").style.display = "none";
+    setTimeout(() => {
+      const grade = getChallengeGrade();
+      if (!grade) {
+        console.log("no score?");
+        return;
+      } else {
+        console.log("there is a grade");
+      }
+      document.getElementById("endOfGameInterfaceScore").innerHTML = grade;
+      document.getElementById("endOfGameInterfaceScore").style.display = "flex";
+    }, 1e3);
   };
   var ANIMATION_RUNNING_VALUES = {
     [0 /* attack */]: 0,
@@ -212,6 +234,9 @@
     requestAnimationFrame(() => moveCamera(direction));
   };
   var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+    if (ANIMATION_RUNNING_VALUES[animationId] >= 1) {
+      return;
+    }
     ANIMATION_RUNNING_VALUES[animationId]++;
     launchCharacterAnimation(
       characterElement,
@@ -335,8 +360,7 @@
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
       setTimeout(() => {
-        if (ANIMATION_RUNNING_VALUES[1 /* run */] === 0)
-          launchHeroRunAnimation();
+        launchHeroRunAnimation();
       }, 200)
     );
   };
@@ -370,13 +394,22 @@
     enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 10}px`;
     requestAnimationFrame(() => moveEnemy(enemy));
   };
+  var initRewardStreakAndCheckForTransform = () => {
+    if (rewardStreak >= TRANSFORMATION_THRESHOLD && !transformed) {
+      rewardStreak = 0;
+      launchTransformation();
+    }
+  };
   var killRightEnemyAndUpdateScore = (enemy) => {
     killEnemy(enemy);
     rewardHero();
+    initRewardStreakAndCheckForTransform();
   };
   var rewardHero = () => {
     const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
-    rewardStreak++;
+    if (!transformed) {
+      rewardStreak++;
+    }
     score += bonus_ratio * REWARD_UNIT;
     updateScoreDisplay();
     displayReward("Congrats! You destroyed a good answer!");
@@ -384,10 +417,6 @@
       displayTransformationKillReward(
         `Transformation bonus reward! X${TRANSFORMED_BONUS_RATIO}`
       );
-    }
-    if (rewardStreak >= TRANSFORMATION_TRESHOLD && !transformed && !preTransformed) {
-      rewardStreak = 0;
-      launchTransformation();
     }
   };
   var updateScoreDisplay = () => {
@@ -470,7 +499,9 @@
     setTimeout(() => {
       ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
       enemy.element.remove();
-      triggerOpponentsApparition();
+      if (!preTransformed) {
+        triggerOpponentsApparition();
+      }
     }, 300);
     ennemiesOnScreen.forEach((enemyOnScreen, index) => {
       if (enemy === enemyOnScreen) {
@@ -511,6 +542,7 @@
           hurtHero();
         } else if (invisible && !enemyOnScreen.answer.good) {
           rewardHero();
+          initRewardStreakAndCheckForTransform();
         }
       }
     });
@@ -586,8 +618,12 @@
     }
   });
   var clearGameTimeouts = () => {
-    GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => clearTimeout(timeout));
+    console.log(GAME_TIMEOUTS[0 /* HERO */]);
+    GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => {
+      clearTimeout(timeout);
+    });
     GAME_TIMEOUTS[0 /* HERO */] = [];
+    console.log();
     GAME_TIMEOUTS[1 /* ENEMY */].forEach((timeout) => clearTimeout(timeout));
     GAME_TIMEOUTS[1 /* ENEMY */] = [];
   };
@@ -667,6 +703,25 @@
       return;
     }
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+    if (transformedAlready) {
+      document.getElementById("transformation_background").style.display = "none";
+      clearGameTimeouts();
+      transformed = true;
+      launchAnimationAndDeclareItLaunched(
+        heroImage,
+        0,
+        "png",
+        "assets/challenge/characters/transformed_hero/run",
+        1,
+        6,
+        1,
+        true,
+        15 /* transformation_run */
+      );
+      setTimeout(turnHeroTransformationOff, 5e3);
+      return;
+    }
     document.getElementById("transformation_background").style.display = "flex";
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     preTransformed = true;
@@ -685,7 +740,6 @@
           true,
           14 /* transformation_pre_run */
         );
-        ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
         clearTimeoutAndLaunchNewOne(
           0 /* HERO */,
           setTimeout(() => {
@@ -713,6 +767,7 @@
   };
   var clearAllOponentsAndTimeouts = () => {
     ennemiesOnScreen.forEach((enemy, index) => {
+      ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
       enemy.element.remove();
       ennemiesOnScreen.splice(index, 1);
     });
