@@ -92,7 +92,7 @@
     S: [18, 19, 20]
   };
   var getChallengeGrade = () => {
-    return Grades.D.includes(score) ? "D" : Grades.C.includes(score) ? "C" : Grades.B.includes(score) ? "B" : Grades.A.includes(score) ? "A" : Grades.S.includes(score) ? "S" : null;
+    return Grades.D.includes(score) ? "D" : Grades.C.includes(score) ? "C" : Grades.B.includes(score) ? "B" : Grades.A.includes(score) ? "A" : "S";
   };
   var updateLifePointsDisplay = () => {
     for (let i = 1; i <= lifePoints.max; i++) {
@@ -147,10 +147,7 @@
     setTimeout(() => {
       const grade = getChallengeGrade();
       if (!grade) {
-        console.log("no score?");
         return;
-      } else {
-        console.log("there is a grade");
       }
       document.getElementById("endOfGameInterfaceScore").innerHTML = grade;
       document.getElementById("endOfGameInterfaceScore").style.display = "flex";
@@ -251,7 +248,7 @@
     }
     throttleNum = 0;
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 11 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+      (map) => map.style.left = `${map.offsetLeft + (direction === 11 /* camera_left_to_right */ ? -1 : 1) * 12}px`
     );
     requestAnimationFrame(() => moveCamera(direction));
   };
@@ -395,9 +392,9 @@
       enemy.element.firstChild,
       0,
       "png",
-      "assets/challenge/characters/enemies/wolf",
+      "assets/challenge/characters/enemies/black_spirit",
       1,
-      9,
+      8,
       1,
       true,
       8 /* opponent_run */
@@ -744,6 +741,7 @@
       setTimeout(turnHeroTransformationOff, 5e3);
       return;
     }
+    transformedAlready = true;
     document.getElementById("transformation_background").style.display = "flex";
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     preTransformed = true;
