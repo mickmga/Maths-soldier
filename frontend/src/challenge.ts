@@ -16,6 +16,12 @@ const scoreRewardContainer = document.getElementById("score_reward_container")!;
 
 const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
+let currentSubject: Subject | null = null;
+
+let runImagesPerMovement = 4;
+
+let gameLaunched = false;
+
 const TRANSFORMED_BONUS_RATIO = 2;
 const REWARD_UNIT = 1;
 
@@ -26,7 +32,7 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 0;
 
-let TRANSFORMATION_THRESHOLD = 4;
+let TRANSFORMATION_THRESHOLD = 5;
 
 let preTransformed = false;
 
@@ -91,12 +97,61 @@ const GAME_TIMEOUTS: GameTimeouts = {
   [TimeoutId.ENEMY]: [],
 };
 
+type Subject = {
+  title: string;
+  good: Array<Answer>;
+  bad: Array<Answer>;
+};
+
+const VECTORS = {
+  title: "Additions",
+  good: [
+    new Answer("un vecteur est noté AB -> ou u ->", true),
+    new Answer(
+      "La norme d'un vecteur, notée ||AB->|| est la longueur du vecteur AB -> autrement dit, la distance entre les points A et B.",
+      true
+    ),
+    new Answer(
+      "Le point d'origine du vecteur AB -> (ici le point A) est le point de départ qui en caractérise le sens",
+      true
+    ),
+    new Answer(
+      "Le point d'extrémité de AB -> est le point d'arrivée  (ici le point B) qui en caractérise le sens",
+      true
+    ),
+    new Answer("Le vecteur opposé du vecteur AB > est BA -> ou -AB -> ", true),
+
+    new Answer(
+      "lorsque deux points AB sont confondus, on dit que AB -> est un vecteur nul",
+      true
+    ),
+  ],
+  bad: [
+    new Answer(
+      "Sens, et direction sont synonymes lorsqu'on parle de vecteurs",
+      false
+    ),
+    new Answer(
+      "Le point d'extremité est toujours égal au point d'arrivée d'un vecteur",
+      false
+    ),
+    new Answer(
+      "Le point d'extremité represente le point de départ du vecteur",
+      false
+    ),
+    new Answer(
+      "Un vecteur ne peut pas être nul, sinon ce n'est pas un vecteur",
+      false
+    ),
+  ],
+};
+
 const CAPITALS = {
   title: "Additions",
   good: [
     new Answer("10+5=15", true),
     new Answer("6X6=36", true),
-    new Answer("10X2=20", true),
+    new Answer("10X5+7=57", true),
     new Answer("10+12=22", true),
     new Answer("10-4=6", true),
     new Answer("6x3=18", true),
@@ -104,6 +159,52 @@ const CAPITALS = {
     new Answer("10X3=15x2", true),
     new Answer("8+8=4X4", true),
     new Answer("10X5=25X2", true),
+    new Answer("6x13=78", true),
+    new Answer("10+10.5=20.5", true),
+    new Answer("10X19+20=210", true),
+    new Answer("8+16=24", true),
+    new Answer("10+5=15", true),
+    new Answer("6X6=36", true),
+    new Answer("10X5+7=57", true),
+    new Answer("10+12=22", true),
+    new Answer("10-4=6", true),
+    new Answer("6x3=18", true),
+    new Answer("10-2=2x2x2", true),
+    new Answer("10X3=15x2", true),
+    new Answer("8+8=4X4", true),
+    new Answer("10X5=25X2", true),
+    new Answer("6x13=78", true),
+    new Answer("10+10.5=20.5", true),
+    new Answer("10X19+20=210", true),
+    new Answer("8+16=24", true),
+    new Answer("10+5=15", true),
+    new Answer("6X6=36", true),
+    new Answer("10X5+7=57", true),
+    new Answer("10+12=22", true),
+    new Answer("10-4=6", true),
+    new Answer("6x3=18", true),
+    new Answer("10-2=2x2x2", true),
+    new Answer("10X3=15x2", true),
+    new Answer("8+8=4X4", true),
+    new Answer("10X5=25X2", true),
+    new Answer("6x13=78", true),
+    new Answer("10+10.5=20.5", true),
+    new Answer("10X19+20=210", true),
+    new Answer("8+16=24", true),
+    new Answer("10+5=15", true),
+    new Answer("6X6=36", true),
+    new Answer("10X5+7=57", true),
+    new Answer("10+12=22", true),
+    new Answer("10-4=6", true),
+    new Answer("6x3=18", true),
+    new Answer("10-2=2x2x2", true),
+    new Answer("10X3=15x2", true),
+    new Answer("8+8=4X4", true),
+    new Answer("10X5=25X2", true),
+    new Answer("6x13=78", true),
+    new Answer("10+10.5=20.5", true),
+    new Answer("10X19+20=210", true),
+    new Answer("8+16=24", true),
   ],
   bad: [
     new Answer("10+15=20", false),
@@ -116,6 +217,11 @@ const CAPITALS = {
     new Answer("100X2=400", false),
     new Answer("8+22=40", false),
     new Answer("10X3=1000/100", false),
+    new Answer("10X15=145", false),
+    new Answer("6x100=6000", false),
+    new Answer("10X10=1000", false),
+    new Answer("19-2.5 = 17.5", false),
+    new Answer("8+17=24", false),
   ],
 };
 
@@ -124,17 +230,21 @@ const CAPITALS = {
 const getNextAnswer = () => {
   const randVal = Math.random() > 0.5;
 
+  if (!currentSubject) {
+    return;
+  }
+
   if (randVal) {
-    return CAPITALS.good.length
-      ? CAPITALS.good.pop()
-      : CAPITALS.bad.length
-      ? CAPITALS.bad.pop()
+    return currentSubject.good.length
+      ? currentSubject.good.pop()
+      : currentSubject.bad.length
+      ? currentSubject.bad.pop()
       : "done";
   } else {
-    return CAPITALS.bad.length
-      ? CAPITALS.bad.pop()
-      : CAPITALS.good.length
-      ? CAPITALS.good.pop()
+    return currentSubject.bad.length
+      ? currentSubject.bad.pop()
+      : currentSubject.good.length
+      ? currentSubject.good.pop()
       : "done";
   }
 };
@@ -171,7 +281,8 @@ const buildEnemyElement = () => {
   const newOpponentContainer = document.createElement("div");
   newOpponentContainer.classList.add("enemy_container");
   const newEnnemyImg = document.createElement("img") as HTMLImageElement;
-  newEnnemyImg.src = "assets/challenge/characters/enemies/wolf/1.png";
+  newEnnemyImg.src =
+    "assets/challenge/characters/enemies/black_spirit/run/1.png";
 
   newOpponentContainer.append(newEnnemyImg);
 
@@ -214,14 +325,19 @@ const buildAndLaunchEnemy = (answer: Answer) => {
 const triggerOpponentsApparition = () => {
   const newAnswer = getNextAnswer();
 
-  if (newAnswer && newAnswer !== "done") {
-    buildAndLaunchEnemy(newAnswer);
-  } else {
-    launchEndOfChallenge();
-  }
+  setTimeout(
+    () => {
+      if (newAnswer && newAnswer !== "done") {
+        buildAndLaunchEnemy(newAnswer);
+      } else {
+        launchEndOfChallenge();
+      }
+    },
+    Math.random() > 0.5 ? 500 : 1000
+  );
 };
 
-let backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
+let backgroundSrc = "assets/palace/maps/castle/castle.gif";
 
 const launchEndOfChallenge = () => {
   gameFinished = true;
@@ -242,19 +358,6 @@ const launchEndOfChallenge = () => {
   }, 1000);
 };
 
-const makeId = (length: number) => {
-  let result = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const charactersLength = characters.length;
-  let counter = 0;
-  while (counter < length) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    counter += 1;
-  }
-  return result;
-};
-
 export enum ANIMATION_ID {
   attack,
   run,
@@ -265,6 +368,7 @@ export enum ANIMATION_ID {
   stop_time,
   cancel_stop_time,
   opponent_run,
+  opponent_attack,
   opponent_move,
   opponent_death,
   camera_left_to_right,
@@ -287,6 +391,7 @@ export const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.stop_time]: 0,
   [ANIMATION_ID.cancel_stop_time]: 0,
   [ANIMATION_ID.opponent_run]: 0,
+  [ANIMATION_ID.opponent_attack]: 0,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.opponent_move]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
@@ -309,6 +414,7 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.stop_time]: 5,
   [ANIMATION_ID.cancel_stop_time]: 5,
   [ANIMATION_ID.opponent_run]: 5,
+  [ANIMATION_ID.opponent_attack]: 0,
   [ANIMATION_ID.opponent_death]: 0,
   [ANIMATION_ID.opponent_move]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
@@ -365,7 +471,11 @@ const slowTime = (multiplicator: number) => {
     opponentMoveMultiplicatorBase * multiplicator * 2;
 };
 
-const moveCamera = (direction: ANIMATION_ID, throttleNum = 0): any => {
+const moveCamera = (
+  direction: ANIMATION_ID,
+  throttleNum = 0,
+  previousFrameTimestamp: number
+): any => {
   if (
     ANIMATION_RUNNING_VALUES[direction] === 0 ||
     ANIMATION_RUNNING_VALUES[direction] > 1
@@ -373,9 +483,15 @@ const moveCamera = (direction: ANIMATION_ID, throttleNum = 0): any => {
     return;
   }
 
+  const currentFrameTimeStamp = Date.now();
+
+  const diff = currentFrameTimeStamp - previousFrameTimestamp;
+
   if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.camera_left_to_right]) {
     throttleNum++;
-    return requestAnimationFrame(() => moveCamera(direction, throttleNum));
+    return requestAnimationFrame(() =>
+      moveCamera(direction, throttleNum, currentFrameTimeStamp)
+    );
   }
 
   throttleNum = 0;
@@ -384,11 +500,11 @@ const moveCamera = (direction: ANIMATION_ID, throttleNum = 0): any => {
     (map) =>
       (map.style.left = `${
         map.offsetLeft +
-        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * 12
+        ((direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * diff) / 3
       }px`)
   );
 
-  requestAnimationFrame(() => moveCamera(direction));
+  requestAnimationFrame(() => moveCamera(direction, 0, currentFrameTimeStamp));
 };
 
 export const launchAnimationAndDeclareItLaunched = (
@@ -400,7 +516,8 @@ export const launchAnimationAndDeclareItLaunched = (
   max: number,
   min: number,
   loop: boolean,
-  animationId: ANIMATION_ID
+  animationId: ANIMATION_ID,
+  endOfAnimationCallback?: () => void
 ) => {
   if (ANIMATION_RUNNING_VALUES[animationId] >= 1) {
     return;
@@ -429,7 +546,9 @@ const launchCharacterAnimation = (
   max: number,
   min: number,
   loop: boolean,
-  animationId: ANIMATION_ID
+  animationId: ANIMATION_ID,
+  endOfAnimationCallback?: () => void,
+  previousTimeStamp?: number
 ): any => {
   if (gameFinished) {
     return;
@@ -454,7 +573,8 @@ const launchCharacterAnimation = (
         max,
         min,
         loop,
-        animationId
+        animationId,
+        () => {}
       )
     );
   }
@@ -464,6 +584,7 @@ const launchCharacterAnimation = (
   if (spriteIndex === max) {
     if (loop === false) {
       ANIMATION_RUNNING_VALUES[animationId] = 0;
+      if (endOfAnimationCallback) endOfAnimationCallback();
       return;
     }
 
@@ -484,7 +605,8 @@ const launchCharacterAnimation = (
       max,
       min,
       loop,
-      animationId
+      animationId,
+      () => {}
     )
   );
 };
@@ -513,6 +635,7 @@ const initAllAnimations = () => {
 };
 
 const turnHeroTransformationOff = () => {
+  alert("off");
   transformed = false;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
@@ -592,32 +715,79 @@ const launchOpponent = (enemy: Enemy) => {
     enemy.element.firstChild as HTMLImageElement,
     0,
     "png",
-    "assets/challenge/characters/enemies/black_spirit",
+    "assets/challenge/characters/enemies/black_spirit/run",
     1,
-    8,
+    4,
     1,
     true,
     ANIMATION_ID.opponent_run
   );
-  moveEnemy(enemy);
+  moveEnemy(enemy, 0, Date.now());
 };
 
-const moveEnemy = (enemy: Enemy, throttleNum = 0): any => {
+const launchEnemyAttack = (enemy: Enemy) => {
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+
+  launchAnimationAndDeclareItLaunched(
+    enemy.element.firstChild as HTMLImageElement,
+    0,
+    "png",
+    "assets/challenge/characters/enemies/black_spirit/attack",
+    1,
+    8,
+    1,
+    false,
+    ANIMATION_ID.opponent_attack,
+    () => {
+      ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_attack] = 0;
+
+      launchAnimationAndDeclareItLaunched(
+        enemy.element.firstChild as HTMLImageElement,
+        0,
+        "png",
+        "assets/challenge/characters/enemies/black_spirit/run",
+        1,
+        4,
+        1,
+        false,
+        ANIMATION_ID.opponent_run,
+        () => {}
+      );
+    }
+  );
+
+  () => {
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run];
+  };
+};
+
+const moveEnemy = (
+  enemy: Enemy,
+  throttleNum = 0,
+  previousTimeStamp: number
+): any => {
   if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] !== 1) {
     return;
   }
+
+  const currentTimeStamp = Date.now();
+
+  const diff = currentTimeStamp - previousTimeStamp;
+
   if (throttleNum < THROTTLE_NUMS[ANIMATION_ID.opponent_move]) {
     throttleNum++;
-    return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
+    return requestAnimationFrame(() =>
+      moveEnemy(enemy, throttleNum, currentTimeStamp)
+    );
   }
 
   throttleNum = 0;
 
   enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - 10
+    enemy.element.getBoundingClientRect().left - diff
   }px`;
 
-  requestAnimationFrame(() => moveEnemy(enemy));
+  requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
 };
 
 const initRewardStreakAndCheckForTransform = () => {
@@ -901,6 +1071,9 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
 };
 
 const launchHeroRunAnimation = () => {
+  if (!heroIsAlive) {
+    return;
+  }
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
@@ -921,8 +1094,32 @@ const launchRun = () => {
     return;
   }
   startCamera();
-  moveCamera(ANIMATION_ID.camera_left_to_right);
+  moveCamera(ANIMATION_ID.camera_left_to_right, 0, Date.now());
   launchHeroRunAnimation();
+};
+
+const checkForOpponentAttack = () => {
+  ennemiesOnScreen.forEach((enemy) => {
+    if (
+      enemy.element.getBoundingClientRect().left <
+      heroContainer.getBoundingClientRect().left +
+        heroContainer.getBoundingClientRect().width
+    ) {
+      ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
+
+      launchAnimationAndDeclareItLaunched(
+        heroImage,
+        0,
+        "png",
+        "assets/challenge/characters/hero/stop_time",
+        1,
+        4,
+        1,
+        false,
+        ANIMATION_ID.opponent_run
+      );
+    }
+  });
 };
 
 const heroInitialTop = heroContainer.getBoundingClientRect().top;
@@ -956,9 +1153,15 @@ const launchFly = (jumpingForward = true) => {
   requestAnimationFrame(() => launchFly(jumpingForward));
 };
 document.addEventListener("keydown", (event) => {
-  if (heroHurt || preTransformed) {
+  if (event.key === "d" && !gameLaunched) {
+    gameLaunched = true;
+    launchGame();
+  }
+
+  if (!gameLaunched || preTransformed || heroHurt) {
     return;
   }
+
   if (event.key === " " && !invisible) {
     launchInvisibilityToggle();
   }
@@ -984,12 +1187,10 @@ document.addEventListener("keydown", (event) => {
 });
 
 const clearGameTimeouts = () => {
-  console.log(GAME_TIMEOUTS[TimeoutId.HERO]);
   GAME_TIMEOUTS[TimeoutId.HERO].forEach((timeout) => {
     clearTimeout(timeout);
   });
   GAME_TIMEOUTS[TimeoutId.HERO] = [];
-  console.log();
 
   GAME_TIMEOUTS[TimeoutId.ENEMY].forEach((timeout) => clearTimeout(timeout));
   GAME_TIMEOUTS[TimeoutId.ENEMY] = [];
@@ -1114,7 +1315,7 @@ const launchTransformation = () => {
       ANIMATION_ID.transformation_run
     );
 
-    setTimeout(turnHeroTransformationOff, 5000);
+    setTimeout(turnHeroTransformationOff, 100000000);
     return;
   }
 
@@ -1169,7 +1370,7 @@ const launchTransformation = () => {
             ANIMATION_ID.transformation_run
           );
 
-          setTimeout(turnHeroTransformationOff, 5000);
+          setTimeout(turnHeroTransformationOff, 100000000);
         }, 2000)
       );
     }, 500)
@@ -1189,7 +1390,7 @@ const lightUpAnswerDataContainer = () => {
 };
 
 const clearAndHideAnswerDataContainer = () => {
-  answerDataContainer.style.opacity = "0.3";
+  answerDataContainer.style.opacity = "1";
   answerDataValue.innerHTML = "";
 };
 
@@ -1280,9 +1481,17 @@ window.onload = () => {
   MAPS.push(createMapBlock(100));
   updateLifePointsDisplay();
   updateScoreDisplay();
-  launchRun();
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
+  defineCurrentSubject(VECTORS);
+};
+
+const launchGame = () => {
+  launchRun();
   triggerOpponentsApparition();
+};
+
+const defineCurrentSubject = (subject: Subject) => {
+  currentSubject = subject;
 };

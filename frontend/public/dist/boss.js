@@ -11,13 +11,15 @@
   var scoreMalusDetail = document.getElementById("score_malus_detail");
   var scoreRewardContainer = document.getElementById("score_reward_container");
   var scoreRewardDetail = document.getElementById("score_reward_detail");
+  var currentSubject = null;
+  var gameLaunched = false;
   var TRANSFORMED_BONUS_RATIO = 2;
   var REWARD_UNIT = 1;
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 0;
-  var TRANSFORMATION_THRESHOLD = 4;
+  var TRANSFORMATION_THRESHOLD = 5;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -49,19 +51,106 @@
     [0 /* HERO */]: [],
     [1 /* ENEMY */]: []
   };
+  var VECTORS = {
+    title: "Additions",
+    good: [
+      new Answer("un vecteur est not\xE9 AB -> ou u ->", true),
+      new Answer(
+        "La norme d'un vecteur, not\xE9e ||AB->|| est la longueur du vecteur AB -> autrement dit, la distance entre les points A et B.",
+        true
+      ),
+      new Answer(
+        "Le point d'origine du vecteur AB -> (ici le point A) est le point de d\xE9part qui en caract\xE9rise le sens",
+        true
+      ),
+      new Answer(
+        "Le point d'extr\xE9mit\xE9 de AB -> est le point d'arriv\xE9e  (ici le point B) qui en caract\xE9rise le sens",
+        true
+      ),
+      new Answer("Le vecteur oppos\xE9 du vecteur AB > est BA -> ou -AB -> ", true),
+      new Answer(
+        "lorsque deux points AB sont confondus, on dit que AB -> est un vecteur nul",
+        true
+      )
+    ],
+    bad: [
+      new Answer(
+        "Sens, et direction sont synonymes lorsqu'on parle de vecteurs",
+        false
+      ),
+      new Answer(
+        "Le point d'extremit\xE9 est toujours \xE9gal au point d'arriv\xE9e d'un vecteur",
+        false
+      ),
+      new Answer(
+        "Le point d'extremit\xE9 represente le point de d\xE9part du vecteur",
+        false
+      ),
+      new Answer(
+        "Un vecteur ne peut pas \xEAtre nul, sinon ce n'est pas un vecteur",
+        false
+      )
+    ]
+  };
   var CAPITALS = {
     title: "Additions",
     good: [
       new Answer("10+5=15", true),
       new Answer("6X6=36", true),
-      new Answer("10X2=20", true),
+      new Answer("10X5+7=57", true),
       new Answer("10+12=22", true),
       new Answer("10-4=6", true),
       new Answer("6x3=18", true),
       new Answer("10-2=2x2x2", true),
       new Answer("10X3=15x2", true),
       new Answer("8+8=4X4", true),
-      new Answer("10X5=25X2", true)
+      new Answer("10X5=25X2", true),
+      new Answer("6x13=78", true),
+      new Answer("10+10.5=20.5", true),
+      new Answer("10X19+20=210", true),
+      new Answer("8+16=24", true),
+      new Answer("10+5=15", true),
+      new Answer("6X6=36", true),
+      new Answer("10X5+7=57", true),
+      new Answer("10+12=22", true),
+      new Answer("10-4=6", true),
+      new Answer("6x3=18", true),
+      new Answer("10-2=2x2x2", true),
+      new Answer("10X3=15x2", true),
+      new Answer("8+8=4X4", true),
+      new Answer("10X5=25X2", true),
+      new Answer("6x13=78", true),
+      new Answer("10+10.5=20.5", true),
+      new Answer("10X19+20=210", true),
+      new Answer("8+16=24", true),
+      new Answer("10+5=15", true),
+      new Answer("6X6=36", true),
+      new Answer("10X5+7=57", true),
+      new Answer("10+12=22", true),
+      new Answer("10-4=6", true),
+      new Answer("6x3=18", true),
+      new Answer("10-2=2x2x2", true),
+      new Answer("10X3=15x2", true),
+      new Answer("8+8=4X4", true),
+      new Answer("10X5=25X2", true),
+      new Answer("6x13=78", true),
+      new Answer("10+10.5=20.5", true),
+      new Answer("10X19+20=210", true),
+      new Answer("8+16=24", true),
+      new Answer("10+5=15", true),
+      new Answer("6X6=36", true),
+      new Answer("10X5+7=57", true),
+      new Answer("10+12=22", true),
+      new Answer("10-4=6", true),
+      new Answer("6x3=18", true),
+      new Answer("10-2=2x2x2", true),
+      new Answer("10X3=15x2", true),
+      new Answer("8+8=4X4", true),
+      new Answer("10X5=25X2", true),
+      new Answer("6x13=78", true),
+      new Answer("10+10.5=20.5", true),
+      new Answer("10X19+20=210", true),
+      new Answer("8+16=24", true)
     ],
     bad: [
       new Answer("10+15=20", false),
@@ -73,15 +162,23 @@
       new Answer("10-5=20", false),
       new Answer("100X2=400", false),
       new Answer("8+22=40", false),
-      new Answer("10X3=1000/100", false)
+      new Answer("10X3=1000/100", false),
+      new Answer("10X15=145", false),
+      new Answer("6x100=6000", false),
+      new Answer("10X10=1000", false),
+      new Answer("19-2.5 = 17.5", false),
+      new Answer("8+17=24", false)
     ]
   };
   var getNextAnswer = () => {
     const randVal = Math.random() > 0.5;
+    if (!currentSubject) {
+      return;
+    }
     if (randVal) {
-      return CAPITALS.good.length ? CAPITALS.good.pop() : CAPITALS.bad.length ? CAPITALS.bad.pop() : "done";
+      return currentSubject.good.length ? currentSubject.good.pop() : currentSubject.bad.length ? currentSubject.bad.pop() : "done";
     } else {
-      return CAPITALS.bad.length ? CAPITALS.bad.pop() : CAPITALS.good.length ? CAPITALS.good.pop() : "done";
+      return currentSubject.bad.length ? currentSubject.bad.pop() : currentSubject.good.length ? currentSubject.good.pop() : "done";
     }
   };
   var Grades = {
@@ -104,7 +201,7 @@
     const newOpponentContainer = document.createElement("div");
     newOpponentContainer.classList.add("enemy_container");
     const newEnnemyImg = document.createElement("img");
-    newEnnemyImg.src = "assets/challenge/characters/enemies/wolf/1.png";
+    newEnnemyImg.src = "assets/challenge/characters/enemies/black_spirit/run/1.png";
     newOpponentContainer.append(newEnnemyImg);
     document.getElementsByTagName("body")[0].append(newOpponentContainer);
     return newOpponentContainer;
@@ -130,13 +227,18 @@
   };
   var triggerOpponentsApparition = () => {
     const newAnswer = getNextAnswer();
-    if (newAnswer && newAnswer !== "done") {
-      buildAndLaunchEnemy(newAnswer);
-    } else {
-      launchEndOfChallenge();
-    }
+    setTimeout(
+      () => {
+        if (newAnswer && newAnswer !== "done") {
+          buildAndLaunchEnemy(newAnswer);
+        } else {
+          launchEndOfChallenge();
+        }
+      },
+      Math.random() > 0.5 ? 500 : 1e3
+    );
   };
-  var backgroundSrc = "assets/challenge/maps/challenge_castle.webp";
+  var backgroundSrc = "assets/palace/maps/castle/castle.gif";
   var launchEndOfChallenge = () => {
     gameFinished = true;
     document.getElementById("endOfGameInterface").style.display = "flex";
@@ -163,16 +265,17 @@
     [6 /* stop_time */]: 0,
     [7 /* cancel_stop_time */]: 0,
     [8 /* opponent_run */]: 0,
-    [10 /* opponent_death */]: 0,
-    [9 /* opponent_move */]: 0,
-    [11 /* camera_left_to_right */]: 0,
-    [12 /* camera_right_to_left */]: 0,
-    [13 /* character_left_to_right_move */]: 0,
-    [14 /* transformation_pre_run */]: 0,
-    [15 /* transformation_run */]: 0,
-    [16 /* transformation_hurt */]: 0,
-    [17 /* boss_idle */]: 0,
-    [18 /* boss_attack */]: 0
+    [9 /* opponent_attack */]: 0,
+    [11 /* opponent_death */]: 0,
+    [10 /* opponent_move */]: 0,
+    [12 /* camera_left_to_right */]: 0,
+    [13 /* camera_right_to_left */]: 0,
+    [14 /* character_left_to_right_move */]: 0,
+    [15 /* transformation_pre_run */]: 0,
+    [16 /* transformation_run */]: 0,
+    [17 /* transformation_hurt */]: 0,
+    [18 /* boss_idle */]: 0,
+    [19 /* boss_attack */]: 0
   };
   var THROTTLE_NUMS = {
     [0 /* attack */]: 0,
@@ -184,16 +287,17 @@
     [6 /* stop_time */]: 5,
     [7 /* cancel_stop_time */]: 5,
     [8 /* opponent_run */]: 5,
-    [10 /* opponent_death */]: 0,
-    [9 /* opponent_move */]: 0,
-    [11 /* camera_left_to_right */]: 0,
-    [12 /* camera_right_to_left */]: 5,
-    [13 /* character_left_to_right_move */]: 5,
-    [14 /* transformation_pre_run */]: 5,
-    [15 /* transformation_run */]: 5,
-    [16 /* transformation_hurt */]: 0,
-    [17 /* boss_idle */]: 15,
-    [18 /* boss_attack */]: 10
+    [9 /* opponent_attack */]: 0,
+    [11 /* opponent_death */]: 0,
+    [10 /* opponent_move */]: 0,
+    [12 /* camera_left_to_right */]: 0,
+    [13 /* camera_right_to_left */]: 5,
+    [14 /* character_left_to_right_move */]: 5,
+    [15 /* transformation_pre_run */]: 5,
+    [16 /* transformation_run */]: 5,
+    [17 /* transformation_hurt */]: 0,
+    [18 /* boss_idle */]: 15,
+    [19 /* boss_attack */]: 10
   };
   var createMapBlock = (left) => {
     const block = document.createElement("div");
@@ -209,28 +313,32 @@
   var slowTime = (multiplicator) => {
     const runMultiplicatorBase = THROTTLE_NUMS[1 /* run */] ? THROTTLE_NUMS[1 /* run */] : 1;
     THROTTLE_NUMS[1 /* run */] = runMultiplicatorBase * multiplicator * 1.5 * 1.5;
-    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[11 /* camera_left_to_right */] ? THROTTLE_NUMS[11 /* camera_left_to_right */] : 1;
-    THROTTLE_NUMS[11 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
+    const cameraMoveMultiplicatorBase = THROTTLE_NUMS[12 /* camera_left_to_right */] ? THROTTLE_NUMS[12 /* camera_left_to_right */] : 1;
+    THROTTLE_NUMS[12 /* camera_left_to_right */] = cameraMoveMultiplicatorBase * multiplicator * 1.5;
     const opponentRunMultiplicatorBase = THROTTLE_NUMS[8 /* opponent_run */] ? THROTTLE_NUMS[8 /* opponent_run */] : 1;
     THROTTLE_NUMS[8 /* opponent_run */] = opponentRunMultiplicatorBase * multiplicator;
-    const opponentMoveMultiplicatorBase = THROTTLE_NUMS[9 /* opponent_move */] ? THROTTLE_NUMS[9 /* opponent_move */] : 1;
-    THROTTLE_NUMS[9 /* opponent_move */] = opponentMoveMultiplicatorBase * multiplicator * 2;
+    const opponentMoveMultiplicatorBase = THROTTLE_NUMS[10 /* opponent_move */] ? THROTTLE_NUMS[10 /* opponent_move */] : 1;
+    THROTTLE_NUMS[10 /* opponent_move */] = opponentMoveMultiplicatorBase * multiplicator * 2;
   };
-  var moveCamera = (direction, throttleNum = 0) => {
+  var moveCamera = (direction, throttleNum = 0, previousFrameTimestamp) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
-    if (throttleNum < THROTTLE_NUMS[11 /* camera_left_to_right */]) {
+    const currentFrameTimeStamp = Date.now();
+    const diff = currentFrameTimeStamp - previousFrameTimestamp;
+    if (throttleNum < THROTTLE_NUMS[12 /* camera_left_to_right */]) {
       throttleNum++;
-      return requestAnimationFrame(() => moveCamera(direction, throttleNum));
+      return requestAnimationFrame(
+        () => moveCamera(direction, throttleNum, currentFrameTimeStamp)
+      );
     }
     throttleNum = 0;
     MAPS.forEach(
-      (map) => map.style.left = `${map.offsetLeft + (direction === 11 /* camera_left_to_right */ ? -1 : 1) * 12}px`
+      (map) => map.style.left = `${map.offsetLeft + (direction === 12 /* camera_left_to_right */ ? -1 : 1) * diff / 3}px`
     );
-    requestAnimationFrame(() => moveCamera(direction));
+    requestAnimationFrame(() => moveCamera(direction, 0, currentFrameTimeStamp));
   };
-  var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+  var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback) => {
     if (ANIMATION_RUNNING_VALUES[animationId] >= 1) {
       return;
     }
@@ -247,7 +355,7 @@
       animationId
     );
   };
-  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback, previousTimeStamp) => {
     if (gameFinished) {
       return;
     }
@@ -266,7 +374,9 @@
           max,
           min,
           loop,
-          animationId
+          animationId,
+          () => {
+          }
         )
       );
     }
@@ -274,6 +384,7 @@
     if (spriteIndex === max) {
       if (loop === false) {
         ANIMATION_RUNNING_VALUES[animationId] = 0;
+        if (endOfAnimationCallback) endOfAnimationCallback();
         return;
       }
       spriteIndex = min;
@@ -291,7 +402,9 @@
         max,
         min,
         loop,
-        animationId
+        animationId,
+        () => {
+        }
       )
     );
   };
@@ -302,20 +415,21 @@
     ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
     ANIMATION_RUNNING_VALUES[5 /* idle */] = 0;
     ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
-    ANIMATION_RUNNING_VALUES[10 /* opponent_death */] = 0;
-    ANIMATION_RUNNING_VALUES[9 /* opponent_move */] = 0;
-    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
-    ANIMATION_RUNNING_VALUES[12 /* camera_right_to_left */] = 0;
-    ANIMATION_RUNNING_VALUES[13 /* character_left_to_right_move */] = 0;
-    ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_hurt */] = 0;
-    ANIMATION_RUNNING_VALUES[17 /* boss_idle */] = 0;
-    ANIMATION_RUNNING_VALUES[18 /* boss_attack */] = 0;
+    ANIMATION_RUNNING_VALUES[11 /* opponent_death */] = 0;
+    ANIMATION_RUNNING_VALUES[10 /* opponent_move */] = 0;
+    ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[13 /* camera_right_to_left */] = 0;
+    ANIMATION_RUNNING_VALUES[14 /* character_left_to_right_move */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[18 /* boss_idle */] = 0;
+    ANIMATION_RUNNING_VALUES[19 /* boss_attack */] = 0;
   };
   var turnHeroTransformationOff = () => {
+    alert("off");
     transformed = false;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
   var launchAttack = () => {
@@ -323,7 +437,7 @@
       return;
     }
     if (transformed) {
-      ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+      ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     } else {
       ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     }
@@ -370,26 +484,30 @@
       enemy.element.firstChild,
       0,
       "png",
-      "assets/challenge/characters/enemies/black_spirit",
+      "assets/challenge/characters/enemies/black_spirit/run",
       1,
-      8,
+      4,
       1,
       true,
       8 /* opponent_run */
     );
-    moveEnemy(enemy);
+    moveEnemy(enemy, 0, Date.now());
   };
-  var moveEnemy = (enemy, throttleNum = 0) => {
+  var moveEnemy = (enemy, throttleNum = 0, previousTimeStamp) => {
     if (ANIMATION_RUNNING_VALUES[8 /* opponent_run */] !== 1) {
       return;
     }
-    if (throttleNum < THROTTLE_NUMS[9 /* opponent_move */]) {
+    const currentTimeStamp = Date.now();
+    const diff = currentTimeStamp - previousTimeStamp;
+    if (throttleNum < THROTTLE_NUMS[10 /* opponent_move */]) {
       throttleNum++;
-      return requestAnimationFrame(() => moveEnemy(enemy, throttleNum));
+      return requestAnimationFrame(
+        () => moveEnemy(enemy, throttleNum, currentTimeStamp)
+      );
     }
     throttleNum = 0;
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - 10}px`;
-    requestAnimationFrame(() => moveEnemy(enemy));
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff}px`;
+    requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
   };
   var initRewardStreakAndCheckForTransform = () => {
     if (rewardStreak >= TRANSFORMATION_THRESHOLD && !transformed) {
@@ -485,7 +603,7 @@
         10,
         1,
         false,
-        10 /* opponent_death */
+        11 /* opponent_death */
       );
     };
     launchExplosion();
@@ -569,6 +687,9 @@
     requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
   };
   var launchHeroRunAnimation = () => {
+    if (!heroIsAlive) {
+      return;
+    }
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -578,7 +699,7 @@
       transformed ? 6 : 8,
       1,
       true,
-      transformed ? 15 /* transformation_run */ : 1 /* run */
+      transformed ? 16 /* transformation_run */ : 1 /* run */
     );
   };
   var launchRun = () => {
@@ -586,12 +707,16 @@
       return;
     }
     startCamera();
-    moveCamera(11 /* camera_left_to_right */);
+    moveCamera(12 /* camera_left_to_right */, 0, Date.now());
     launchHeroRunAnimation();
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
-    if (heroHurt || preTransformed) {
+    if (event.key === "d" && !gameLaunched) {
+      gameLaunched = true;
+      launchGame();
+    }
+    if (!gameLaunched || preTransformed || heroHurt) {
       return;
     }
     if (event.key === " " && !invisible) {
@@ -615,12 +740,10 @@
     }
   });
   var clearGameTimeouts = () => {
-    console.log(GAME_TIMEOUTS[0 /* HERO */]);
     GAME_TIMEOUTS[0 /* HERO */].forEach((timeout) => {
       clearTimeout(timeout);
     });
     GAME_TIMEOUTS[0 /* HERO */] = [];
-    console.log();
     GAME_TIMEOUTS[1 /* ENEMY */].forEach((timeout) => clearTimeout(timeout));
     GAME_TIMEOUTS[1 /* ENEMY */] = [];
   };
@@ -633,16 +756,16 @@
     ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
     ANIMATION_RUNNING_VALUES[5 /* idle */] = 0;
     ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
-    ANIMATION_RUNNING_VALUES[10 /* opponent_death */] = 0;
-    ANIMATION_RUNNING_VALUES[9 /* opponent_move */] = 0;
-    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
-    ANIMATION_RUNNING_VALUES[12 /* camera_right_to_left */] = 0;
-    ANIMATION_RUNNING_VALUES[13 /* character_left_to_right_move */] = 0;
-    ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_hurt */] = 0;
-    ANIMATION_RUNNING_VALUES[17 /* boss_idle */] = 0;
-    ANIMATION_RUNNING_VALUES[18 /* boss_attack */] = 0;
+    ANIMATION_RUNNING_VALUES[11 /* opponent_death */] = 0;
+    ANIMATION_RUNNING_VALUES[10 /* opponent_move */] = 0;
+    ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[13 /* camera_right_to_left */] = 0;
+    ANIMATION_RUNNING_VALUES[14 /* character_left_to_right_move */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[18 /* boss_idle */] = 0;
+    ANIMATION_RUNNING_VALUES[19 /* boss_attack */] = 0;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -700,7 +823,7 @@
       return;
     }
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     if (transformedAlready) {
       document.getElementById("transformation_background").style.display = "none";
       clearGameTimeouts();
@@ -714,9 +837,9 @@
         6,
         1,
         true,
-        15 /* transformation_run */
+        16 /* transformation_run */
       );
-      setTimeout(turnHeroTransformationOff, 5e3);
+      setTimeout(turnHeroTransformationOff, 1e8);
       return;
     }
     transformedAlready = true;
@@ -736,14 +859,14 @@
           9,
           1,
           true,
-          14 /* transformation_pre_run */
+          15 /* transformation_pre_run */
         );
         clearTimeoutAndLaunchNewOne(
           0 /* HERO */,
           setTimeout(() => {
             triggerOpponentsApparition();
             document.getElementById("transformation_background").style.display = "none";
-            ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
+            ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
             launchAnimationAndDeclareItLaunched(
@@ -755,9 +878,9 @@
               6,
               1,
               true,
-              15 /* transformation_run */
+              16 /* transformation_run */
             );
-            setTimeout(turnHeroTransformationOff, 5e3);
+            setTimeout(turnHeroTransformationOff, 1e8);
           }, 2e3)
         );
       }, 500)
@@ -774,12 +897,12 @@
     answerDataContainer.style.opacity = "1";
   };
   var clearAndHideAnswerDataContainer = () => {
-    answerDataContainer.style.opacity = "0.3";
+    answerDataContainer.style.opacity = "1";
     answerDataValue.innerHTML = "";
   };
   var launchDeathAnimation = () => {
     initHeroAnimations();
-    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
     const killHero2 = () => {
       launchAnimationAndDeclareItLaunched(
         heroImage,
@@ -814,7 +937,7 @@
       transformed ? 5 : 3,
       1,
       false,
-      transformed ? 16 /* transformation_hurt */ : 3 /* hurt */
+      transformed ? 17 /* transformation_hurt */ : 3 /* hurt */
     );
     initHeroAnimations();
     stopCamera();
@@ -829,18 +952,18 @@
     );
   };
   var stopCamera = () => {
-    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] = 0;
+    ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
   };
   var startCamera = () => {
-    if (ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */] > 0) {
+    if (ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] > 0) {
       return;
     }
-    ANIMATION_RUNNING_VALUES[11 /* camera_left_to_right */]++;
+    ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */]++;
   };
   var initHeroAnimations = () => {
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[14 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
   };
   window.onload = () => {
@@ -848,11 +971,17 @@
     MAPS.push(createMapBlock(100));
     updateLifePointsDisplay();
     updateScoreDisplay();
-    launchRun();
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
+    defineCurrentSubject(VECTORS);
+  };
+  var launchGame = () => {
+    launchRun();
     triggerOpponentsApparition();
+  };
+  var defineCurrentSubject = (subject) => {
+    currentSubject = subject;
   };
 
   // src/boss.ts
@@ -881,7 +1010,7 @@
       15,
       1,
       true,
-      17 /* boss_idle */
+      18 /* boss_idle */
     );
   };
   var launchBossAttack = () => {
@@ -894,14 +1023,14 @@
       17,
       1,
       false,
-      18 /* boss_attack */
+      19 /* boss_attack */
     );
   };
   window.onload = () => {
     launcHeroIdle();
     launchBossIdle();
     setTimeout(() => {
-      ANIMATION_RUNNING_VALUES[17 /* boss_idle */] = 0;
+      ANIMATION_RUNNING_VALUES[18 /* boss_idle */] = 0;
       launchBossAttack();
     }, 1e3);
   };
