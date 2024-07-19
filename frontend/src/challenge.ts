@@ -531,6 +531,14 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.boss_attack]: 10,
 };
 
+const timeManipulationToggle = () => {
+  if (timeStoped) {
+    cancelStopTimeSpell();
+  } else {
+    stopTime();
+  }
+};
+
 const createMapBlock = (left: number) => {
   const block = document.createElement("div");
   block.classList.add("mapBlock");
@@ -539,6 +547,7 @@ const createMapBlock = (left: number) => {
   block.append(backgroundImage);
   block.style.position = "fixed";
   block.style.left = `${left}px`;
+  block.onclick = (event: Event) => timeManipulationToggle();
 
   document.getElementsByTagName("body")[0].append(block);
 
@@ -1287,11 +1296,7 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "s") {
-    if (timeStoped) {
-      cancelStopTimeSpell();
-    } else {
-      stopTime();
-    }
+    timeManipulationToggle();
   }
 });
 

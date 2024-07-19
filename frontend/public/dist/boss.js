@@ -389,6 +389,13 @@
     [18 /* boss_idle */]: 15,
     [19 /* boss_attack */]: 10
   };
+  var timeManipulationToggle = () => {
+    if (timeStoped) {
+      cancelStopTimeSpell();
+    } else {
+      stopTime();
+    }
+  };
   var createMapBlock = (left) => {
     const block = document.createElement("div");
     block.classList.add("mapBlock");
@@ -397,6 +404,7 @@
     block.append(backgroundImage);
     block.style.position = "fixed";
     block.style.left = `${left}px`;
+    block.onclick = (event) => timeManipulationToggle();
     document.getElementsByTagName("body")[0].append(block);
     return block;
   };
@@ -543,7 +551,7 @@
       0 /* attack */
     );
     const enemyCanBeHit = (enemy) => {
-      return enemy.element.getBoundingClientRect().left > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemy.element.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.15;
+      return enemy.element.getBoundingClientRect().left > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemy.element.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.5;
     };
     ennemiesOnScreen.forEach((enemy) => {
       if (!enemyCanBeHit(enemy)) {
@@ -826,11 +834,7 @@
       launchDeathAnimation();
     }
     if (event.key === "s") {
-      if (timeStoped) {
-        cancelStopTimeSpell();
-      } else {
-        stopTime();
-      }
+      timeManipulationToggle();
     }
   });
   var clearGameTimeouts = () => {
