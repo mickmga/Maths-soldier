@@ -273,3 +273,49 @@ body {
   width: 10%;
   color: rgb(78, 68, 12);
 }
+
+#leftMobileButton {
+  position: fixed;
+  left: 5vw;
+  bottom: 2vh;
+  height: 10vh;
+  width: auto;
+  z-index: 1002;
+  display: flex;
+}
+
+#rightMobileButton {
+  position: fixed;
+  right: 5vw;
+  bottom: 2vh;
+  height: 10vh;
+  width: auto;
+  z-index: 1002;
+  display: flex;
+}
+.controllerImg {
+  height: 100%;
+  width: auto;
+}
+
+@media screen and (min-width: 1000px) {
+  #leftMobileButton {
+    position: fixed;
+    left: 5vw;
+    bottom: 2vh;
+    height: 10vh;
+    width: auto;
+    z-index: 1002;
+    display: none;
+  }
+
+  #rightMobileButton {
+    position: fixed;
+    right: 5vw;
+    bottom: 2vh;
+    height: 10vh;
+    width: auto;
+    z-index: 1002;
+    display: none;
+  }
+}

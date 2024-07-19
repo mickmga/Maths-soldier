@@ -166,7 +166,7 @@ const STATS = {
     new Answer("Les statistiques descriptives n'existent pas", false),
 
     new Answer(
-      "décrivent les caractéristiques d'un ensemble de données",
+      "les statistique inférentielles décrivent les caractéristiques d'un ensemble de données",
       false
     ),
     new Answer("Un ensemble de données ne peut avoir qu'un modes", false),

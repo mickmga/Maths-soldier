@@ -110,7 +110,7 @@
       ),
       new Answer("Les statistiques descriptives n'existent pas", false),
       new Answer(
-        "d\xE9crivent les caract\xE9ristiques d'un ensemble de donn\xE9es",
+        "les statistique inf\xE9rentielles d\xE9crivent les caract\xE9ristiques d'un ensemble de donn\xE9es",
         false
       ),
       new Answer("Un ensemble de donn\xE9es ne peut avoir qu'un modes", false),
