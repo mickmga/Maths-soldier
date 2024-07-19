@@ -11,7 +11,7 @@
   
     <div id="wrapper">
         <div id="wrapper_A">
-            <h1>Introduction à la probabilité</h1>
+            <h1>Introduction aux statistiques</h1>
         </div>
 
         <div id="wrapper_B">
@@ -38,6 +38,12 @@
  
     </div>
 
+    <div id="playBtn">
+        <a href="http://localhost:3001/challenge">
+            <img src="assets/palace/items/sword.png" alt="">
+        </a>
+    </div>
+
 </body>
 
 
@@ -50,6 +56,30 @@
         margin: 0;
         padding: 0;
     }
+
+    #playBtn {
+        position: absolute;
+        top: 80vh;
+        right: 10vw;
+        height: 15%;
+        width: 7.5%;
+        z-index: 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    #playBtn a {
+        height: 100%;
+        width: 100%;
+    }
+
+    #playBtn a img{
+        height: 100%;
+        width: auto;
+    }
+
 
     #papyrus{
         position: absolute;
@@ -96,7 +126,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: large;
+    font-size: 21px;
   }
 
 

@@ -280,6 +280,7 @@
   top: 50vh;
   width: auto;
   z-index: 2;
+  cursor: pointer;
 }
 
 #obeliskContainer {

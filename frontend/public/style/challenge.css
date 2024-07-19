@@ -112,13 +112,17 @@ body {
 
 #answer_data_container div {
   height: 100%;
-  width: 50%;
   display: flex;
   align-items: center;
   font-size: x-large;
 }
 
+#answer_data_value {
+  width: 80%;
+}
+
 #answer_data_container_left_logo_container {
+  width: 20%;
   justify-content: flex-start;
   opacity: 0.3;
 }

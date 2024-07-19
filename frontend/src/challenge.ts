@@ -103,6 +103,77 @@ type Subject = {
   bad: Array<Answer>;
 };
 
+const STATS = {
+  title: "statistics",
+  good: [
+    new Answer(
+      "Etendue = Valeur maximale - Valeur minimale d'un jeu de donnée",
+      true
+    ),
+    new Answer(
+      "Le mode est la valeur la plus fréquente dans un ensemble de données.",
+      true
+    ),
+    new Answer(
+      "La variance mesure à quel point les données d'un ensemble sont dispersées par rapport à la moyenne.",
+      true
+    ),
+    new Answer("L'écart type est la racine carrée de la variance", true),
+    new Answer(
+      "Les statistiques descriptives sont une des deux catégories des statistiques",
+      true
+    ),
+
+    new Answer(
+      "Les statistiques Inférentielles sont une des deux catégories des statistiques",
+      true
+    ),
+    new Answer(
+      "Les statistiques descriptives résument ou décrivent les caractéristiques d'un ensemble de données",
+      true
+    ),
+
+    new Answer(
+      "Les statistiques inférentielles font des inférences et des prédictions sur une population à partir d'un échantillon de données",
+      true
+    ),
+    new Answer("Un ensemble de données peut avoir plusieurs modes", true),
+    new Answer("Un ensemble de données peut avoir 0 modes", true),
+  ],
+  bad: [
+    new Answer("Etendue = la Valeur minimale d'un jeu de donnée", false),
+    new Answer(
+      "Le mode est la valeur la moins répendue dans un ensemble de données.",
+      false
+    ),
+    new Answer(
+      "La variance mesure le nombre de différence entre deux jeux de données",
+      false
+    ),
+    new Answer(
+      "L'écart type est l'ecart entre le premier et le dernier élément d'un jeu de donnée ",
+      false
+    ),
+    new Answer(
+      "Les statistiques cumulatives sont une des deux catégories des statistiques",
+      false
+    ),
+
+    new Answer(
+      "Les statistiques proclamatives sont une des deux catégories des statistiques",
+      false
+    ),
+    new Answer("Les statistiques descriptives n'existent pas", false),
+
+    new Answer(
+      "décrivent les caractéristiques d'un ensemble de données",
+      false
+    ),
+    new Answer("Un ensemble de données ne peut avoir qu'un modes", false),
+    new Answer("Un ensemble de données ne peut pas avoir 0 modes", false),
+  ],
+};
+
 const VECTORS = {
   title: "Additions",
   good: [
@@ -234,17 +305,43 @@ const getNextAnswer = () => {
     return;
   }
 
+  const getAndRemoveSubject: any = (index: number, list: Array<any>) => {
+    let foundElement = null;
+    for (let elementIndex = 0; elementIndex < list.length; elementIndex++) {
+      let element = list[elementIndex];
+      if (elementIndex === index) {
+        list.splice(elementIndex, 1);
+        foundElement = element;
+        break; // Break out of the loop since we found and removed the element
+      }
+    }
+
+    return foundElement;
+  };
+
   if (randVal) {
     return currentSubject.good.length
-      ? currentSubject.good.pop()
+      ? getAndRemoveSubject(
+          Math.round(Math.random() * currentSubject.good.length),
+          currentSubject.good
+        )
       : currentSubject.bad.length
-      ? currentSubject.bad.pop()
+      ? getAndRemoveSubject(
+          Math.round(Math.random() * currentSubject.bad.length),
+          currentSubject.bad
+        )
       : "done";
   } else {
     return currentSubject.bad.length
-      ? currentSubject.bad.pop()
+      ? getAndRemoveSubject(
+          Math.round(Math.random() * currentSubject.bad.length),
+          currentSubject.bad
+        )
       : currentSubject.good.length
-      ? currentSubject.good.pop()
+      ? getAndRemoveSubject(
+          Math.round(Math.random() * currentSubject.good.length),
+          currentSubject.good
+        )
       : "done";
   }
 };
@@ -547,8 +644,7 @@ const launchCharacterAnimation = (
   min: number,
   loop: boolean,
   animationId: ANIMATION_ID,
-  endOfAnimationCallback?: () => void,
-  previousTimeStamp?: number
+  endOfAnimationCallback?: () => void
 ): any => {
   if (gameFinished) {
     return;
@@ -1153,6 +1249,10 @@ const launchFly = (jumpingForward = true) => {
   requestAnimationFrame(() => launchFly(jumpingForward));
 };
 document.addEventListener("keydown", (event) => {
+  if (event.key === "t") {
+    console.log(getNextAnswer());
+  }
+
   if (event.key === "d" && !gameLaunched) {
     gameLaunched = true;
     launchGame();
@@ -1484,7 +1584,7 @@ window.onload = () => {
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(VECTORS);
+  defineCurrentSubject(STATS);
 };
 
 const launchGame = () => {

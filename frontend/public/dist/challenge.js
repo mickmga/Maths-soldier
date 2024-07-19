@@ -51,6 +51,72 @@
     [0 /* HERO */]: [],
     [1 /* ENEMY */]: []
   };
+  var STATS = {
+    title: "statistics",
+    good: [
+      new Answer(
+        "Etendue = Valeur maximale - Valeur minimale d'un jeu de donn\xE9e",
+        true
+      ),
+      new Answer(
+        "Le mode est la valeur la plus fr\xE9quente dans un ensemble de donn\xE9es.",
+        true
+      ),
+      new Answer(
+        "La variance mesure \xE0 quel point les donn\xE9es d'un ensemble sont dispers\xE9es par rapport \xE0 la moyenne.",
+        true
+      ),
+      new Answer("L'\xE9cart type est la racine carr\xE9e de la variance", true),
+      new Answer(
+        "Les statistiques descriptives sont une des deux cat\xE9gories des statistiques",
+        true
+      ),
+      new Answer(
+        "Les statistiques Inf\xE9rentielles sont une des deux cat\xE9gories des statistiques",
+        true
+      ),
+      new Answer(
+        "Les statistiques descriptives r\xE9sument ou d\xE9crivent les caract\xE9ristiques d'un ensemble de donn\xE9es",
+        true
+      ),
+      new Answer(
+        "Les statistiques inf\xE9rentielles font des inf\xE9rences et des pr\xE9dictions sur une population \xE0 partir d'un \xE9chantillon de donn\xE9es",
+        true
+      ),
+      new Answer("Un ensemble de donn\xE9es peut avoir plusieurs modes", true),
+      new Answer("Un ensemble de donn\xE9es peut avoir 0 modes", true)
+    ],
+    bad: [
+      new Answer("Etendue = la Valeur minimale d'un jeu de donn\xE9e", false),
+      new Answer(
+        "Le mode est la valeur la moins r\xE9pendue dans un ensemble de donn\xE9es.",
+        false
+      ),
+      new Answer(
+        "La variance mesure le nombre de diff\xE9rence entre deux jeux de donn\xE9es",
+        false
+      ),
+      new Answer(
+        "L'\xE9cart type est l'ecart entre le premier et le dernier \xE9l\xE9ment d'un jeu de donn\xE9e ",
+        false
+      ),
+      new Answer(
+        "Les statistiques cumulatives sont une des deux cat\xE9gories des statistiques",
+        false
+      ),
+      new Answer(
+        "Les statistiques proclamatives sont une des deux cat\xE9gories des statistiques",
+        false
+      ),
+      new Answer("Les statistiques descriptives n'existent pas", false),
+      new Answer(
+        "d\xE9crivent les caract\xE9ristiques d'un ensemble de donn\xE9es",
+        false
+      ),
+      new Answer("Un ensemble de donn\xE9es ne peut avoir qu'un modes", false),
+      new Answer("Un ensemble de donn\xE9es ne peut pas avoir 0 modes", false)
+    ]
+  };
   var VECTORS = {
     title: "Additions",
     good: [
@@ -175,10 +241,34 @@
     if (!currentSubject) {
       return;
     }
+    const getAndRemoveSubject = (index, list) => {
+      let foundElement = null;
+      for (let elementIndex = 0; elementIndex < list.length; elementIndex++) {
+        let element = list[elementIndex];
+        if (elementIndex === index) {
+          list.splice(elementIndex, 1);
+          foundElement = element;
+          break;
+        }
+      }
+      return foundElement;
+    };
     if (randVal) {
-      return currentSubject.good.length ? currentSubject.good.pop() : currentSubject.bad.length ? currentSubject.bad.pop() : "done";
+      return currentSubject.good.length ? getAndRemoveSubject(
+        Math.round(Math.random() * currentSubject.good.length),
+        currentSubject.good
+      ) : currentSubject.bad.length ? getAndRemoveSubject(
+        Math.round(Math.random() * currentSubject.bad.length),
+        currentSubject.bad
+      ) : "done";
     } else {
-      return currentSubject.bad.length ? currentSubject.bad.pop() : currentSubject.good.length ? currentSubject.good.pop() : "done";
+      return currentSubject.bad.length ? getAndRemoveSubject(
+        Math.round(Math.random() * currentSubject.bad.length),
+        currentSubject.bad
+      ) : currentSubject.good.length ? getAndRemoveSubject(
+        Math.round(Math.random() * currentSubject.good.length),
+        currentSubject.good
+      ) : "done";
     }
   };
   var Grades = {
@@ -378,7 +468,7 @@
       animationId
     );
   };
-  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback, previousTimeStamp) => {
+  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback) => {
     if (gameFinished) {
       return;
     }
@@ -735,6 +825,9 @@
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
+    if (event.key === "t") {
+      console.log(getNextAnswer());
+    }
     if (event.key === "d" && !gameLaunched) {
       gameLaunched = true;
       launchGame();
@@ -997,7 +1090,7 @@
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(VECTORS);
+    defineCurrentSubject(STATS);
   };
   var launchGame = () => {
     launchRun();

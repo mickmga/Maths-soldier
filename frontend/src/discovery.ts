@@ -152,7 +152,12 @@ const createMapPalaceBlock = (left: number) => {
     golemImg.id = "golemImage";
     golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
 
-    block.append(golemImg);
+    const golemLink = document.createElement("a");
+    golemLink.href = "http://localhost:3001/page";
+
+    golemLink.append(golemImg);
+
+    block.append(golemLink);
 
     launchGolemIdleAnimation();
   } else if (left === window.innerWidth * 2) {

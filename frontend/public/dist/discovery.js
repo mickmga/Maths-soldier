@@ -2790,7 +2790,10 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       const golemImg = document.createElement("img");
       golemImg.id = "golemImage";
       golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
-      block.append(golemImg);
+      const golemLink = document.createElement("a");
+      golemLink.href = "http://localhost:3001/page";
+      golemLink.append(golemImg);
+      block.append(golemLink);
       launchGolemIdleAnimation();
     } else if (left === window.innerWidth * 2) {
       const obeliskContainer = document.createElement("div");
