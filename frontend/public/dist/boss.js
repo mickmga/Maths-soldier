@@ -14,8 +14,20 @@
   var runAudio = document.getElementById("run_audio");
   var swordAudio = document.getElementById("sword_audio");
   var epicAudio = document.getElementById("epic_audio");
+  var bassAudio = document.getElementById("bass_audio");
+  var electricityAudio = document.getElementById(
+    "electricity_audio"
+  );
+  var transformationScreamAudio = document.getElementById(
+    "transformation_scream_audio"
+  );
+  var transformatedEpicAudio = document.getElementById(
+    "transformated_epic_audio"
+  );
   swordAudio.volume = 0.05;
   epicAudio.volume = 0.25;
+  electricityAudio.volume = 0.7;
+  transformationScreamAudio.volume = 0.2;
   var currentSubject = null;
   var swordReach = window.innerWidth * 0.3;
   var gameLaunched = false;
@@ -387,13 +399,13 @@
       if (!grade) {
         return;
       }
+      killAllAudios();
       document.getElementById("endOfGameInterfaceScore").innerHTML = grade;
       document.getElementById("endOfGameInterfaceScore").style.display = "flex";
       const stampAudio = document.getElementById(
         "stamp_audio"
       );
       stampAudio.play();
-      killAllAudios();
     }, 1e3);
   };
   var ANIMATION_RUNNING_VALUES = {
@@ -602,6 +614,7 @@
   };
   var turnHeroTransformationOff = () => {
     transformed = false;
+    runAudio.playbackRate = 1;
     ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
@@ -867,7 +880,6 @@
     if (!heroIsAlive) {
       return;
     }
-    runAudio.playbackRate = 1;
     runAudio.volume = 1;
     launchAnimationAndDeclareItLaunched(
       heroImage,
@@ -1032,6 +1044,8 @@
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     preTransformed = true;
     clearAllOponentsAndTimeouts();
+    bassAudio.play();
+    setTimeout(() => electricityAudio.play(), 200);
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
       setTimeout(() => {
@@ -1051,6 +1065,9 @@
           setTimeout(() => {
             triggerOpponentsApparition();
             document.getElementById("transformation_background").style.display = "none";
+            transformationScreamAudio.play();
+            setTimeout(() => transformatedEpicAudio, 1e3);
+            electricityAudio.volume = 0.3;
             ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
@@ -1069,7 +1086,7 @@
               16 /* transformation_run */
             );
             setTimeout(turnHeroTransformationOff, 1e8);
-          }, 2e3)
+          }, 5e3)
         );
       }, 500)
     );

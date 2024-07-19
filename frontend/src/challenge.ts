@@ -19,8 +19,22 @@ const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
 const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
 const epicAudio = document.getElementById("epic_audio")! as HTMLAudioElement;
+const bassAudio = document.getElementById("bass_audio")! as HTMLAudioElement;
+const electricityAudio = document.getElementById(
+  "electricity_audio"
+)! as HTMLAudioElement;
+const transformationScreamAudio = document.getElementById(
+  "transformation_scream_audio"
+)! as HTMLAudioElement;
+
+const transformatedEpicAudio = document.getElementById(
+  "transformated_epic_audio"
+)! as HTMLAudioElement;
+
 swordAudio.volume = 0.05;
 epicAudio.volume = 0.25;
+electricityAudio.volume = 0.7;
+transformationScreamAudio.volume = 0.2;
 
 let currentSubject: Subject | null = null;
 
@@ -506,14 +520,20 @@ const launchEndOfChallenge = () => {
     if (!grade) {
       return;
     }
+    killAllAudios();
+
     document.getElementById("endOfGameInterfaceScore")!.innerHTML = grade;
     document.getElementById("endOfGameInterfaceScore")!.style.display = "flex";
     const stampAudio = document.getElementById(
       "stamp_audio"
     )! as HTMLAudioElement;
     stampAudio.play();
-    killAllAudios();
   }, 1000);
+};
+
+const playAndFadeOut = (audioElement: HTMLAudioElement) => {
+  audioElement.play();
+  fadeOutAudio(audioElement, 1000);
 };
 
 export enum ANIMATION_ID {
@@ -832,6 +852,8 @@ const initAllAnimations = () => {
 
 const turnHeroTransformationOff = () => {
   transformed = false;
+  runAudio.playbackRate = 1;
+
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
   launchHeroRunAnimation();
@@ -1276,7 +1298,6 @@ const launchHeroRunAnimation = () => {
     return;
   }
 
-  runAudio.playbackRate = 1;
   runAudio.volume = 1;
 
   launchAnimationAndDeclareItLaunched(
@@ -1544,6 +1565,10 @@ const launchTransformation = () => {
 
   clearAllOponentsAndTimeouts();
 
+  bassAudio.play();
+
+  setTimeout(() => electricityAudio.play(), 200);
+
   clearTimeoutAndLaunchNewOne(
     TimeoutId.HERO,
     setTimeout(() => {
@@ -1566,6 +1591,12 @@ const launchTransformation = () => {
 
           document.getElementById("transformation_background")!.style.display =
             "none";
+
+          transformationScreamAudio.play();
+
+          setTimeout(() => transformatedEpicAudio, 1000);
+
+          electricityAudio.volume = 0.3;
 
           ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
 
@@ -1590,7 +1621,7 @@ const launchTransformation = () => {
           );
 
           setTimeout(turnHeroTransformationOff, 100000000);
-        }, 2000)
+        }, 5000)
       );
     }, 500)
   );
