@@ -27,14 +27,14 @@ const transformationScreamAudio = document.getElementById(
   "transformation_scream_audio"
 )! as HTMLAudioElement;
 
-const transformatedEpicAudio = document.getElementById(
-  "transformated_epic_audio"
+const transformedEpicAudio = document.getElementById(
+  "transformed_epic_audio"
 )! as HTMLAudioElement;
 
 swordAudio.volume = 0.05;
 epicAudio.volume = 0.25;
 electricityAudio.volume = 0.7;
-transformationScreamAudio.volume = 0.2;
+transformationScreamAudio.volume = 0.25;
 
 let currentSubject: Subject | null = null;
 
@@ -54,7 +54,7 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 0;
 
-let TRANSFORMATION_THRESHOLD = 1;
+let TRANSFORMATION_THRESHOLD = 5;
 
 let preTransformed = false;
 
@@ -1594,9 +1594,9 @@ const launchTransformation = () => {
 
           transformationScreamAudio.play();
 
-          setTimeout(() => transformatedEpicAudio, 1000);
+          setTimeout(() => transformedEpicAudio.play(), 1000);
 
-          electricityAudio.volume = 0.3;
+          electricityAudio.volume = 0.1;
 
           ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
 

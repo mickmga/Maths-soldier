@@ -21,13 +21,13 @@
   var transformationScreamAudio = document.getElementById(
     "transformation_scream_audio"
   );
-  var transformatedEpicAudio = document.getElementById(
-    "transformated_epic_audio"
+  var transformedEpicAudio = document.getElementById(
+    "transformed_epic_audio"
   );
   swordAudio.volume = 0.05;
   epicAudio.volume = 0.25;
   electricityAudio.volume = 0.7;
-  transformationScreamAudio.volume = 0.2;
+  transformationScreamAudio.volume = 0.25;
   var currentSubject = null;
   var swordReach = window.innerWidth * 0.3;
   var gameLaunched = false;
@@ -37,7 +37,7 @@
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 0;
-  var TRANSFORMATION_THRESHOLD = 1;
+  var TRANSFORMATION_THRESHOLD = 5;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -1066,8 +1066,8 @@
             triggerOpponentsApparition();
             document.getElementById("transformation_background").style.display = "none";
             transformationScreamAudio.play();
-            setTimeout(() => transformatedEpicAudio, 1e3);
-            electricityAudio.volume = 0.3;
+            setTimeout(() => transformedEpicAudio.play(), 1e3);
+            electricityAudio.volume = 0.1;
             ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
