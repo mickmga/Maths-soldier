@@ -522,7 +522,7 @@
     ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
-  var launchAttack = () => {
+  var launchAttack = (event) => {
     if (invisible || !heroIsAlive) {
       return;
     }
@@ -565,6 +565,7 @@
       }, 200)
     );
   };
+  window.launchAttack = launchAttack;
   var clearTimeoutAndLaunchNewOne = (timeoutId, timeout) => {
     GAME_TIMEOUTS[timeoutId].forEach((gameTimout) => clearTimeout(gameTimout));
     GAME_TIMEOUTS[timeoutId] = [timeout];
@@ -911,6 +912,7 @@
     }
     setTimeout(launchInvisibilityToggle, INVISIBILITY_DURATION_IN_MILLISECONDS);
   };
+  window.launchInvisibilityToggle = launchInvisibilityToggle;
   var launchTransformation = () => {
     if (timeStoped) {
       return;

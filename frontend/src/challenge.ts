@@ -87,6 +87,13 @@ enum TimeoutId {
   ENEMY,
 }
 
+declare global {
+  interface Window {
+    launchAttack: (event: Event) => void;
+    launchInvisibilityToggle: (event: Event) => void;
+  }
+}
+
 type GameTimeouts = {
   [TimeoutId.HERO]: ReturnType<typeof setTimeout>[];
   [TimeoutId.ENEMY]: ReturnType<typeof setTimeout>[];
@@ -738,7 +745,7 @@ const turnHeroTransformationOff = () => {
   launchHeroRunAnimation();
 };
 
-const launchAttack = () => {
+const launchAttack = (event?: Event) => {
   if (invisible || !heroIsAlive) {
     return;
   }
@@ -796,6 +803,8 @@ const launchAttack = () => {
     }, 200)
   );
 };
+
+window.launchAttack = launchAttack;
 
 const clearTimeoutAndLaunchNewOne = (
   timeoutId: TimeoutId,
@@ -1387,6 +1396,8 @@ const launchInvisibilityToggle = () => {
 
   setTimeout(launchInvisibilityToggle, INVISIBILITY_DURATION_IN_MILLISECONDS);
 };
+
+window.launchInvisibilityToggle = launchInvisibilityToggle;
 
 const launchTransformation = () => {
   if (timeStoped) {
