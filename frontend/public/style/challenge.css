@@ -11,6 +11,10 @@ body {
   overflow: hidden; /* Prevent scrolling */
 }
 
+audio {
+  display: none;
+}
+
 #game_container {
   position: fixed;
   height: 100%;
@@ -167,8 +171,8 @@ body {
 
 #transformed_hero_bonus_reward_container {
   position: absolute;
-  top: 30vh;
-  left: 30vw;
+  top: 20vh;
+  left: 22.5vw;
   display: none;
   flex-direction: column;
   z-index: 10;

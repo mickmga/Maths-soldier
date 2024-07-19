@@ -11,7 +11,13 @@
   var scoreMalusDetail = document.getElementById("score_malus_detail");
   var scoreRewardContainer = document.getElementById("score_reward_container");
   var scoreRewardDetail = document.getElementById("score_reward_detail");
+  var runAudio = document.getElementById("run_audio");
+  var swordAudio = document.getElementById("sword_audio");
+  var epicAudio = document.getElementById("epic_audio");
+  swordAudio.volume = 0.05;
+  epicAudio.volume = 0.25;
   var currentSubject = null;
+  var swordReach = window.innerWidth * 0.3;
   var gameLaunched = false;
   var TRANSFORMED_BONUS_RATIO = 2;
   var REWARD_UNIT = 1;
@@ -19,7 +25,7 @@
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 0;
-  var TRANSFORMATION_THRESHOLD = 5;
+  var TRANSFORMATION_THRESHOLD = 1;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -97,7 +103,7 @@
         false
       ),
       new Answer(
-        "L'\xE9cart type est l'ecart entre le premier et le dernier \xE9l\xE9ment d'un jeu de donn\xE9e ",
+        "L'\xE9cart type est l'\xE9cart entre le premier et le dernier \xE9l\xE9ment d'un jeu de donn\xE9e ",
         false
       ),
       new Answer(
@@ -158,7 +164,43 @@
       )
     ]
   };
-  var CAPITALS = {
+  var MATHS_EASY = {
+    title: "Additions",
+    good: [
+      new Answer("10+5=15", true),
+      new Answer("6X6=36", true),
+      new Answer("10+10=20", true),
+      new Answer("10+12=22", true),
+      new Answer("10+4=14", true),
+      new Answer("6x3=18", true),
+      new Answer("10-2=8", true),
+      new Answer("10X3=30", true),
+      new Answer("8+8=16", true),
+      new Answer("10X5=50", true),
+      new Answer("6x4=24", true),
+      new Answer("10+10.5=20.5", true),
+      new Answer("10X19=190", true),
+      new Answer("8+16=24", true)
+    ],
+    bad: [
+      new Answer("10+15=20", false),
+      new Answer("6+3=10", false),
+      new Answer("10x6=70", false),
+      new Answer("12x10=250", false),
+      new Answer("15x2=20", false),
+      new Answer("6x4=20", false),
+      new Answer("10-5=20", false),
+      new Answer("100X2=400", false),
+      new Answer("8+22=40", false),
+      new Answer("10X3=3000", false),
+      new Answer("10X15=145", false),
+      new Answer("6x100=6000", false),
+      new Answer("10X10=1000", false),
+      new Answer("19-5 = 15", false),
+      new Answer("8+17=24", false)
+    ]
+  };
+  var MATHS_MEDIUM = {
     title: "Additions",
     good: [
       new Answer("10+5=15", true),
@@ -251,6 +293,9 @@
           break;
         }
       }
+      if (foundElement === null) {
+        return 0;
+      }
       return foundElement;
     };
     if (randVal) {
@@ -322,6 +367,7 @@
         if (newAnswer && newAnswer !== "done") {
           buildAndLaunchEnemy(newAnswer);
         } else {
+          console.log(newAnswer);
           launchEndOfChallenge();
         }
       },
@@ -343,6 +389,11 @@
       }
       document.getElementById("endOfGameInterfaceScore").innerHTML = grade;
       document.getElementById("endOfGameInterfaceScore").style.display = "flex";
+      const stampAudio = document.getElementById(
+        "stamp_audio"
+      );
+      stampAudio.play();
+      killAllAudios();
     }, 1e3);
   };
   var ANIMATION_RUNNING_VALUES = {
@@ -390,6 +441,7 @@
     [19 /* boss_attack */]: 10
   };
   var timeManipulationToggle = () => {
+    if (!gameLaunched) return;
     if (timeStoped) {
       cancelStopTimeSpell();
     } else {
@@ -453,7 +505,7 @@
       animationId
     );
   };
-  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback) => {
+  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback, lastExecutionTimeStamp) => {
     if (gameFinished) {
       return;
     }
@@ -474,9 +526,32 @@
           loop,
           animationId,
           () => {
-          }
+          },
+          lastExecutionTimeStamp
         )
       );
+    }
+    const newExecutionTimeStamp = Date.now();
+    if (animationId === 1 /* run */ && lastExecutionTimeStamp) {
+      const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
+      if (diff < 100) {
+        return requestAnimationFrame(
+          () => launchCharacterAnimation(
+            characterElement,
+            throttleNum,
+            extension,
+            spriteBase,
+            spriteIndex,
+            max,
+            min,
+            loop,
+            animationId,
+            () => {
+            },
+            lastExecutionTimeStamp
+          )
+        );
+      }
     }
     throttleNum = 0;
     if (spriteIndex === max) {
@@ -502,7 +577,8 @@
         loop,
         animationId,
         () => {
-        }
+        },
+        newExecutionTimeStamp
       )
     );
   };
@@ -525,7 +601,6 @@
     ANIMATION_RUNNING_VALUES[19 /* boss_attack */] = 0;
   };
   var turnHeroTransformationOff = () => {
-    alert("off");
     transformed = false;
     ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     launchHeroRunAnimation();
@@ -534,6 +609,7 @@
     if (invisible || !heroIsAlive) {
       return;
     }
+    swordAudio.play();
     if (transformed) {
       ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     } else {
@@ -551,7 +627,7 @@
       0 /* attack */
     );
     const enemyCanBeHit = (enemy) => {
-      return enemy.element.getBoundingClientRect().left > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemy.element.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.5;
+      return enemy.element.getBoundingClientRect().left > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemy.element.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + swordReach;
     };
     ennemiesOnScreen.forEach((enemy) => {
       if (!enemyCanBeHit(enemy)) {
@@ -731,6 +807,7 @@
     if (!heroIsAlive) {
       return;
     }
+    runAudio.volume = 0;
     rewardStreak = 0;
     heroHurt = true;
     lifePoints.value--;
@@ -745,6 +822,7 @@
     }
   };
   var killHero = () => {
+    runAudio.volume = 0;
     heroIsAlive = false;
     launchDeathAnimation();
   };
@@ -789,6 +867,8 @@
     if (!heroIsAlive) {
       return;
     }
+    runAudio.playbackRate = 1;
+    runAudio.volume = 1;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -815,6 +895,8 @@
       console.log(getNextAnswer());
     }
     if (event.key === "d" && !gameLaunched) {
+      runAudio.play();
+      epicAudio.play();
       gameLaunched = true;
       launchGame();
     }
@@ -846,6 +928,7 @@
     GAME_TIMEOUTS[1 /* ENEMY */] = [];
   };
   var stopTime = () => {
+    runAudio.volume = 0;
     timeStoped = true;
     clearGameTimeouts();
     ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
@@ -921,6 +1004,9 @@
     if (timeStoped) {
       return;
     }
+    runAudio.volume = 0;
+    swordAudio.volume = 0;
+    epicAudio.volume = 0;
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     if (transformedAlready) {
@@ -968,6 +1054,9 @@
             ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
+            runAudio.playbackRate = 2;
+            runAudio.volume = 1;
+            swordAudio.volume = 1;
             launchAnimationAndDeclareItLaunched(
               heroImage,
               0,
@@ -1073,7 +1162,11 @@
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(STATS);
+    defineCurrentSubject(MATHS_EASY);
+    defineSwordReach();
+  };
+  var defineSwordReach = () => {
+    swordReach = window.innerWidth * (window.innerWidth > 1e3 ? 0.15 : 0.35);
   };
   var launchGame = () => {
     launchRun();
@@ -1081,6 +1174,10 @@
   };
   var defineCurrentSubject = (subject) => {
     currentSubject = subject;
+  };
+  var killAllAudios = () => {
+    runAudio.pause();
+    epicAudio.pause();
   };
 
   // src/boss.ts

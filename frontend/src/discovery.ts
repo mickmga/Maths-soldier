@@ -429,7 +429,7 @@ const checkForScreenUpdateFromRightToLeft = (throttleNum: number): any => {
     return;
   }
 
-  if (throttleNum < 6) {
+  if (throttleNum < 5) {
     throttleNum++;
     return requestAnimationFrame(() =>
       checkForScreenUpdateFromRightToLeft(throttleNum)
@@ -538,7 +538,6 @@ document.addEventListener(
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0
     ) {
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right]++;
-      checkForScreenUpdateFromLeftToRight(10);
       if (!isAnimating) {
         isAnimating = true;
 
@@ -553,7 +552,6 @@ document.addEventListener(
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left]++;
       isAnimating = true;
       // launchCharacterMovementLeft();
-      checkForScreenUpdateFromRightToLeft(10);
       launchCharacterMovementLeft();
       moveCamera(ANIMATION_ID.camera_right_to_left);
     }

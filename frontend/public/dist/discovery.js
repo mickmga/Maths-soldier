@@ -2703,8 +2703,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var searchInput = document.getElementById("searchInput");
   var menuB = document.getElementById("menuB");
   var backgroundSrc = "assets/challenge/maps/outside.png";
-  var currentCacheLeftIndex = 0;
-  var currentCacheRightIndex = 1;
   var makeId = (length) => {
     let result = "";
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -2891,100 +2889,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       )
     );
   };
-  var checkForScreenUpdateFromLeftToRight = (throttleNum) => {
-    if (ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
-      return;
-    }
-    if (throttleNum < 5) {
-      throttleNum++;
-      return requestAnimationFrame(
-        () => checkForScreenUpdateFromLeftToRight(throttleNum)
-      );
-    }
-    throttleNum = 0;
-    const middleOfScreen = window.innerWidth / 2;
-    const sectionsAtTheLeftOfTheMiddle = [];
-    window.store.getState().localStorage.sections.find((section) => {
-      console.log(section);
-      const beginSlotElement = document.getElementById(section.beginSlotId);
-      if (beginSlotElement) {
-        const beginOffset = beginSlotElement.getBoundingClientRect().left;
-        if (beginOffset < middleOfScreen) {
-          sectionsAtTheLeftOfTheMiddle.push(section);
-        }
-      }
-    });
-    if (sectionsAtTheLeftOfTheMiddle.length) {
-      console.log("section at the left >");
-      console.log(sectionsAtTheLeftOfTheMiddle);
-      const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
-      document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
-    } else {
-      document.getElementById("currentSection").innerText = "No current section";
-    }
-    const firstMapDomElement = MAPS[0];
-    if (firstMapDomElement.getBoundingClientRect().left < -window.innerWidth) {
-      firstMapDomElement.remove();
-      MAPS.shift();
-      currentCacheLeftIndex++;
-    }
-    const lastMapDomElement = MAPS[MAPS.length - 1];
-    if (lastMapDomElement && lastMapDomElement.getBoundingClientRect().left <= window.innerWidth / 10 && currentCacheRightIndex < window.store.getState().localStorage.mapBlocks.length - 1) {
-      MAPS.push(
-        createMapPalaceBlock(
-          lastMapDomElement.getBoundingClientRect().left + lastMapDomElement.offsetWidth
-        )
-      );
-      currentCacheRightIndex++;
-    }
-    requestAnimationFrame(() => checkForScreenUpdateFromLeftToRight(throttleNum));
-  };
-  var checkForScreenUpdateFromRightToLeft = (throttleNum) => {
-    if (ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
-      return;
-    }
-    if (throttleNum < 6) {
-      throttleNum++;
-      return requestAnimationFrame(
-        () => checkForScreenUpdateFromRightToLeft(throttleNum)
-      );
-    }
-    throttleNum = 0;
-    const middleOfScreen = window.innerWidth / 2;
-    const sectionsAtTheLeftOfTheMiddle = [];
-    window.store.getState().localStorage.sections.find((section) => {
-      const beginSlotElement = document.getElementById(section.beginSlotId);
-      if (beginSlotElement) {
-        const beginOffset = beginSlotElement.getBoundingClientRect().left;
-        if (beginOffset < middleOfScreen) {
-          sectionsAtTheLeftOfTheMiddle.push(section);
-          console.log("we found one");
-        }
-      }
-    });
-    if (sectionsAtTheLeftOfTheMiddle.length) {
-      const currentSection = sectionsAtTheLeftOfTheMiddle[sectionsAtTheLeftOfTheMiddle.length - 1];
-      document.getElementById("currentSection").innerText = "Current section: " + currentSection.name;
-    } else {
-      document.getElementById("currentSection").innerText = "No current section";
-    }
-    const firstMapDomElement = MAPS[0];
-    if (firstMapDomElement && firstMapDomElement.getBoundingClientRect().left > -window.innerWidth && currentCacheLeftIndex > 0) {
-      const newMapBlockData = window.store.getState().localStorage.mapBlocks[currentCacheLeftIndex - 1];
-      MAPS.unshift(
-        createMapPalaceBlock(
-          firstMapDomElement.getBoundingClientRect().left - firstMapDomElement.offsetWidth
-        )
-      );
-      currentCacheLeftIndex--;
-    }
-    const lastMapDomElement = MAPS[MAPS.length - 1];
-    if (lastMapDomElement && lastMapDomElement.getBoundingClientRect().left > window.innerWidth) {
-      lastMapDomElement.remove();
-      MAPS.pop();
-    }
-    requestAnimationFrame(() => checkForScreenUpdateFromRightToLeft(throttleNum));
-  };
   var closeMenu = () => {
     menu.style.display = "none";
   };
@@ -3022,7 +2926,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     (event) => {
       if (event.key === "d" && ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
         ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */]++;
-        checkForScreenUpdateFromLeftToRight(10);
         if (!isAnimating) {
           isAnimating = true;
           launchCharacterMovement();
@@ -3031,7 +2934,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       if (event.key === "q" && ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] === 0) {
         ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */]++;
         isAnimating = true;
-        checkForScreenUpdateFromRightToLeft(10);
         launchCharacterMovementLeft();
         moveCamera(5 /* camera_right_to_left */);
       }

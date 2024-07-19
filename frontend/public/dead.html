@@ -6,13 +6,19 @@
  <body>
 
     <div id="gameOverContainer">
-        <img src="assets/challenge/millescaneous/go.webp" alt="game_over">
+        <img id="backgroundImg" src="assets/challenge/millescaneous/go.webp" alt="game_over">
           <a href="http://localhost:3001/challenge">
             <button onclick="playAgain(event)" class="start-again-button">
               <img id="sword" src="assets/challenge/millescaneous/sword.png" alt="sword">
            </button>
            </a>
     </div>
+
+    
+    <audio style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls autoplay loop>
+      <source src="assets/audio/fire.mp3" type="audio/mpeg">
+    </audio>
+
 
  </body>
 

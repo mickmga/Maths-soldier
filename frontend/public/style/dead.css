@@ -14,7 +14,7 @@ body {
   align-items: center;
 }
 
-#gameOverContainer img {
+#backgroundImg {
   height: 100%;
   width: 100%;
 }
@@ -32,7 +32,7 @@ body {
 }
 
 #sword {
-  height: 50%;
+  height: 100%;
   width: auto;
   cursor: pointer;
 }

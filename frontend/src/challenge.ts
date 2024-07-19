@@ -16,9 +16,17 @@ const scoreRewardContainer = document.getElementById("score_reward_container")!;
 
 const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
+const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
+const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
+const epicAudio = document.getElementById("epic_audio")! as HTMLAudioElement;
+swordAudio.volume = 0.05;
+epicAudio.volume = 0.25;
+
 let currentSubject: Subject | null = null;
 
 let runImagesPerMovement = 4;
+
+let swordReach = window.innerWidth * 0.3;
 
 let gameLaunched = false;
 
@@ -32,7 +40,7 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 0;
 
-let TRANSFORMATION_THRESHOLD = 5;
+let TRANSFORMATION_THRESHOLD = 1;
 
 let preTransformed = false;
 
@@ -158,7 +166,7 @@ const STATS = {
       false
     ),
     new Answer(
-      "L'écart type est l'ecart entre le premier et le dernier élément d'un jeu de donnée ",
+      "L'écart type est l'écart entre le premier et le dernier élément d'un jeu de donnée ",
       false
     ),
     new Answer(
@@ -224,7 +232,44 @@ const VECTORS = {
   ],
 };
 
-const CAPITALS = {
+const MATHS_EASY = {
+  title: "Additions",
+  good: [
+    new Answer("10+5=15", true),
+    new Answer("6X6=36", true),
+    new Answer("10+10=20", true),
+    new Answer("10+12=22", true),
+    new Answer("10+4=14", true),
+    new Answer("6x3=18", true),
+    new Answer("10-2=8", true),
+    new Answer("10X3=30", true),
+    new Answer("8+8=16", true),
+    new Answer("10X5=50", true),
+    new Answer("6x4=24", true),
+    new Answer("10+10.5=20.5", true),
+    new Answer("10X19=190", true),
+    new Answer("8+16=24", true),
+  ],
+  bad: [
+    new Answer("10+15=20", false),
+    new Answer("6+3=10", false),
+    new Answer("10x6=70", false),
+    new Answer("12x10=250", false),
+    new Answer("15x2=20", false),
+    new Answer("6x4=20", false),
+    new Answer("10-5=20", false),
+    new Answer("100X2=400", false),
+    new Answer("8+22=40", false),
+    new Answer("10X3=3000", false),
+    new Answer("10X15=145", false),
+    new Answer("6x100=6000", false),
+    new Answer("10X10=1000", false),
+    new Answer("19-5 = 15", false),
+    new Answer("8+17=24", false),
+  ],
+};
+
+const MATHS_MEDIUM = {
   title: "Additions",
   good: [
     new Answer("10+5=15", true),
@@ -321,6 +366,9 @@ const getNextAnswer = () => {
         foundElement = element;
         break; // Break out of the loop since we found and removed the element
       }
+    }
+    if (foundElement === null) {
+      return 0;
     }
 
     return foundElement;
@@ -434,6 +482,7 @@ const triggerOpponentsApparition = () => {
       if (newAnswer && newAnswer !== "done") {
         buildAndLaunchEnemy(newAnswer);
       } else {
+        console.log(newAnswer);
         launchEndOfChallenge();
       }
     },
@@ -459,6 +508,11 @@ const launchEndOfChallenge = () => {
     }
     document.getElementById("endOfGameInterfaceScore")!.innerHTML = grade;
     document.getElementById("endOfGameInterfaceScore")!.style.display = "flex";
+    const stampAudio = document.getElementById(
+      "stamp_audio"
+    )! as HTMLAudioElement;
+    stampAudio.play();
+    killAllAudios();
   }, 1000);
 };
 
@@ -532,6 +586,7 @@ export const THROTTLE_NUMS = {
 };
 
 const timeManipulationToggle = () => {
+  if (!gameLaunched) return;
   if (timeStoped) {
     cancelStopTimeSpell();
   } else {
@@ -660,7 +715,8 @@ const launchCharacterAnimation = (
   min: number,
   loop: boolean,
   animationId: ANIMATION_ID,
-  endOfAnimationCallback?: () => void
+  endOfAnimationCallback?: () => void,
+  lastExecutionTimeStamp?: number
 ): any => {
   if (gameFinished) {
     return;
@@ -686,9 +742,36 @@ const launchCharacterAnimation = (
         min,
         loop,
         animationId,
-        () => {}
+        () => {},
+        lastExecutionTimeStamp
       )
     );
+  }
+
+  //SPAGHETTI ANIMATION SPECIFIC
+
+  const newExecutionTimeStamp = Date.now();
+
+  if (animationId === ANIMATION_ID.run && lastExecutionTimeStamp) {
+    const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
+
+    if (diff < 100) {
+      return requestAnimationFrame(() =>
+        launchCharacterAnimation(
+          characterElement,
+          throttleNum,
+          extension,
+          spriteBase,
+          spriteIndex,
+          max,
+          min,
+          loop,
+          animationId,
+          () => {},
+          lastExecutionTimeStamp
+        )
+      );
+    }
   }
 
   throttleNum = 0;
@@ -718,7 +801,8 @@ const launchCharacterAnimation = (
       min,
       loop,
       animationId,
-      () => {}
+      () => {},
+      newExecutionTimeStamp
     )
   );
 };
@@ -747,7 +831,6 @@ const initAllAnimations = () => {
 };
 
 const turnHeroTransformationOff = () => {
-  alert("off");
   transformed = false;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
@@ -758,6 +841,7 @@ const launchAttack = (event?: Event) => {
   if (invisible || !heroIsAlive) {
     return;
   }
+  swordAudio.play();
   if (transformed) {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
   } else {
@@ -786,7 +870,7 @@ const launchAttack = (event?: Event) => {
       enemy.element.getBoundingClientRect().left <
         heroContainer.getBoundingClientRect().left +
           heroContainer.getBoundingClientRect().width +
-          window.innerWidth * 0.15
+          swordReach
     );
   };
 
@@ -1060,6 +1144,8 @@ const hurtHero = () => {
   if (!heroIsAlive) {
     return;
   }
+  runAudio.volume = 0;
+
   rewardStreak = 0;
 
   heroHurt = true;
@@ -1078,6 +1164,7 @@ const checkForHerosDeath = () => {
 };
 
 const killHero = () => {
+  runAudio.volume = 0;
   heroIsAlive = false;
   launchDeathAnimation();
 };
@@ -1188,6 +1275,10 @@ const launchHeroRunAnimation = () => {
   if (!heroIsAlive) {
     return;
   }
+
+  runAudio.playbackRate = 1;
+  runAudio.volume = 1;
+
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
@@ -1207,6 +1298,7 @@ const launchRun = () => {
   if (timeStoped) {
     return;
   }
+
   startCamera();
   moveCamera(ANIMATION_ID.camera_left_to_right, 0, Date.now());
   launchHeroRunAnimation();
@@ -1272,6 +1364,8 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "d" && !gameLaunched) {
+    runAudio.play();
+    epicAudio.play();
     gameLaunched = true;
     launchGame();
   }
@@ -1311,6 +1405,8 @@ const clearGameTimeouts = () => {
 };
 
 const stopTime = () => {
+  runAudio.volume = 0;
+
   timeStoped = true;
 
   clearGameTimeouts();
@@ -1408,6 +1504,9 @@ const launchTransformation = () => {
   if (timeStoped) {
     return;
   }
+  runAudio.volume = 0;
+  swordAudio.volume = 0;
+  epicAudio.volume = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
@@ -1473,6 +1572,10 @@ const launchTransformation = () => {
           transformed = true;
 
           preTransformed = false;
+
+          runAudio.playbackRate = 2;
+          runAudio.volume = 1;
+          swordAudio.volume = 1;
 
           launchAnimationAndDeclareItLaunched(
             heroImage,
@@ -1592,6 +1695,22 @@ const initHeroAnimations = () => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.hurt] = 0;
 };
 
+// Function to fade out the audio
+const fadeOutAudio = (audio: HTMLAudioElement, duration: number) => {
+  // Create a new AudioContext
+  const audioContext = new AudioContext();
+  const track = audioContext.createMediaElementSource(audio);
+
+  // Create a GainNode to control the volume
+  const gainNode = audioContext.createGain();
+  track.connect(gainNode).connect(audioContext.destination);
+
+  const currentTime = audioContext.currentTime;
+  gainNode.gain.setValueAtTime(gainNode.gain.value, currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration);
+  setTimeout(() => audio.pause(), duration * 1000); // Pause the audio after fade out
+};
+
 window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
@@ -1600,7 +1719,12 @@ window.onload = () => {
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(STATS);
+  defineCurrentSubject(MATHS_EASY);
+  defineSwordReach();
+};
+
+const defineSwordReach = () => {
+  swordReach = window.innerWidth * (window.innerWidth > 1000 ? 0.15 : 0.35);
 };
 
 const launchGame = () => {
@@ -1610,4 +1734,9 @@ const launchGame = () => {
 
 const defineCurrentSubject = (subject: Subject) => {
   currentSubject = subject;
+};
+
+const killAllAudios = () => {
+  runAudio.pause();
+  epicAudio.pause();
 };

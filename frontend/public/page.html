@@ -11,7 +11,7 @@
   
     <div id="wrapper">
         <div id="wrapper_A">
-            <h1>Introduction aux statistiques</h1>
+            <h1 >Introduction aux arcanes des statistiques</h1>
         </div>
 
         <div id="wrapper_B">
@@ -40,9 +40,15 @@
 
     <div id="playBtn">
         <a href="http://localhost:3001/challenge">
-            <img src="assets/palace/items/sword.png" alt="">
+            <img src="assets/challenge/items/lock.png" alt="">
         </a>
     </div>
+
+    <audio style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls autoplay>
+        <source src="assets/audio/page.mp3" type="audio/mpeg">
+      </audio>
+
+      
 
 </body>
 
@@ -72,12 +78,13 @@
 
     #playBtn a {
         height: 100%;
-        width: 100%;
+        width: 100%; 
     }
 
     #playBtn a img{
         height: 100%;
         width: auto;
+        opacity: 0.8;
     }
 
 
@@ -105,6 +112,7 @@
        display: flex;
        justify-content: center;
        align-items: center;
+       opacity: 0.75;
     }
 
   #wrapper_B {
