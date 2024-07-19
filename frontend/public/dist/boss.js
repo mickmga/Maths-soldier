@@ -24,20 +24,24 @@
   var transformedEpicAudio = document.getElementById(
     "transformed_epic_audio"
   );
+  var transformationOffAudio = document.getElementById(
+    "transformation_off_audio"
+  );
   swordAudio.volume = 0.05;
-  epicAudio.volume = 0.25;
+  epicAudio.volume = 0.22;
   electricityAudio.volume = 0.7;
   transformationScreamAudio.volume = 0.25;
   var currentSubject = null;
+  var currentSubjectTotal = 0;
   var swordReach = window.innerWidth * 0.3;
   var gameLaunched = false;
-  var TRANSFORMED_BONUS_RATIO = 2;
+  var TRANSFORMED_BONUS_RATIO = 1;
   var REWARD_UNIT = 1;
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
-  var rewardStreak = 0;
-  var TRANSFORMATION_THRESHOLD = 5;
+  var rewardStreak = 19;
+  var TRANSFORMATION_THRESHOLD = 20;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -306,24 +310,24 @@
         }
       }
       if (foundElement === null) {
-        return 0;
+        console.log("error => we couldnt find an element in the answers list");
       }
       return foundElement;
     };
     if (randVal) {
       return currentSubject.good.length ? getAndRemoveSubject(
-        Math.round(Math.random() * currentSubject.good.length),
+        Math.round(Math.random() * (currentSubject.good.length - 1)),
         currentSubject.good
       ) : currentSubject.bad.length ? getAndRemoveSubject(
-        Math.round(Math.random() * currentSubject.bad.length),
+        Math.round(Math.random() * (currentSubject.bad.length - 1)),
         currentSubject.bad
       ) : "done";
     } else {
       return currentSubject.bad.length ? getAndRemoveSubject(
-        Math.round(Math.random() * currentSubject.bad.length),
+        Math.round(Math.random() * (currentSubject.bad.length - 1)),
         currentSubject.bad
       ) : currentSubject.good.length ? getAndRemoveSubject(
-        Math.round(Math.random() * currentSubject.good.length),
+        Math.round(Math.random() * (currentSubject.good.length - 1)),
         currentSubject.good
       ) : "done";
     }
@@ -336,7 +340,13 @@
     S: [18, 19, 20]
   };
   var getChallengeGrade = () => {
-    return Grades.D.includes(score) ? "D" : Grades.C.includes(score) ? "C" : Grades.B.includes(score) ? "B" : Grades.A.includes(score) ? "A" : "S";
+    if (!currentSubject) {
+      return;
+    }
+    const grade = Math.round(score / currentSubjectTotal * 20);
+    console.log("grade >");
+    console.log(grade);
+    return Grades.D.includes(grade) ? "D" : Grades.C.includes(grade) ? "C" : Grades.B.includes(grade) ? "B" : Grades.A.includes(grade) ? "A" : "S";
   };
   var updateLifePointsDisplay = () => {
     for (let i = 1; i <= lifePoints.max; i++) {
@@ -615,6 +625,14 @@
   var turnHeroTransformationOff = () => {
     transformed = false;
     runAudio.playbackRate = 1;
+    transformationOffAudio.play();
+    transformedEpicAudio.pause();
+    transformedEpicAudio.currentTime = 0;
+    electricityAudio.currentTime = 0;
+    epicAudio.currentTime = 0;
+    setTimeout(() => {
+      epicAudio.play();
+    }, 4e3);
     ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
@@ -1018,10 +1036,15 @@
     }
     runAudio.volume = 0;
     swordAudio.volume = 0;
-    epicAudio.volume = 0;
+    epicAudio.pause();
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
     if (transformedAlready) {
+      electricityAudio.volume = 0.7;
+      transformationScreamAudio.volume = 0.1;
+      transformationScreamAudio.play();
+      setTimeout(() => transformedEpicAudio.play(), 1e3);
+      setTimeout(() => electricityAudio.play(), 200);
       document.getElementById("transformation_background").style.display = "none";
       clearGameTimeouts();
       transformed = true;
@@ -1036,10 +1059,9 @@
         true,
         16 /* transformation_run */
       );
-      setTimeout(turnHeroTransformationOff, 1e8);
+      setTimeout(turnHeroTransformationOff, 15e3);
       return;
     }
-    transformedAlready = true;
     document.getElementById("transformation_background").style.display = "flex";
     heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     preTransformed = true;
@@ -1067,7 +1089,7 @@
             document.getElementById("transformation_background").style.display = "none";
             transformationScreamAudio.play();
             setTimeout(() => transformedEpicAudio.play(), 1e3);
-            electricityAudio.volume = 0.1;
+            electricityAudio.volume = 0.2;
             ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
@@ -1085,7 +1107,7 @@
               true,
               16 /* transformation_run */
             );
-            setTimeout(turnHeroTransformationOff, 1e8);
+            setTimeout(turnHeroTransformationOff, 15e3);
           }, 5e3)
         );
       }, 500)
@@ -1191,6 +1213,7 @@
   };
   var defineCurrentSubject = (subject) => {
     currentSubject = subject;
+    currentSubjectTotal = currentSubject.good.length + currentSubject.bad.length;
   };
   var killAllAudios = () => {
     runAudio.pause();

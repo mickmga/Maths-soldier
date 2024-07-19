@@ -31,12 +31,18 @@ const transformedEpicAudio = document.getElementById(
   "transformed_epic_audio"
 )! as HTMLAudioElement;
 
+const transformationOffAudio = document.getElementById(
+  "transformation_off_audio"
+) as HTMLAudioElement;
+
 swordAudio.volume = 0.05;
-epicAudio.volume = 0.25;
+epicAudio.volume = 0.22;
 electricityAudio.volume = 0.7;
 transformationScreamAudio.volume = 0.25;
 
 let currentSubject: Subject | null = null;
+
+let currentSubjectTotal = 0;
 
 let runImagesPerMovement = 4;
 
@@ -44,7 +50,7 @@ let swordReach = window.innerWidth * 0.3;
 
 let gameLaunched = false;
 
-const TRANSFORMED_BONUS_RATIO = 2;
+const TRANSFORMED_BONUS_RATIO = 1;
 const REWARD_UNIT = 1;
 
 let transformedAlready = false;
@@ -52,9 +58,9 @@ let transformedAlready = false;
 const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
-let rewardStreak = 0;
+let rewardStreak = 19;
 
-let TRANSFORMATION_THRESHOLD = 5;
+let TRANSFORMATION_THRESHOLD = 20;
 
 let preTransformed = false;
 
@@ -382,7 +388,7 @@ const getNextAnswer = () => {
       }
     }
     if (foundElement === null) {
-      return 0;
+      console.log("error => we couldnt find an element in the answers list");
     }
 
     return foundElement;
@@ -391,24 +397,24 @@ const getNextAnswer = () => {
   if (randVal) {
     return currentSubject.good.length
       ? getAndRemoveSubject(
-          Math.round(Math.random() * currentSubject.good.length),
+          Math.round(Math.random() * (currentSubject.good.length - 1)),
           currentSubject.good
         )
       : currentSubject.bad.length
       ? getAndRemoveSubject(
-          Math.round(Math.random() * currentSubject.bad.length),
+          Math.round(Math.random() * (currentSubject.bad.length - 1)),
           currentSubject.bad
         )
       : "done";
   } else {
     return currentSubject.bad.length
       ? getAndRemoveSubject(
-          Math.round(Math.random() * currentSubject.bad.length),
+          Math.round(Math.random() * (currentSubject.bad.length - 1)),
           currentSubject.bad
         )
       : currentSubject.good.length
       ? getAndRemoveSubject(
-          Math.round(Math.random() * currentSubject.good.length),
+          Math.round(Math.random() * (currentSubject.good.length - 1)),
           currentSubject.good
         )
       : "done";
@@ -423,6 +429,8 @@ const Grades = {
   S: [18, 19, 20],
 };
 
+/*
+
 const getChallengeGrade = () => {
   return Grades.D.includes(score)
     ? "D"
@@ -434,6 +442,30 @@ const getChallengeGrade = () => {
     ? "A"
     : "S";
 };
+
+*/
+
+const getChallengeGrade = () => {
+  if (!currentSubject) {
+    return;
+  }
+
+  const grade = Math.round((score / currentSubjectTotal) * 20);
+
+  console.log("grade >");
+  console.log(grade);
+
+  return Grades.D.includes(grade)
+    ? "D"
+    : Grades.C.includes(grade)
+    ? "C"
+    : Grades.B.includes(grade)
+    ? "B"
+    : Grades.A.includes(grade)
+    ? "A"
+    : "S";
+};
+
 const updateLifePointsDisplay = () => {
   for (let i = 1; i <= lifePoints.max; i++) {
     const lifePointOpacity = i <= lifePoints.value ? "1" : "0.3";
@@ -529,11 +561,6 @@ const launchEndOfChallenge = () => {
     )! as HTMLAudioElement;
     stampAudio.play();
   }, 1000);
-};
-
-const playAndFadeOut = (audioElement: HTMLAudioElement) => {
-  audioElement.play();
-  fadeOutAudio(audioElement, 1000);
 };
 
 export enum ANIMATION_ID {
@@ -853,6 +880,18 @@ const initAllAnimations = () => {
 const turnHeroTransformationOff = () => {
   transformed = false;
   runAudio.playbackRate = 1;
+  transformationOffAudio.play();
+
+  transformedEpicAudio.pause();
+  transformedEpicAudio.currentTime = 0;
+
+  electricityAudio.currentTime = 0;
+
+  epicAudio.currentTime = 0;
+
+  setTimeout(() => {
+    epicAudio.play();
+  }, 4000);
 
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
@@ -1527,11 +1566,21 @@ const launchTransformation = () => {
   }
   runAudio.volume = 0;
   swordAudio.volume = 0;
-  epicAudio.volume = 0;
+  epicAudio.pause();
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
   if (transformedAlready) {
+    electricityAudio.volume = 0.7;
+
+    transformationScreamAudio.volume = 0.1;
+
+    transformationScreamAudio.play();
+
+    setTimeout(() => transformedEpicAudio.play(), 1000);
+
+    setTimeout(() => electricityAudio.play(), 200);
+
     document.getElementById("transformation_background")!.style.display =
       "none";
 
@@ -1551,11 +1600,9 @@ const launchTransformation = () => {
       ANIMATION_ID.transformation_run
     );
 
-    setTimeout(turnHeroTransformationOff, 100000000);
+    setTimeout(turnHeroTransformationOff, 15000);
     return;
   }
-
-  transformedAlready = true;
 
   document.getElementById("transformation_background")!.style.display = "flex";
 
@@ -1596,7 +1643,7 @@ const launchTransformation = () => {
 
           setTimeout(() => transformedEpicAudio.play(), 1000);
 
-          electricityAudio.volume = 0.1;
+          electricityAudio.volume = 0.2;
 
           ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
 
@@ -1620,7 +1667,7 @@ const launchTransformation = () => {
             ANIMATION_ID.transformation_run
           );
 
-          setTimeout(turnHeroTransformationOff, 100000000);
+          setTimeout(turnHeroTransformationOff, 15000);
         }, 5000)
       );
     }, 500)
@@ -1726,21 +1773,21 @@ const initHeroAnimations = () => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.hurt] = 0;
 };
 
-// Function to fade out the audio
-const fadeOutAudio = (audio: HTMLAudioElement, duration: number) => {
-  // Create a new AudioContext
-  const audioContext = new AudioContext();
-  const track = audioContext.createMediaElementSource(audio);
+function getSoundAndFadeAudio(audioElement: HTMLAudioElement) {
+  // Set the point in playback that fadeout begins. This is for a 2 second fade out.
+  var fadePoint = audioElement.duration - 2;
 
-  // Create a GainNode to control the volume
-  const gainNode = audioContext.createGain();
-  track.connect(gainNode).connect(audioContext.destination);
-
-  const currentTime = audioContext.currentTime;
-  gainNode.gain.setValueAtTime(gainNode.gain.value, currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + duration);
-  setTimeout(() => audio.pause(), duration * 1000); // Pause the audio after fade out
-};
+  var fadeAudio = setInterval(function () {
+    // Only fade if past the fade out point or not at zero already
+    if (audioElement.currentTime >= fadePoint && audioElement.volume != 0.0) {
+      audioElement.volume -= 0.1;
+    }
+    // When volume at zero stop all the intervalling
+    if (audioElement.volume === 0.0) {
+      clearInterval(fadeAudio);
+    }
+  }, 200);
+}
 
 window.onload = () => {
   MAPS.push(createMapBlock(0));
@@ -1765,6 +1812,7 @@ const launchGame = () => {
 
 const defineCurrentSubject = (subject: Subject) => {
   currentSubject = subject;
+  currentSubjectTotal = currentSubject.good.length + currentSubject.bad.length;
 };
 
 const killAllAudios = () => {
