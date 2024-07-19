@@ -18,6 +18,7 @@ const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
 const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
 const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
+const laserdAudio = document.getElementById("laser_audio")! as HTMLAudioElement;
 const epicAudio = document.getElementById("epic_audio")! as HTMLAudioElement;
 const bassAudio = document.getElementById("bass_audio")! as HTMLAudioElement;
 const electricityAudio = document.getElementById(
@@ -58,7 +59,7 @@ let transformedAlready = false;
 const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
-let rewardStreak = 19;
+let rewardStreak = 15;
 
 let TRANSFORMATION_THRESHOLD = 20;
 
@@ -633,12 +634,14 @@ export const THROTTLE_NUMS = {
 };
 
 const timeManipulationToggle = () => {
+  /*
   if (!gameLaunched) return;
   if (timeStoped) {
     cancelStopTimeSpell();
   } else {
     stopTime();
   }
+  */
 };
 
 const createMapBlock = (left: number) => {
@@ -890,6 +893,10 @@ const turnHeroTransformationOff = () => {
   epicAudio.currentTime = 0;
 
   setTimeout(() => {
+    electricityAudio.volume = 0;
+  }, 1000);
+
+  setTimeout(() => {
     epicAudio.play();
   }, 4000);
 
@@ -898,11 +905,15 @@ const turnHeroTransformationOff = () => {
   launchHeroRunAnimation();
 };
 
-const launchAttack = (event?: Event) => {
+const launchAttack = () => {
   if (invisible || !heroIsAlive) {
     return;
   }
-  swordAudio.play();
+  if (transformed) {
+    laserdAudio.play();
+  } else {
+    swordAudio.play();
+  }
   if (transformed) {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
   } else {
@@ -958,7 +969,13 @@ const launchAttack = (event?: Event) => {
   );
 };
 
-window.launchAttack = launchAttack;
+window.launchAttack = (event: Event) => {
+  if (!gameLaunched) {
+    launchGame();
+    return;
+  }
+  launchAttack();
+};
 
 const clearTimeoutAndLaunchNewOne = (
   timeoutId: TimeoutId,
@@ -1052,6 +1069,7 @@ const moveEnemy = (
 const initRewardStreakAndCheckForTransform = () => {
   if (rewardStreak >= TRANSFORMATION_THRESHOLD && !transformed) {
     rewardStreak = 0;
+    updateTransformationProgressBarDisplay();
     launchTransformation();
   }
 };
@@ -1067,6 +1085,7 @@ const rewardHero = () => {
   const bonus_ratio = transformed ? TRANSFORMED_BONUS_RATIO : 1;
   if (!transformed) {
     rewardStreak++;
+    updateTransformationProgressBarDisplay();
   }
 
   score += bonus_ratio * REWARD_UNIT;
@@ -1208,6 +1227,7 @@ const hurtHero = () => {
   runAudio.volume = 0;
 
   rewardStreak = 0;
+  updateTransformationProgressBarDisplay();
 
   heroHurt = true;
   lifePoints.value--;
@@ -1424,9 +1444,6 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "d" && !gameLaunched) {
-    runAudio.play();
-    epicAudio.play();
-    gameLaunched = true;
     launchGame();
   }
 
@@ -1600,7 +1617,7 @@ const launchTransformation = () => {
       ANIMATION_ID.transformation_run
     );
 
-    setTimeout(turnHeroTransformationOff, 15000);
+    setTimeout(turnHeroTransformationOff, 20000);
     return;
   }
 
@@ -1653,7 +1670,7 @@ const launchTransformation = () => {
 
           runAudio.playbackRate = 2;
           runAudio.volume = 1;
-          swordAudio.volume = 1;
+          swordAudio.volume = 0.05;
 
           launchAnimationAndDeclareItLaunched(
             heroImage,
@@ -1667,7 +1684,7 @@ const launchTransformation = () => {
             ANIMATION_ID.transformation_run
           );
 
-          setTimeout(turnHeroTransformationOff, 15000);
+          setTimeout(turnHeroTransformationOff, 20000);
         }, 5000)
       );
     }, 500)
@@ -1799,6 +1816,20 @@ window.onload = () => {
   checkForOpponentsClearance();
   defineCurrentSubject(MATHS_EASY);
   defineSwordReach();
+  updateTransformationProgressBarDisplay();
+};
+
+const getTransformationProgressValue = () => {
+  return Math.floor((rewardStreak / TRANSFORMATION_THRESHOLD) * 100);
+};
+
+const updateTransformationProgressBarDisplay = () => {
+  console.log(getTransformationProgressValue());
+  const progress = document.querySelector(".progress")! as HTMLElement;
+  progress.style.setProperty(
+    "--progress",
+    `${getTransformationProgressValue()}%`
+  );
 };
 
 const defineSwordReach = () => {
@@ -1806,6 +1837,9 @@ const defineSwordReach = () => {
 };
 
 const launchGame = () => {
+  runAudio.play();
+  epicAudio.play();
+  gameLaunched = true;
   launchRun();
   triggerOpponentsApparition();
 };

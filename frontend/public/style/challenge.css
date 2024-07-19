@@ -172,7 +172,7 @@ audio {
 #transformed_hero_bonus_reward_container {
   position: absolute;
   top: 20vh;
-  left: 22.5vw;
+  left: 20vw;
   display: none;
   flex-direction: column;
   z-index: 10;
@@ -250,7 +250,7 @@ audio {
   position: absolute;
   left: 0;
   top: 0;
-  z-index: 1000;
+  z-index: 1004;
   height: 100vh;
   width: 100vw;
   display: none;
@@ -321,5 +321,71 @@ audio {
     width: auto;
     z-index: 1002;
     display: none;
+  }
+}
+
+#playAgainLink {
+  height: 10vh;
+  width: 10vw;
+  position: absolute;
+  bottom: 5vh;
+  left: 10vw;
+  z-index: 1005;
+}
+#playAgainLink img {
+  height: 100%;
+  width: auto;
+}
+
+body {
+  background: black;
+}
+
+.progress {
+  --progress: 0%;
+
+  position: absolute;
+  top: 5vh;
+  left: 35vw;
+  width: 30vw;
+  height: 7.5vh;
+  border: 1px solid #fff;
+  padding: 9px 7px;
+  box-shadow: 0 0 10px #aaa;
+  z-index: 1002;
+}
+
+.progress .bar {
+  width: var(--progress);
+  height: 100%;
+  background: linear-gradient(gold, #c85, gold);
+  background-repeat: repeat;
+  box-shadow: 0 0 10px 0px orange;
+  animation: shine 4s ease-in infinite, end 1s ease-out 1;
+  transition: width 3s ease;
+}
+
+@property --progress {
+  syntax: "<length>";
+  initial-value: 0%;
+  inherits: true;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 50px;
+  }
+}
+
+@keyframes end {
+  0%,
+  100% {
+    box-shadow: 0 0 10px 0px orange;
+  }
+  50% {
+    box-shadow: 0 0 15px 5px orange;
   }
 }
