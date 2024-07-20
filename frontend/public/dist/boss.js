@@ -51,7 +51,7 @@
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 15;
-  var hardEnemy = null;
+  var hardEnemy = true;
   var TRANSFORMATION_THRESHOLD = hardEnemy ? 1e8 : 20;
   var preTransformed = false;
   var gameFinished = false;
@@ -63,6 +63,7 @@
   var INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
   var invisible = false;
   var ennemiesOnScreen = [];
+  var enemiesComingTimeout = null;
   var transformed = false;
   var currentMalusContainerTimeout = null;
   var currentRewardContainerTimeout = null;
@@ -393,7 +394,7 @@
   };
   var triggerOpponentsApparition = () => {
     const newAnswer = getNextAnswer();
-    setTimeout(
+    enemiesComingTimeout = setTimeout(
       () => {
         if (newAnswer && newAnswer !== "done") {
           buildAndLaunchEnemy(newAnswer);
@@ -999,6 +1000,9 @@
     runAudio.volume = 0;
     timeStoped = true;
     clearGameTimeouts();
+    if (enemiesComingTimeout) {
+      clearTimeout(enemiesComingTimeout);
+    }
     ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     ANIMATION_RUNNING_VALUES[4 /* death */] = 0;
@@ -1046,6 +1050,9 @@
         initAllAnimations();
         launchRun();
         ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+        if (!ennemiesOnScreen.length) {
+          triggerOpponentsApparition();
+        }
       }, 1e3)
     );
   };
@@ -1128,6 +1135,9 @@
           true,
           16 /* transformation_pre_run */
         );
+        if (enemiesComingTimeout) {
+          clearTimeout(enemiesComingTimeout);
+        }
         clearTimeoutAndLaunchNewOne(
           0 /* HERO */,
           setTimeout(() => {

@@ -305,6 +305,7 @@
   position: absolute;
   left: -17.5vw;
   width: auto;
+  cursor: pointer;
 }
 
 #ground {

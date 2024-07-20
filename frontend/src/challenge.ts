@@ -72,7 +72,7 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 15;
 
-let hardEnemy: boolean | null = null;
+let hardEnemy: boolean | null = true;
 
 let TRANSFORMATION_THRESHOLD = hardEnemy ? 100000000 : 20;
 
@@ -94,6 +94,8 @@ let INVISIBILITY_DURATION_IN_MILLISECONDS = 600;
 let invisible = false;
 
 const ennemiesOnScreen: Enemy[] = [];
+
+let enemiesComingTimeout: ReturnType<typeof setTimeout> | null = null;
 
 let transformed = false;
 
@@ -536,7 +538,7 @@ const buildAndLaunchEnemy = (answer: Answer) => {
 const triggerOpponentsApparition = () => {
   const newAnswer = getNextAnswer();
 
-  setTimeout(
+  enemiesComingTimeout = setTimeout(
     () => {
       if (newAnswer && newAnswer !== "done") {
         buildAndLaunchEnemy(newAnswer);
@@ -1524,6 +1526,10 @@ const stopTime = () => {
 
   clearGameTimeouts();
 
+  if (enemiesComingTimeout) {
+    clearTimeout(enemiesComingTimeout);
+  }
+
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.attack] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.death] = 0;
@@ -1575,6 +1581,10 @@ const cancelStopTimeSpell = () => {
       initAllAnimations();
       launchRun();
       ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+
+      if (!ennemiesOnScreen.length) {
+        triggerOpponentsApparition();
+      }
     }, 1000)
   );
 };
@@ -1692,6 +1702,10 @@ const launchTransformation = () => {
         true,
         ANIMATION_ID.transformation_pre_run
       );
+
+      if (enemiesComingTimeout) {
+        clearTimeout(enemiesComingTimeout);
+      }
 
       clearTimeoutAndLaunchNewOne(
         TimeoutId.HERO,

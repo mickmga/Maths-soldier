@@ -15,6 +15,8 @@ let backgroundSrc = "assets/challenge/maps/outside.png";
 let currentCacheLeftIndex = 0;
 let currentCacheRightIndex = 1;
 
+let converstationWithBardStarted = false;
+
 enum ANIMATION_ID {
   attack,
   run,
@@ -62,16 +64,13 @@ const launchGolemIdleAnimation = () => {
   );
 };
 
-let tutoStep = 0;
-
 const launchTutorialTalk = () => {
-  tutoStep++;
-  if (tutoStep > 9) {
-    alert("tuto is over");
+  if (converstationWithBardStarted) {
+    window.location.href = "http://localhost:3001/challenge";
+    return;
   }
-  const audio = document.getElementById(
-    `bard_tutorial_${tutoStep}`
-  )! as HTMLAudioElement;
+  converstationWithBardStarted = true;
+  const audio = document.getElementById(`bard_tutorial_1`)! as HTMLAudioElement;
   audio.play();
 };
 
@@ -103,6 +102,8 @@ const createMapPalaceBlock = (left: number) => {
   } else if (left === window.innerWidth * 2) {
     const obeliskContainer = document.createElement("div");
     obeliskContainer.id = "obeliskContainer";
+    obeliskContainer.onclick = () =>
+      (window.location.href = "http://localhost:3001/page");
 
     const obeliskLightning = document.createElement("img");
     obeliskLightning.src = "assets/challenge/items/lightning/1.png";
