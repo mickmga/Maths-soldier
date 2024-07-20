@@ -324,14 +324,6 @@ audio {
   }
 }
 
-#playAgainLink {
-  height: 10vh;
-  width: 10vw;
-  position: absolute;
-  bottom: 5vh;
-  left: 10vw;
-  z-index: 1005;
-}
 #playAgainLink img {
   height: 100%;
   width: auto;
@@ -363,6 +355,67 @@ body {
   box-shadow: 0 0 10px 0px orange;
   animation: shine 4s ease-in infinite, end 1s ease-out 1;
   transition: width 3s ease;
+}
+
+#playAgainLink {
+  height: 10vh;
+  width: 10vw;
+  position: absolute;
+  bottom: 5vh;
+  left: 10vw;
+  z-index: 1005;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 1px 1px 1px 1px;
+  border: solid 3px gray;
+}
+
+#challengesuccessButton {
+  height: 10vh;
+  width: 10vw;
+  position: absolute;
+  bottom: 5vh;
+  right: 10vw;
+  z-index: 1005;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 1px 1px 1px 1px;
+  border: solid 3px gray;
+}
+
+.endOfGameButton {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: none;
+  border: none;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(204, 201, 201);
+  font-weight: bold;
+  cursor: pointer;
+  font-family: "MedievalSharp", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.woodButtonBackground {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
 
 @property --progress {

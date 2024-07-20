@@ -23,6 +23,11 @@ const successfulKillsScoreContainer = document.getElementById("killed_score")!;
 const menu = document.getElementById("menu")!;
 const searchInput = document.getElementById("searchInput")! as HTMLInputElement;
 const menuB = document.getElementById("menuB") as HTMLDivElement;
+const stepsInSwow = document.getElementById(
+  "snow_steps_audio"
+)! as HTMLAudioElement;
+stepsInSwow.volume = 0.25;
+stepsInSwow.playbackRate = 1.2;
 
 let errorScore = 0;
 let successfulKillsScore = 0;
@@ -205,13 +210,19 @@ const launchGolemDoorCreationAnimation = () => {
   );
 };
 
-const moveCamera = (direction: ANIMATION_ID) => {
+const moveCamera = (
+  direction: ANIMATION_ID,
+  previousFrameTimestamp: number
+) => {
   if (
     ANIMATION_RUNNING_VALUES[direction] === 0 ||
     ANIMATION_RUNNING_VALUES[direction] > 1
   ) {
     return;
   }
+  const currentTs = Date.now();
+
+  const diff = currentTs - previousFrameTimestamp;
 
   if (
     direction === ANIMATION_ID.camera_right_to_left &&
@@ -233,11 +244,12 @@ const moveCamera = (direction: ANIMATION_ID) => {
     (map) =>
       (map.style.left = `${
         map.getBoundingClientRect().left +
-        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) * 4
+        (direction === ANIMATION_ID.camera_left_to_right ? -1 : 1) *
+          Math.floor(diff / 4)
       }px`)
   );
 
-  requestAnimationFrame(() => moveCamera(direction));
+  requestAnimationFrame(() => moveCamera(direction, currentTs));
 };
 
 const updateScores = () => {
@@ -267,7 +279,8 @@ const launchAnimationAndDeclareItLaunched = (
     max,
     min,
     loop,
-    animationId
+    animationId,
+    Date.now()
   );
 };
 
@@ -280,10 +293,10 @@ const launchCharacterAnimation = (
   max: number,
   min: number,
   loop: boolean,
-  animationId: ANIMATION_ID
+  animationId: ANIMATION_ID,
+  previousExecutionTimeStamp = Date.now()
 ): any => {
   if (!characterElement) {
-    alert("no el!");
     return;
   }
 
@@ -294,8 +307,11 @@ const launchCharacterAnimation = (
     return;
   }
 
-  if (throttleNum < 10) {
-    throttleNum++;
+  const currentTimeStamp = Date.now();
+
+  const executionDiff = currentTimeStamp - previousExecutionTimeStamp;
+
+  if (executionDiff < 150) {
     return requestAnimationFrame(() =>
       launchCharacterAnimation(
         characterElement,
@@ -306,12 +322,11 @@ const launchCharacterAnimation = (
         max,
         min,
         loop,
-        animationId
+        animationId,
+        previousExecutionTimeStamp
       )
     );
   }
-
-  throttleNum = 0;
 
   if (spriteIndex === max) {
     if (loop === false) {
@@ -335,7 +350,8 @@ const launchCharacterAnimation = (
       max,
       min,
       loop,
-      animationId
+      animationId,
+      currentTimeStamp
     )
   );
 };
@@ -499,8 +515,14 @@ const closeMenu = () => {
 };
 window.closeMenu = closeMenu;
 
+const initAndLaunchFootStepsAudio = () => {
+  stepsInSwow.currentTime = 0;
+  stepsInSwow.play();
+};
+
 const launchCharacterMovement = () => {
-  moveCamera(ANIMATION_ID.camera_left_to_right);
+  initAndLaunchFootStepsAudio();
+  moveCamera(ANIMATION_ID.camera_left_to_right, Date.now());
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
@@ -515,7 +537,8 @@ const launchCharacterMovement = () => {
 };
 
 const launchCharacterMovementLeft = () => {
-  moveCamera(ANIMATION_ID.camera_right_to_left);
+  initAndLaunchFootStepsAudio();
+  moveCamera(ANIMATION_ID.camera_right_to_left, Date.now());
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
@@ -551,19 +574,20 @@ document.addEventListener(
     ) {
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left]++;
       isAnimating = true;
-      // launchCharacterMovementLeft();
       launchCharacterMovementLeft();
-      moveCamera(ANIMATION_ID.camera_right_to_left);
     }
   }
 );
 
-document.addEventListener("keyup", () => {
+document.addEventListener("keyup", (event) => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.character_left_to_right_move] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.walk] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
   isAnimating = false; // Stop animation when "d" is released
+  if (event.key === "d" || event.key === "q") {
+    stepsInSwow.pause();
+  }
 });
 
 window.onload = () => {

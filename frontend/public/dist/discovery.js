@@ -2702,6 +2702,11 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var menu = document.getElementById("menu");
   var searchInput = document.getElementById("searchInput");
   var menuB = document.getElementById("menuB");
+  var stepsInSwow = document.getElementById(
+    "snow_steps_audio"
+  );
+  stepsInSwow.volume = 0.25;
+  stepsInSwow.playbackRate = 1.2;
   var backgroundSrc = "assets/challenge/maps/outside.png";
   var makeId = (length) => {
     let result = "";
@@ -2810,10 +2815,12 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     }
     return block;
   };
-  var moveCamera = (direction) => {
+  var moveCamera = (direction, previousFrameTimestamp) => {
     if (ANIMATION_RUNNING_VALUES[direction] === 0 || ANIMATION_RUNNING_VALUES[direction] > 1) {
       return;
     }
+    const currentTs = Date.now();
+    const diff = currentTs - previousFrameTimestamp;
     if (direction === 5 /* camera_right_to_left */ && MAPS[0].getBoundingClientRect().left >= 0) {
       ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
       return;
@@ -2823,9 +2830,9 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       return;
     }
     MAPS.forEach(
-      (map) => map.style.left = `${map.getBoundingClientRect().left + (direction === 4 /* camera_left_to_right */ ? -1 : 1) * 4}px`
+      (map) => map.style.left = `${map.getBoundingClientRect().left + (direction === 4 /* camera_left_to_right */ ? -1 : 1) * Math.floor(diff / 4)}px`
     );
-    requestAnimationFrame(() => moveCamera(direction));
+    requestAnimationFrame(() => moveCamera(direction, currentTs));
   };
   var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
     ANIMATION_RUNNING_VALUES[animationId]++;
@@ -2838,19 +2845,20 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       max,
       min,
       loop,
-      animationId
+      animationId,
+      Date.now()
     );
   };
-  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId) => {
+  var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, previousExecutionTimeStamp = Date.now()) => {
     if (!characterElement) {
-      alert("no el!");
       return;
     }
     if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
       return;
     }
-    if (throttleNum < 10) {
-      throttleNum++;
+    const currentTimeStamp = Date.now();
+    const executionDiff = currentTimeStamp - previousExecutionTimeStamp;
+    if (executionDiff < 150) {
       return requestAnimationFrame(
         () => launchCharacterAnimation(
           characterElement,
@@ -2861,11 +2869,11 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
           max,
           min,
           loop,
-          animationId
+          animationId,
+          previousExecutionTimeStamp
         )
       );
     }
-    throttleNum = 0;
     if (spriteIndex === max) {
       if (loop === false) {
         return;
@@ -2885,7 +2893,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         max,
         min,
         loop,
-        animationId
+        animationId,
+        currentTimeStamp
       )
     );
   };
@@ -2893,8 +2902,13 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     menu.style.display = "none";
   };
   window.closeMenu = closeMenu;
+  var initAndLaunchFootStepsAudio = () => {
+    stepsInSwow.currentTime = 0;
+    stepsInSwow.play();
+  };
   var launchCharacterMovement = () => {
-    moveCamera(4 /* camera_left_to_right */);
+    initAndLaunchFootStepsAudio();
+    moveCamera(4 /* camera_left_to_right */, Date.now());
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -2908,7 +2922,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     );
   };
   var launchCharacterMovementLeft = () => {
-    moveCamera(5 /* camera_right_to_left */);
+    initAndLaunchFootStepsAudio();
+    moveCamera(5 /* camera_right_to_left */, Date.now());
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -2935,16 +2950,18 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
         ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */]++;
         isAnimating = true;
         launchCharacterMovementLeft();
-        moveCamera(5 /* camera_right_to_left */);
       }
     }
   );
-  document.addEventListener("keyup", () => {
+  document.addEventListener("keyup", (event) => {
     ANIMATION_RUNNING_VALUES[6 /* character_left_to_right_move */] = 0;
     ANIMATION_RUNNING_VALUES[2 /* walk */] = 0;
     ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] = 0;
     ANIMATION_RUNNING_VALUES[5 /* camera_right_to_left */] = 0;
     isAnimating = false;
+    if (event.key === "d" || event.key === "q") {
+      stepsInSwow.pause();
+    }
   });
   window.onload = () => {
     MAPS.push(createMapPalaceBlock(0));

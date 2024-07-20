@@ -36,6 +36,10 @@ const transformationOffAudio = document.getElementById(
   "transformation_off_audio"
 ) as HTMLAudioElement;
 
+const progressBar = document.getElementsByClassName(
+  "progress"
+)[0]! as HTMLElement;
+
 swordAudio.volume = 0.05;
 epicAudio.volume = 0.22;
 electricityAudio.volume = 0.7;
@@ -61,7 +65,7 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 15;
 
-let TRANSFORMATION_THRESHOLD = 20;
+let TRANSFORMATION_THRESHOLD = 100;
 
 let preTransformed = false;
 
@@ -634,14 +638,12 @@ export const THROTTLE_NUMS = {
 };
 
 const timeManipulationToggle = () => {
-  /*
   if (!gameLaunched) return;
   if (timeStoped) {
     cancelStopTimeSpell();
   } else {
     stopTime();
   }
-  */
 };
 
 const createMapBlock = (left: number) => {
@@ -884,6 +886,8 @@ const turnHeroTransformationOff = () => {
   transformed = false;
   runAudio.playbackRate = 1;
   transformationOffAudio.play();
+
+  progressBar.style.display = "flex";
 
   transformedEpicAudio.pause();
   transformedEpicAudio.currentTime = 0;
@@ -1672,6 +1676,8 @@ const launchTransformation = () => {
           runAudio.volume = 1;
           swordAudio.volume = 0.05;
 
+          progressBar.style.display = "none";
+
           launchAnimationAndDeclareItLaunched(
             heroImage,
             0,
@@ -1807,6 +1813,8 @@ function getSoundAndFadeAudio(audioElement: HTMLAudioElement) {
 }
 
 window.onload = () => {
+  launchEndOfChallenge();
+  return;
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
   updateLifePointsDisplay();
@@ -1814,7 +1822,7 @@ window.onload = () => {
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(MATHS_EASY);
+  defineCurrentSubject(STATS);
   defineSwordReach();
   updateTransformationProgressBarDisplay();
 };
