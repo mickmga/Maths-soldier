@@ -2705,6 +2705,8 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var stepsInSwow = document.getElementById(
     "snow_steps_audio"
   );
+  var windowAudio = document.getElementById("wind_audio");
+  windowAudio.volume = 0.4;
   stepsInSwow.volume = 0.7;
   stepsInSwow.playbackRate = 1.2;
   var backgroundSrc = "assets/challenge/maps/outside.png";
@@ -2764,7 +2766,6 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var launchGolemIdleAnimation = () => {
     const golemImage = document.getElementById("golemImage");
     if (!golemImage) {
-      console.log("l image du golem n existe pas");
       return;
     }
     launchAnimationAndDeclareItLaunched(
@@ -2778,6 +2779,17 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       true,
       7 /* golem_idle */
     );
+  };
+  var tutoStep = 0;
+  var launchTutorialTalk = () => {
+    tutoStep++;
+    if (tutoStep > 9) {
+      alert("tuto is over");
+    }
+    const audio = document.getElementById(
+      `bard_tutorial_${tutoStep}`
+    );
+    audio.play();
   };
   var createMapPalaceBlock = (left) => {
     const block = document.createElement("div");
@@ -2794,7 +2806,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       golemImg.id = "golemImage";
       golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
       const golemLink = document.createElement("a");
-      golemLink.href = "http://localhost:3001/challenge";
+      golemLink.onclick = launchTutorialTalk;
       golemLink.append(golemImg);
       block.append(golemLink);
       launchGolemIdleAnimation();

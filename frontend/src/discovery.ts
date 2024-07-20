@@ -26,6 +26,9 @@ const menuB = document.getElementById("menuB") as HTMLDivElement;
 const stepsInSwow = document.getElementById(
   "snow_steps_audio"
 )! as HTMLAudioElement;
+const windowAudio = document.getElementById("wind_audio")! as HTMLAudioElement;
+
+windowAudio.volume = 0.4;
 stepsInSwow.volume = 0.7;
 stepsInSwow.playbackRate = 1.2;
 
@@ -124,7 +127,6 @@ const launchGolemIdleAnimation = () => {
   const golemImage = document.getElementById("golemImage") as HTMLImageElement;
 
   if (!golemImage) {
-    console.log("l image du golem n existe pas");
     return;
   }
   launchAnimationAndDeclareItLaunched(
@@ -138,6 +140,19 @@ const launchGolemIdleAnimation = () => {
     true,
     ANIMATION_ID.golem_idle
   );
+};
+
+let tutoStep = 0;
+
+const launchTutorialTalk = () => {
+  tutoStep++;
+  if (tutoStep > 9) {
+    alert("tuto is over");
+  }
+  const audio = document.getElementById(
+    `bard_tutorial_${tutoStep}`
+  )! as HTMLAudioElement;
+  audio.play();
 };
 
 const createMapPalaceBlock = (left: number) => {
@@ -158,7 +173,7 @@ const createMapPalaceBlock = (left: number) => {
     golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
 
     const golemLink = document.createElement("a");
-    golemLink.href = "http://localhost:3001/challenge";
+    golemLink.onclick = launchTutorialTalk;
 
     golemLink.append(golemImg);
 

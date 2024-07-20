@@ -50,7 +50,7 @@
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
-  var rewardStreak = 1;
+  var rewardStreak = 15;
   var TRANSFORMATION_THRESHOLD = 20;
   var preTransformed = false;
   var gameFinished = false;
@@ -1259,7 +1259,7 @@
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(MATHS_EASY);
+    defineCurrentSubject(STATS);
     defineSwordReach();
     updateTransformationProgressBarDisplay();
   };

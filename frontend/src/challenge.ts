@@ -70,7 +70,7 @@ let transformedAlready = false;
 const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
-let rewardStreak = 1;
+let rewardStreak = 15;
 
 let TRANSFORMATION_THRESHOLD = 20;
 
@@ -1874,7 +1874,7 @@ window.onload = () => {
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(MATHS_EASY);
+  defineCurrentSubject(STATS);
   defineSwordReach();
   updateTransformationProgressBarDisplay();
 };
