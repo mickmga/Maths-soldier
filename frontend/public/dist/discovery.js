@@ -2705,7 +2705,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
   var stepsInSwow = document.getElementById(
     "snow_steps_audio"
   );
-  stepsInSwow.volume = 0.25;
+  stepsInSwow.volume = 0.7;
   stepsInSwow.playbackRate = 1.2;
   var backgroundSrc = "assets/challenge/maps/outside.png";
   var makeId = (length) => {
@@ -2794,7 +2794,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
       golemImg.id = "golemImage";
       golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
       const golemLink = document.createElement("a");
-      golemLink.href = "http://localhost:3001/page";
+      golemLink.href = "http://localhost:3001/challenge";
       golemLink.append(golemImg);
       block.append(golemLink);
       launchGolemIdleAnimation();

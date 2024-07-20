@@ -387,6 +387,7 @@ body {
   overflow: hidden;
   box-shadow: 1px 1px 1px 1px;
   border: solid 3px gray;
+  display: none;
 }
 
 .endOfGameButton {
@@ -416,6 +417,13 @@ body {
   height: 100%;
   width: 100%;
   z-index: 1;
+}
+
+#sword_slash {
+  position: absolute;
+  top: -5vh;
+  left: 7.5vw;
+  display: none;
 }
 
 @property --progress {

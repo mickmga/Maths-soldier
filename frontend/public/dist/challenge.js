@@ -4,6 +4,9 @@
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
   var heroImage = document.getElementById("heroImg");
+  var swordSlashImg = document.getElementById(
+    "sword_slash"
+  );
   var scoreContainer = document.getElementById("score_value");
   var answerDataContainer = document.getElementById("answer_data_container");
   var answerDataValue = document.getElementById("answer_data_value");
@@ -31,10 +34,13 @@
   var progressBar = document.getElementsByClassName(
     "progress"
   )[0];
-  swordAudio.volume = 0.05;
+  var bombAudio = document.getElementById("bomb_audio");
+  swordAudio.volume = 0.65;
+  bombAudio.volume = 0.12;
   epicAudio.volume = 0.22;
   electricityAudio.volume = 0.7;
   transformationScreamAudio.volume = 0.25;
+  runAudio.volume = 0.7;
   var currentSubject = null;
   var currentSubjectTotal = 0;
   var swordReach = window.innerWidth * 0.3;
@@ -44,8 +50,8 @@
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
-  var rewardStreak = 15;
-  var TRANSFORMATION_THRESHOLD = 100;
+  var rewardStreak = 1;
+  var TRANSFORMATION_THRESHOLD = 20;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -348,8 +354,6 @@
       return;
     }
     const grade = Math.round(score / currentSubjectTotal * 20);
-    console.log("grade >");
-    console.log(grade);
     return Grades.D.includes(grade) ? "D" : Grades.C.includes(grade) ? "C" : Grades.B.includes(grade) ? "B" : Grades.A.includes(grade) ? "A" : "S";
   };
   var updateLifePointsDisplay = () => {
@@ -393,7 +397,6 @@
         if (newAnswer && newAnswer !== "done") {
           buildAndLaunchEnemy(newAnswer);
         } else {
-          console.log(newAnswer);
           launchEndOfChallenge();
         }
       },
@@ -408,8 +411,18 @@
     initAllAnimations();
     heroImage.src = "assets/challenge/characters/hero/run/1.png";
     document.getElementById("transformation_background").style.display = "none";
+    const grade = getChallengeGrade();
+    const levelUpAudio = document.getElementById(
+      "levelup_audio"
+    );
+    const endOfChallengeButton = document.getElementById(
+      "challengesuccessButton"
+    );
+    const displayEndOfGameButton = () => {
+      endOfChallengeButton.style.display = "flex";
+      levelUpAudio.play();
+    };
     setTimeout(() => {
-      const grade = getChallengeGrade();
       if (!grade) {
         return;
       }
@@ -420,6 +433,9 @@
         "stamp_audio"
       );
       stampAudio.play();
+      setTimeout(() => {
+        displayEndOfGameButton();
+      }, 2e3);
     }, 1e3);
   };
   var ANIMATION_ID = /* @__PURE__ */ ((ANIMATION_ID2) => {
@@ -438,11 +454,12 @@
     ANIMATION_ID2[ANIMATION_ID2["camera_left_to_right"] = 12] = "camera_left_to_right";
     ANIMATION_ID2[ANIMATION_ID2["camera_right_to_left"] = 13] = "camera_right_to_left";
     ANIMATION_ID2[ANIMATION_ID2["character_left_to_right_move"] = 14] = "character_left_to_right_move";
-    ANIMATION_ID2[ANIMATION_ID2["transformation_pre_run"] = 15] = "transformation_pre_run";
-    ANIMATION_ID2[ANIMATION_ID2["transformation_run"] = 16] = "transformation_run";
-    ANIMATION_ID2[ANIMATION_ID2["transformation_hurt"] = 17] = "transformation_hurt";
-    ANIMATION_ID2[ANIMATION_ID2["boss_idle"] = 18] = "boss_idle";
-    ANIMATION_ID2[ANIMATION_ID2["boss_attack"] = 19] = "boss_attack";
+    ANIMATION_ID2[ANIMATION_ID2["hero_sword_slash"] = 15] = "hero_sword_slash";
+    ANIMATION_ID2[ANIMATION_ID2["transformation_pre_run"] = 16] = "transformation_pre_run";
+    ANIMATION_ID2[ANIMATION_ID2["transformation_run"] = 17] = "transformation_run";
+    ANIMATION_ID2[ANIMATION_ID2["transformation_hurt"] = 18] = "transformation_hurt";
+    ANIMATION_ID2[ANIMATION_ID2["boss_idle"] = 19] = "boss_idle";
+    ANIMATION_ID2[ANIMATION_ID2["boss_attack"] = 20] = "boss_attack";
     return ANIMATION_ID2;
   })(ANIMATION_ID || {});
   var ANIMATION_RUNNING_VALUES = {
@@ -461,11 +478,12 @@
     [12 /* camera_left_to_right */]: 0,
     [13 /* camera_right_to_left */]: 0,
     [14 /* character_left_to_right_move */]: 0,
-    [15 /* transformation_pre_run */]: 0,
-    [16 /* transformation_run */]: 0,
-    [17 /* transformation_hurt */]: 0,
-    [18 /* boss_idle */]: 0,
-    [19 /* boss_attack */]: 0
+    [15 /* hero_sword_slash */]: 0,
+    [16 /* transformation_pre_run */]: 0,
+    [17 /* transformation_run */]: 0,
+    [18 /* transformation_hurt */]: 0,
+    [19 /* boss_idle */]: 0,
+    [20 /* boss_attack */]: 0
   };
   var THROTTLE_NUMS = {
     [0 /* attack */]: 0,
@@ -482,12 +500,13 @@
     [10 /* opponent_move */]: 0,
     [12 /* camera_left_to_right */]: 0,
     [13 /* camera_right_to_left */]: 5,
+    [15 /* hero_sword_slash */]: 0,
     [14 /* character_left_to_right_move */]: 5,
-    [15 /* transformation_pre_run */]: 5,
-    [16 /* transformation_run */]: 5,
-    [17 /* transformation_hurt */]: 0,
-    [18 /* boss_idle */]: 15,
-    [19 /* boss_attack */]: 10
+    [16 /* transformation_pre_run */]: 5,
+    [17 /* transformation_run */]: 5,
+    [18 /* transformation_hurt */]: 0,
+    [19 /* boss_idle */]: 15,
+    [20 /* boss_attack */]: 10
   };
   var timeManipulationToggle = () => {
     if (!gameLaunched) return;
@@ -643,11 +662,11 @@
     ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
     ANIMATION_RUNNING_VALUES[13 /* camera_right_to_left */] = 0;
     ANIMATION_RUNNING_VALUES[14 /* character_left_to_right_move */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
-    ANIMATION_RUNNING_VALUES[17 /* transformation_hurt */] = 0;
-    ANIMATION_RUNNING_VALUES[18 /* boss_idle */] = 0;
-    ANIMATION_RUNNING_VALUES[19 /* boss_attack */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[18 /* transformation_hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[19 /* boss_idle */] = 0;
+    ANIMATION_RUNNING_VALUES[20 /* boss_attack */] = 0;
   };
   var turnHeroTransformationOff = () => {
     transformed = false;
@@ -664,7 +683,7 @@
     setTimeout(() => {
       epicAudio.play();
     }, 4e3);
-    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
   var launchAttack = () => {
@@ -675,12 +694,14 @@
       laserdAudio.play();
     } else {
       swordAudio.play();
+      swordAudio.currentTime = 0;
     }
     if (transformed) {
-      ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
+      ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     } else {
       ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     }
+    launchSwordSlash();
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -843,6 +864,8 @@
   };
   var killEnemy = (enemy) => {
     const launchExplosion = () => {
+      bombAudio.play();
+      bombAudio.currentTime = 0;
       launchAnimationAndDeclareItLaunched(
         enemy.element.firstChild,
         0,
@@ -942,7 +965,7 @@
     if (!heroIsAlive) {
       return;
     }
-    runAudio.volume = 1;
+    runAudio.volume = 0.7;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -952,7 +975,7 @@
       transformed ? 6 : 8,
       1,
       true,
-      transformed ? 16 /* transformation_run */ : 1 /* run */
+      transformed ? 17 /* transformation_run */ : 1 /* run */
     );
   };
   var launchRun = () => {
@@ -965,9 +988,6 @@
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
   document.addEventListener("keydown", (event) => {
-    if (event.key === "t") {
-      console.log(getNextAnswer());
-    }
     if (event.key === "d" && !gameLaunched) {
       launchGame();
     }
@@ -1013,11 +1033,11 @@
     ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
     ANIMATION_RUNNING_VALUES[13 /* camera_right_to_left */] = 0;
     ANIMATION_RUNNING_VALUES[14 /* character_left_to_right_move */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
-    ANIMATION_RUNNING_VALUES[17 /* transformation_hurt */] = 0;
-    ANIMATION_RUNNING_VALUES[18 /* boss_idle */] = 0;
-    ANIMATION_RUNNING_VALUES[19 /* boss_attack */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[18 /* transformation_hurt */] = 0;
+    ANIMATION_RUNNING_VALUES[19 /* boss_idle */] = 0;
+    ANIMATION_RUNNING_VALUES[20 /* boss_attack */] = 0;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -1065,6 +1085,13 @@
   var launchInvisibilityToggle = () => {
     invisible = !invisible;
     heroContainer.style.opacity = invisible ? "0.3" : "1";
+    if (invisible) {
+      const teleportAudio = document.getElementById(
+        "teleport_audio"
+      );
+      teleportAudio.volume = 0.15;
+      teleportAudio.play().then((val) => teleportAudio.currentTime = 0);
+    }
     if (!invisible) {
       return;
     }
@@ -1077,9 +1104,10 @@
     }
     runAudio.volume = 0;
     swordAudio.volume = 0;
+    bombAudio.volume = 0;
     epicAudio.pause();
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     if (transformedAlready) {
       electricityAudio.volume = 0.7;
       transformationScreamAudio.volume = 0.1;
@@ -1098,7 +1126,7 @@
         6,
         1,
         true,
-        16 /* transformation_run */
+        17 /* transformation_run */
       );
       setTimeout(turnHeroTransformationOff, 2e4);
       return;
@@ -1121,7 +1149,7 @@
           9,
           1,
           true,
-          15 /* transformation_pre_run */
+          16 /* transformation_pre_run */
         );
         clearTimeoutAndLaunchNewOne(
           0 /* HERO */,
@@ -1131,12 +1159,12 @@
             transformationScreamAudio.play();
             setTimeout(() => transformedEpicAudio.play(), 1e3);
             electricityAudio.volume = 0.2;
-            ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
+            ANIMATION_RUNNING_VALUES[16 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
-            runAudio.playbackRate = 2;
-            runAudio.volume = 1;
-            swordAudio.volume = 0.05;
+            runAudio.volume = 0.7;
+            swordAudio.volume = 0.65;
+            bombAudio.volume = 0.12;
             progressBar.style.display = "none";
             launchAnimationAndDeclareItLaunched(
               heroImage,
@@ -1147,7 +1175,7 @@
               6,
               1,
               true,
-              16 /* transformation_run */
+              17 /* transformation_run */
             );
             setTimeout(turnHeroTransformationOff, 2e4);
           }, 5e3)
@@ -1168,6 +1196,18 @@
   var clearAndHideAnswerDataContainer = () => {
     answerDataContainer.style.opacity = "1";
     answerDataValue.innerHTML = "";
+  };
+  var launchSwordSlash = () => {
+    ANIMATION_RUNNING_VALUES[15 /* hero_sword_slash */]++;
+    if (ANIMATION_RUNNING_VALUES[15 /* hero_sword_slash */] !== 1 || transformed) {
+      return;
+    }
+    ANIMATION_RUNNING_VALUES[15 /* hero_sword_slash */]++;
+    swordSlashImg.style.display = "flex";
+    setTimeout(() => {
+      swordSlashImg.style.display = "none";
+      ANIMATION_RUNNING_VALUES[15 /* hero_sword_slash */] = 0;
+    }, 75);
   };
   var launchDeathAnimation = () => {
     initHeroAnimations();
@@ -1206,7 +1246,7 @@
       transformed ? 5 : 3,
       1,
       false,
-      transformed ? 17 /* transformation_hurt */ : 3 /* hurt */
+      transformed ? 18 /* transformation_hurt */ : 3 /* hurt */
     );
     initHeroAnimations();
     stopCamera();
@@ -1231,13 +1271,11 @@
   };
   var initHeroAnimations = () => {
     ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[15 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_run */] = 0;
+    ANIMATION_RUNNING_VALUES[16 /* transformation_pre_run */] = 0;
+    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
   };
   window.onload = () => {
-    launchEndOfChallenge();
-    return;
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
     updateLifePointsDisplay();
@@ -1245,7 +1283,7 @@
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(STATS);
+    defineCurrentSubject(MATHS_EASY);
     defineSwordReach();
     updateTransformationProgressBarDisplay();
   };
@@ -1253,7 +1291,6 @@
     return Math.floor(rewardStreak / TRANSFORMATION_THRESHOLD * 100);
   };
   var updateTransformationProgressBarDisplay = () => {
-    console.log(getTransformationProgressValue());
     const progress = document.querySelector(".progress");
     progress.style.setProperty(
       "--progress",

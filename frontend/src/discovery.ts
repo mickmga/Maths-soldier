@@ -26,7 +26,7 @@ const menuB = document.getElementById("menuB") as HTMLDivElement;
 const stepsInSwow = document.getElementById(
   "snow_steps_audio"
 )! as HTMLAudioElement;
-stepsInSwow.volume = 0.25;
+stepsInSwow.volume = 0.7;
 stepsInSwow.playbackRate = 1.2;
 
 let errorScore = 0;
@@ -158,7 +158,7 @@ const createMapPalaceBlock = (left: number) => {
     golemImg.src = "assets/challenge/characters/neutral/golem/1.png";
 
     const golemLink = document.createElement("a");
-    golemLink.href = "http://localhost:3001/page";
+    golemLink.href = "http://localhost:3001/challenge";
 
     golemLink.append(golemImg);
 

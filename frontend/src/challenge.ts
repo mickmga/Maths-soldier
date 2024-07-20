@@ -4,6 +4,10 @@ const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
 const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
 
+const swordSlashImg = document.getElementById(
+  "sword_slash"
+)! as HTMLImageElement;
+
 const scoreContainer = document.getElementById("score_value")!;
 
 const answerDataContainer = document.getElementById("answer_data_container")!;
@@ -40,16 +44,19 @@ const progressBar = document.getElementsByClassName(
   "progress"
 )[0]! as HTMLElement;
 
-swordAudio.volume = 0.05;
+const bombAudio = document.getElementById("bomb_audio")! as HTMLAudioElement;
+
+swordAudio.volume = 0.65;
+bombAudio.volume = 0.12;
 epicAudio.volume = 0.22;
 electricityAudio.volume = 0.7;
 transformationScreamAudio.volume = 0.25;
 
+runAudio.volume = 0.7;
+
 let currentSubject: Subject | null = null;
 
 let currentSubjectTotal = 0;
-
-let runImagesPerMovement = 4;
 
 let swordReach = window.innerWidth * 0.3;
 
@@ -63,9 +70,9 @@ let transformedAlready = false;
 const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
-let rewardStreak = 15;
+let rewardStreak = 1;
 
-let TRANSFORMATION_THRESHOLD = 100;
+let TRANSFORMATION_THRESHOLD = 20;
 
 let preTransformed = false;
 
@@ -150,6 +157,7 @@ const STATS = {
       "Etendue = Valeur maximale - Valeur minimale d'un jeu de donnée",
       true
     ),
+
     new Answer(
       "Le mode est la valeur la plus fréquente dans un ensemble de données.",
       true
@@ -457,9 +465,6 @@ const getChallengeGrade = () => {
 
   const grade = Math.round((score / currentSubjectTotal) * 20);
 
-  console.log("grade >");
-  console.log(grade);
-
   return Grades.D.includes(grade)
     ? "D"
     : Grades.C.includes(grade)
@@ -533,7 +538,6 @@ const triggerOpponentsApparition = () => {
       if (newAnswer && newAnswer !== "done") {
         buildAndLaunchEnemy(newAnswer);
       } else {
-        console.log(newAnswer);
         launchEndOfChallenge();
       }
     },
@@ -551,9 +555,23 @@ const launchEndOfChallenge = () => {
   heroImage.src = "assets/challenge/characters/hero/run/1.png";
   document.getElementById("transformation_background")!.style.display = "none";
 
-  setTimeout(() => {
-    const grade = getChallengeGrade();
+  const grade = getChallengeGrade();
 
+  const levelUpAudio = document.getElementById(
+    "levelup_audio"
+  )! as HTMLAudioElement;
+  const endOfChallengeButton = document.getElementById(
+    "challengesuccessButton"
+  )!;
+
+  const displayEndOfGameButton = () => {
+    //if (grade === "A" || grade === "S") {
+    endOfChallengeButton.style.display = "flex";
+    levelUpAudio.play();
+    // }
+  };
+
+  setTimeout(() => {
     if (!grade) {
       return;
     }
@@ -565,6 +583,10 @@ const launchEndOfChallenge = () => {
       "stamp_audio"
     )! as HTMLAudioElement;
     stampAudio.play();
+
+    setTimeout(() => {
+      displayEndOfGameButton();
+    }, 2000);
   }, 1000);
 };
 
@@ -584,6 +606,7 @@ export enum ANIMATION_ID {
   camera_left_to_right,
   camera_right_to_left,
   character_left_to_right_move,
+  hero_sword_slash,
   transformation_pre_run,
   transformation_run,
   transformation_hurt,
@@ -607,6 +630,7 @@ export const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 0,
+  [ANIMATION_ID.hero_sword_slash]: 0,
   [ANIMATION_ID.transformation_pre_run]: 0,
   [ANIMATION_ID.transformation_run]: 0,
   [ANIMATION_ID.transformation_hurt]: 0,
@@ -629,6 +653,7 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.opponent_move]: 0,
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 5,
+  [ANIMATION_ID.hero_sword_slash]: 0,
   [ANIMATION_ID.character_left_to_right_move]: 5,
   [ANIMATION_ID.transformation_pre_run]: 5,
   [ANIMATION_ID.transformation_run]: 5,
@@ -917,12 +942,15 @@ const launchAttack = () => {
     laserdAudio.play();
   } else {
     swordAudio.play();
+    swordAudio.currentTime = 0;
   }
   if (transformed) {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
   } else {
     ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   }
+
+  launchSwordSlash();
 
   launchAnimationAndDeclareItLaunched(
     heroImage,
@@ -1183,6 +1211,9 @@ const hideReward = () => {};
 
 const killEnemy = (enemy: Enemy) => {
   const launchExplosion = () => {
+    bombAudio.play();
+    bombAudio.currentTime = 0;
+
     launchAnimationAndDeclareItLaunched(
       enemy.element.firstChild as HTMLImageElement,
       0,
@@ -1361,7 +1392,7 @@ const launchHeroRunAnimation = () => {
     return;
   }
 
-  runAudio.volume = 1;
+  runAudio.volume = 0.7;
 
   launchAnimationAndDeclareItLaunched(
     heroImage,
@@ -1443,10 +1474,6 @@ const launchFly = (jumpingForward = true) => {
   requestAnimationFrame(() => launchFly(jumpingForward));
 };
 document.addEventListener("keydown", (event) => {
-  if (event.key === "t") {
-    console.log(getNextAnswer());
-  }
-
   if (event.key === "d" && !gameLaunched) {
     launchGame();
   }
@@ -1572,6 +1599,14 @@ const launchInvisibilityToggle = () => {
 
   heroContainer.style.opacity = invisible ? "0.3" : "1";
 
+  if (invisible) {
+    const teleportAudio = document.getElementById(
+      "teleport_audio"
+    )! as HTMLAudioElement;
+    teleportAudio.volume = 0.15;
+    teleportAudio.play().then((val) => (teleportAudio.currentTime = 0));
+  }
+
   if (!invisible) {
     return;
   }
@@ -1587,6 +1622,7 @@ const launchTransformation = () => {
   }
   runAudio.volume = 0;
   swordAudio.volume = 0;
+  bombAudio.volume = 0;
   epicAudio.pause();
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
@@ -1672,9 +1708,9 @@ const launchTransformation = () => {
 
           preTransformed = false;
 
-          runAudio.playbackRate = 2;
-          runAudio.volume = 1;
-          swordAudio.volume = 0.05;
+          runAudio.volume = 0.7;
+          swordAudio.volume = 0.65;
+          bombAudio.volume = 0.12;
 
           progressBar.style.display = "none";
 
@@ -1712,6 +1748,24 @@ const lightUpAnswerDataContainer = () => {
 const clearAndHideAnswerDataContainer = () => {
   answerDataContainer.style.opacity = "1";
   answerDataValue.innerHTML = "";
+};
+
+const launchSwordSlash = () => {
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.hero_sword_slash]++;
+  if (
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.hero_sword_slash] !== 1 ||
+    transformed
+  ) {
+    return;
+  }
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.hero_sword_slash]++;
+
+  swordSlashImg.style.display = "flex";
+
+  setTimeout(() => {
+    swordSlashImg.style.display = "none";
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.hero_sword_slash] = 0;
+  }, 75);
 };
 
 const launchDeathAnimation = () => {
@@ -1813,8 +1867,6 @@ function getSoundAndFadeAudio(audioElement: HTMLAudioElement) {
 }
 
 window.onload = () => {
-  launchEndOfChallenge();
-  return;
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
   updateLifePointsDisplay();
@@ -1822,7 +1874,7 @@ window.onload = () => {
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(STATS);
+  defineCurrentSubject(MATHS_EASY);
   defineSwordReach();
   updateTransformationProgressBarDisplay();
 };
@@ -1832,7 +1884,6 @@ const getTransformationProgressValue = () => {
 };
 
 const updateTransformationProgressBarDisplay = () => {
-  console.log(getTransformationProgressValue());
   const progress = document.querySelector(".progress")! as HTMLElement;
   progress.style.setProperty(
     "--progress",
