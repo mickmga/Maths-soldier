@@ -1,5 +1,23 @@
 export {};
 
+declare global {
+  interface Window {
+    goBackToMountain: (event: Event) => void;
+    tryAgain: (event: Event) => void;
+  }
+}
+
+const goBackToMountain = (event: Event) => {
+  window.location.href = "http://localhost:3001/discovery";
+};
+
+const tryAgain = (event: Event) => {
+  window.location.reload();
+};
+
+window.goBackToMountain = goBackToMountain;
+window.tryAgain = tryAgain;
+
 const MAPS: HTMLElement[] = [];
 const heroContainer = document.getElementById("hero_container")!;
 const heroImage = document.getElementById("heroImg")! as HTMLImageElement;
@@ -1745,7 +1763,7 @@ const launchTransformation = () => {
             ANIMATION_ID.transformation_run
           );
 
-          setTimeout(turnHeroTransformationOff, 20000);
+          setTimeout(turnHeroTransformationOff, 100000000);
         }, 5000)
       );
     }, 500)
@@ -1951,6 +1969,7 @@ const defineCurrentSubject = (subject: Subject) => {
 const killAllAudios = () => {
   runAudio.pause();
   epicAudio.pause();
+  transformedEpicAudio.pause();
 };
 
 const getUrlParameter = (name: string): string | null => {

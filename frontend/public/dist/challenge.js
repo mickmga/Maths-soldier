@@ -1,6 +1,14 @@
 "use strict";
 (() => {
   // src/challenge.ts
+  var goBackToMountain = (event) => {
+    window.location.href = "http://localhost:3001/discovery";
+  };
+  var tryAgain = (event) => {
+    window.location.reload();
+  };
+  window.goBackToMountain = goBackToMountain;
+  window.tryAgain = tryAgain;
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
   var heroImage = document.getElementById("heroImg");
@@ -1188,7 +1196,7 @@
               true,
               17 /* transformation_run */
             );
-            setTimeout(turnHeroTransformationOff, 2e4);
+            setTimeout(turnHeroTransformationOff, 1e8);
           }, 5e3)
         );
       }, 500)
@@ -1341,6 +1349,7 @@
   var killAllAudios = () => {
     runAudio.pause();
     epicAudio.pause();
+    transformedEpicAudio.pause();
   };
   var getUrlParameter = (name) => {
     const urlParams = new URLSearchParams(window.location.search);
