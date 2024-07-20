@@ -366,7 +366,7 @@
     const newOpponentContainer = document.createElement("div");
     newOpponentContainer.classList.add("enemy_container");
     const newEnnemyImg = document.createElement("img");
-    newEnnemyImg.src = "assets/challenge/characters/enemies/black_spirit/run/1.png";
+    newEnnemyImg.src = "assets/challenge/characters/enemies/hard/1.png";
     newOpponentContainer.append(newEnnemyImg);
     document.getElementsByTagName("body")[0].append(newOpponentContainer);
     return newOpponentContainer;
@@ -728,9 +728,9 @@
       enemy.element.firstChild,
       0,
       "png",
-      "assets/challenge/characters/enemies/black_spirit/run",
+      "assets/challenge/characters/enemies/hard",
       1,
-      4,
+      6,
       1,
       true,
       8 /* opponent_run */
@@ -750,7 +750,7 @@
       );
     }
     throttleNum = 0;
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff}px`;
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff / 3}px`;
     requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
   };
   var initRewardStreakAndCheckForTransform = () => {

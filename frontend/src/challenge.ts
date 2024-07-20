@@ -95,6 +95,8 @@ const ennemiesOnScreen: Enemy[] = [];
 
 let transformed = false;
 
+let hardEnemy = false;
+
 let currentMalusContainerTimeout: ReturnType<typeof setTimeout> | null = null;
 let currentRewardContainerTimeout: ReturnType<typeof setTimeout> | null = null;
 let currentTransformationRewardContainerTimeout: ReturnType<
@@ -489,8 +491,9 @@ const buildEnemyElement = () => {
   const newOpponentContainer = document.createElement("div");
   newOpponentContainer.classList.add("enemy_container");
   const newEnnemyImg = document.createElement("img") as HTMLImageElement;
-  newEnnemyImg.src =
-    "assets/challenge/characters/enemies/black_spirit/run/1.png";
+  newEnnemyImg.src = hardEnemy
+    ? "assets/challenge/characters/enemies/hard/1.png"
+    : "assets/challenge/characters/enemies/black_spirit/run/1.png";
 
   newOpponentContainer.append(newEnnemyImg);
 
@@ -1023,9 +1026,11 @@ const launchOpponent = (enemy: Enemy) => {
     enemy.element.firstChild as HTMLImageElement,
     0,
     "png",
-    "assets/challenge/characters/enemies/black_spirit/run",
+    hardEnemy
+      ? "assets/challenge/characters/enemies/hard"
+      : "assets/challenge/characters/enemies/black_spirit/run/1.png",
     1,
-    4,
+    hardEnemy ? 6 : 8,
     1,
     true,
     ANIMATION_ID.opponent_run
@@ -1092,7 +1097,7 @@ const moveEnemy = (
   throttleNum = 0;
 
   enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - diff
+    enemy.element.getBoundingClientRect().left - diff * (hardEnemy ? 0.33 : 1)
   }px`;
 
   requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
