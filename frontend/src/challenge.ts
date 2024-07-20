@@ -72,7 +72,9 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 15;
 
-let TRANSFORMATION_THRESHOLD = 20;
+let hardEnemy: boolean | null = null;
+
+let TRANSFORMATION_THRESHOLD = hardEnemy ? 100000000 : 20;
 
 let preTransformed = false;
 
@@ -94,8 +96,6 @@ let invisible = false;
 const ennemiesOnScreen: Enemy[] = [];
 
 let transformed = false;
-
-let hardEnemy = false;
 
 let currentMalusContainerTimeout: ReturnType<typeof setTimeout> | null = null;
 let currentRewardContainerTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -666,7 +666,7 @@ export const THROTTLE_NUMS = {
 };
 
 const timeManipulationToggle = () => {
-  if (!gameLaunched) return;
+  if (!gameLaunched || !hardEnemy) return;
   if (timeStoped) {
     cancelStopTimeSpell();
   } else {
@@ -1028,9 +1028,9 @@ const launchOpponent = (enemy: Enemy) => {
     "png",
     hardEnemy
       ? "assets/challenge/characters/enemies/hard"
-      : "assets/challenge/characters/enemies/black_spirit/run/1.png",
+      : "assets/challenge/characters/enemies/black_spirit/run",
     1,
-    hardEnemy ? 6 : 8,
+    hardEnemy ? 6 : 4,
     1,
     true,
     ANIMATION_ID.opponent_run
@@ -1874,14 +1874,22 @@ function getSoundAndFadeAudio(audioElement: HTMLAudioElement) {
 window.onload = () => {
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
+  launchEnemyToggle();
   updateLifePointsDisplay();
   updateScoreDisplay();
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(STATS);
+  defineCurrentSubject(hardEnemy ? STATS : MATHS_EASY);
   defineSwordReach();
   updateTransformationProgressBarDisplay();
+};
+
+const launchEnemyToggle = () => {
+  if (hardEnemy) {
+    return;
+  }
+  progressBar.style.display = "flex";
 };
 
 const getTransformationProgressValue = () => {

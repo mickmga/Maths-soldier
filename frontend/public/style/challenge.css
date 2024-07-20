@@ -345,6 +345,7 @@ body {
   padding: 9px 7px;
   box-shadow: 0 0 10px #aaa;
   z-index: 1002;
+  display: none;
 }
 
 .progress .bar {

@@ -51,7 +51,8 @@
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 15;
-  var TRANSFORMATION_THRESHOLD = 20;
+  var hardEnemy = null;
+  var TRANSFORMATION_THRESHOLD = hardEnemy ? 1e8 : 20;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -366,7 +367,7 @@
     const newOpponentContainer = document.createElement("div");
     newOpponentContainer.classList.add("enemy_container");
     const newEnnemyImg = document.createElement("img");
-    newEnnemyImg.src = "assets/challenge/characters/enemies/hard/1.png";
+    newEnnemyImg.src = hardEnemy ? "assets/challenge/characters/enemies/hard/1.png" : "assets/challenge/characters/enemies/black_spirit/run/1.png";
     newOpponentContainer.append(newEnnemyImg);
     document.getElementsByTagName("body")[0].append(newOpponentContainer);
     return newOpponentContainer;
@@ -485,7 +486,7 @@
     [20 /* boss_attack */]: 10
   };
   var timeManipulationToggle = () => {
-    if (!gameLaunched) return;
+    if (!gameLaunched || !hardEnemy) return;
     if (timeStoped) {
       cancelStopTimeSpell();
     } else {
@@ -728,9 +729,9 @@
       enemy.element.firstChild,
       0,
       "png",
-      "assets/challenge/characters/enemies/hard",
+      hardEnemy ? "assets/challenge/characters/enemies/hard" : "assets/challenge/characters/enemies/black_spirit/run",
       1,
-      6,
+      hardEnemy ? 6 : 4,
       1,
       true,
       8 /* opponent_run */
@@ -750,7 +751,7 @@
       );
     }
     throttleNum = 0;
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff / 3}px`;
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff * (hardEnemy ? 0.33 : 1)}px`;
     requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
   };
   var initRewardStreakAndCheckForTransform = () => {
@@ -1254,14 +1255,21 @@
   window.onload = () => {
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
+    launchEnemyToggle();
     updateLifePointsDisplay();
     updateScoreDisplay();
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(STATS);
+    defineCurrentSubject(hardEnemy ? STATS : MATHS_EASY);
     defineSwordReach();
     updateTransformationProgressBarDisplay();
+  };
+  var launchEnemyToggle = () => {
+    if (hardEnemy) {
+      return;
+    }
+    progressBar.style.display = "flex";
   };
   var getTransformationProgressValue = () => {
     return Math.floor(rewardStreak / TRANSFORMATION_THRESHOLD * 100);
