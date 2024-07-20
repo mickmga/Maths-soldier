@@ -51,8 +51,8 @@
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
   var rewardStreak = 15;
-  var hardEnemy = true;
-  var TRANSFORMATION_THRESHOLD = hardEnemy ? 1e8 : 20;
+  var hardMode = false;
+  var TRANSFORMATION_THRESHOLD = hardMode ? 1e8 : 20;
   var preTransformed = false;
   var gameFinished = false;
   var timeStoped = false;
@@ -368,7 +368,7 @@
     const newOpponentContainer = document.createElement("div");
     newOpponentContainer.classList.add("enemy_container");
     const newEnnemyImg = document.createElement("img");
-    newEnnemyImg.src = hardEnemy ? "assets/challenge/characters/enemies/hard/1.png" : "assets/challenge/characters/enemies/black_spirit/run/1.png";
+    newEnnemyImg.src = hardMode ? "assets/challenge/characters/enemies/hard/1.png" : "assets/challenge/characters/enemies/black_spirit/run/1.png";
     newOpponentContainer.append(newEnnemyImg);
     document.getElementsByTagName("body")[0].append(newOpponentContainer);
     return newOpponentContainer;
@@ -511,7 +511,7 @@
     [20 /* boss_attack */]: 10
   };
   var timeManipulationToggle = () => {
-    if (!gameLaunched || !hardEnemy) return;
+    if (!gameLaunched || !hardMode) return;
     if (timeStoped) {
       cancelStopTimeSpell();
     } else {
@@ -754,9 +754,9 @@
       enemy.element.firstChild,
       0,
       "png",
-      hardEnemy ? "assets/challenge/characters/enemies/hard" : "assets/challenge/characters/enemies/black_spirit/run",
+      hardMode ? "assets/challenge/characters/enemies/hard" : "assets/challenge/characters/enemies/black_spirit/run",
       1,
-      hardEnemy ? 6 : 4,
+      hardMode ? 6 : 4,
       1,
       true,
       8 /* opponent_run */
@@ -776,7 +776,7 @@
       );
     }
     throttleNum = 0;
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff * (hardEnemy ? 0.33 : 1)}px`;
+    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff * (hardMode ? 0.33 : 1)}px`;
     requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
   };
   var initRewardStreakAndCheckForTransform = () => {
@@ -1287,23 +1287,32 @@
     ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
   };
   window.onload = () => {
+    launchHardModeToggle();
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
-    launchEnemyToggle();
+    createGameAccordingToMode();
     updateLifePointsDisplay();
     updateScoreDisplay();
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(hardEnemy ? STATS : MATHS_EASY);
+    defineCurrentSubject(hardMode ? STATS : MATHS_EASY);
     defineSwordReach();
     updateTransformationProgressBarDisplay();
   };
-  var launchEnemyToggle = () => {
-    if (hardEnemy) {
+  var createGameAccordingToMode = () => {
+    if (hardMode) {
       return;
     }
     progressBar.style.display = "flex";
+  };
+  var launchHardModeToggle = () => {
+    const modeParameter = getUrlParameter("mode");
+    if (!modeParameter) {
+      console.log("there is no mode parameter");
+      return;
+    }
+    hardMode = modeParameter === "hard";
   };
   var getTransformationProgressValue = () => {
     return Math.floor(rewardStreak / TRANSFORMATION_THRESHOLD * 100);
@@ -1332,6 +1341,10 @@
   var killAllAudios = () => {
     runAudio.pause();
     epicAudio.pause();
+  };
+  var getUrlParameter = (name) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
   };
 })();
 //# sourceMappingURL=challenge.js.map

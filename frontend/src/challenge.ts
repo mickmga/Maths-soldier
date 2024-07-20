@@ -72,9 +72,9 @@ const KILLED_ENEMY_REWARD = 30;
 
 let rewardStreak = 15;
 
-let hardEnemy: boolean | null = true;
+let hardMode: boolean | null = false;
 
-let TRANSFORMATION_THRESHOLD = hardEnemy ? 100000000 : 20;
+let TRANSFORMATION_THRESHOLD = hardMode ? 100000000 : 20;
 
 let preTransformed = false;
 
@@ -493,7 +493,7 @@ const buildEnemyElement = () => {
   const newOpponentContainer = document.createElement("div");
   newOpponentContainer.classList.add("enemy_container");
   const newEnnemyImg = document.createElement("img") as HTMLImageElement;
-  newEnnemyImg.src = hardEnemy
+  newEnnemyImg.src = hardMode
     ? "assets/challenge/characters/enemies/hard/1.png"
     : "assets/challenge/characters/enemies/black_spirit/run/1.png";
 
@@ -668,7 +668,7 @@ export const THROTTLE_NUMS = {
 };
 
 const timeManipulationToggle = () => {
-  if (!gameLaunched || !hardEnemy) return;
+  if (!gameLaunched || !hardMode) return;
   if (timeStoped) {
     cancelStopTimeSpell();
   } else {
@@ -1028,11 +1028,11 @@ const launchOpponent = (enemy: Enemy) => {
     enemy.element.firstChild as HTMLImageElement,
     0,
     "png",
-    hardEnemy
+    hardMode
       ? "assets/challenge/characters/enemies/hard"
       : "assets/challenge/characters/enemies/black_spirit/run",
     1,
-    hardEnemy ? 6 : 4,
+    hardMode ? 6 : 4,
     1,
     true,
     ANIMATION_ID.opponent_run
@@ -1099,7 +1099,7 @@ const moveEnemy = (
   throttleNum = 0;
 
   enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - diff * (hardEnemy ? 0.33 : 1)
+    enemy.element.getBoundingClientRect().left - diff * (hardMode ? 0.33 : 1)
   }px`;
 
   requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
@@ -1886,24 +1886,37 @@ function getSoundAndFadeAudio(audioElement: HTMLAudioElement) {
 }
 
 window.onload = () => {
+  launchHardModeToggle();
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
-  launchEnemyToggle();
+  createGameAccordingToMode();
   updateLifePointsDisplay();
   updateScoreDisplay();
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(hardEnemy ? STATS : MATHS_EASY);
+  defineCurrentSubject(hardMode ? STATS : MATHS_EASY);
   defineSwordReach();
   updateTransformationProgressBarDisplay();
 };
 
-const launchEnemyToggle = () => {
-  if (hardEnemy) {
+const createGameAccordingToMode = () => {
+  if (hardMode) {
     return;
   }
   progressBar.style.display = "flex";
+};
+
+const launchHardModeToggle = () => {
+  const modeParameter = getUrlParameter("mode");
+
+  if (!modeParameter) {
+    console.log("there is no mode parameter");
+
+    return;
+  }
+
+  hardMode = modeParameter === "hard";
 };
 
 const getTransformationProgressValue = () => {
@@ -1938,4 +1951,9 @@ const defineCurrentSubject = (subject: Subject) => {
 const killAllAudios = () => {
   runAudio.pause();
   epicAudio.pause();
+};
+
+const getUrlParameter = (name: string): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
 };
