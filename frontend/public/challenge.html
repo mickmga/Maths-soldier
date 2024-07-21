@@ -81,13 +81,13 @@
 
             <div id="endOfGameInterfaceScore"></div>
 
-            <div id="playAgainLink" href="http://localhost:3001/challenge">
+            <div id="playAgainLink">
               <img class="woodButtonBackground" src="assets/challenge/buttons/textures/wood.png" alt="">
-              <button id="tryAgainButton" onclick="tryAgain()" class="endOfGameButton">Recommencer</button>
+              <button id="tryAgainButton" class="endOfGameButton">Recommencer</button>
             </div>
             <div id="challengesuccessButton">
               <img class="woodButtonBackground" src="assets/challenge/buttons/textures/wood.png" alt="">
-              <button onclick="goBackToMountain()" class="endOfGameButton" >
+              <button id="backToStormGradButton" class="endOfGameButton" >
                 Retourner à Stormgrad
              </button>
             </div>
@@ -100,11 +100,14 @@
         </div>
 
          
-      <audio style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls autoplay loop>
+      <audio id="fire_background_audio" style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls autoplay loop>
         <source src="assets/audio/fire.mp3" type="audio/mpeg">
       </audio>
       <audio id="bass_audio" style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls>
         <source src="assets/audio/bass.wav" type="audio/mpeg">
+      </audio>
+      <audio id="hero_hurt_audio" style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls>
+        <source src="assets/audio/hurt.mp3" type="audio/mpeg">
       </audio>
       
       <audio id="stamp_audio" style="position: absolute; left: 10vw; z-index: 2000;display: none;" width="320" height="240" controls>

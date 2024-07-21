@@ -44,7 +44,7 @@
   };
   var launchTutorialTalk = () => {
     if (converstationWithBardStarted) {
-      window.location.href = "http://localhost:3001/challenge";
+      window.location.href = `${process.env.URL_BASE}/challenge`;
       return;
     }
     converstationWithBardStarted = true;
@@ -73,7 +73,7 @@
     } else if (left === window.innerWidth * 2) {
       const obeliskContainer = document.createElement("div");
       obeliskContainer.id = "obeliskContainer";
-      obeliskContainer.onclick = () => window.location.href = "http://localhost:3001/page";
+      obeliskContainer.onclick = () => window.location.href = `${process.env.URL_BASE}/page`;
       const obeliskLightning = document.createElement("img");
       obeliskLightning.src = "assets/challenge/items/lightning/1.png";
       obeliskLightning.id = "obeliskLightning";
