@@ -46,7 +46,7 @@
   epicAudio.volume = 0.22;
   electricityAudio.volume = 0.7;
   transformationScreamAudio.volume = 0.25;
-  hurtAudio.volume = 0.02;
+  hurtAudio.volume = 0.025;
   runAudio.volume = 0.7;
   var currentSubject = null;
   var currentSubjectTotal = 0;
@@ -530,6 +530,49 @@
     [19 /* boss_idle */]: 15,
     [20 /* boss_attack */]: 10
   };
+  var AnimationRequest = class {
+    constructor(animation, callBack) {
+      this.animation = animation;
+      this.callBack = callBack;
+    }
+  };
+  var APP_ELEMENTS_ANIMATION_QUEUE = {
+    hero: {
+      request_queue: [],
+      current_animation: null,
+      associated_animations: [
+        1 /* run */,
+        0 /* attack */,
+        3 /* hurt */,
+        4 /* death */,
+        6 /* stop_time */,
+        18 /* transformation_hurt */,
+        16 /* transformation_pre_run */,
+        17 /* transformation_run */
+      ]
+    },
+    enemy: {
+      request_queue: [],
+      current_animation: null,
+      associated_animations: [
+        9 /* opponent_attack */,
+        8 /* opponent_run */,
+        11 /* opponent_death */,
+        10 /* opponent_move */
+      ]
+    }
+  };
+  var getAppIdByAnimationId = (animationId) => {
+    for (const appId in APP_ELEMENTS_ANIMATION_QUEUE) {
+      if (APP_ELEMENTS_ANIMATION_QUEUE.hasOwnProperty(appId)) {
+        const element = APP_ELEMENTS_ANIMATION_QUEUE[appId];
+        if (element.associated_animations.includes(animationId)) {
+          return appId;
+        }
+      }
+    }
+    return false;
+  };
   var timeManipulationToggle = () => {
     if (!gameLaunched || !hardMode) return;
     if (timeStoped) {
@@ -583,17 +626,38 @@
       return;
     }
     ANIMATION_RUNNING_VALUES[animationId]++;
-    launchCharacterAnimation(
-      characterElement,
-      throttleNum,
-      extension,
-      spriteBase,
-      spriteIndex,
-      max,
-      min,
-      loop,
-      animationId
-    );
+    const animationCallback = () => {
+      launchCharacterAnimation(
+        characterElement,
+        throttleNum,
+        extension,
+        spriteBase,
+        spriteIndex,
+        max,
+        min,
+        loop,
+        animationId
+      );
+    };
+    const elementAssociatedWithThisAnimation = getAppIdByAnimationId(animationId);
+    if (elementAssociatedWithThisAnimation) {
+      const animationRequestCallback = () => {
+        if (APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation) {
+          requestAnimationFrame(animationRequestCallback);
+          return;
+        }
+        APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation = animationId;
+        animationCallback();
+      };
+      if (APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation) {
+        APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].request_queue.unshift(
+          new AnimationRequest(animationId, animationRequestCallback)
+        );
+        return;
+      }
+      APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation = animationId;
+    }
+    animationCallback();
   };
   var launchCharacterAnimation = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback, lastExecutionTimeStamp) => {
     if (gameFinished) {
@@ -601,6 +665,20 @@
     }
     if (!ANIMATION_RUNNING_VALUES[animationId] || ANIMATION_RUNNING_VALUES[animationId] > 1) {
       return;
+    }
+    const elementAssociatedWithThisAnimation = getAppIdByAnimationId(animationId);
+    if (elementAssociatedWithThisAnimation) {
+      if (APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation !== animationId) {
+        console.log("there was an error, an animation should not run");
+        return;
+      }
+      const requestQueue = APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].request_queue;
+      if (requestQueue.length) {
+        APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation = null;
+        initAnimation(animationId);
+        const firstQueueElement = requestQueue.pop();
+        firstQueueElement == null ? void 0 : firstQueueElement.callBack();
+      }
     }
     if (throttleNum < THROTTLE_NUMS[animationId]) {
       throttleNum++;
@@ -643,6 +721,27 @@
         );
       }
     }
+    if (lastExecutionTimeStamp) {
+      const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
+      if (diff < 35) {
+        return requestAnimationFrame(
+          () => launchCharacterAnimation(
+            characterElement,
+            throttleNum,
+            extension,
+            spriteBase,
+            spriteIndex,
+            max,
+            min,
+            loop,
+            animationId,
+            () => {
+            },
+            lastExecutionTimeStamp
+          )
+        );
+      }
+    }
     throttleNum = 0;
     if (spriteIndex === max) {
       if (loop === false) {
@@ -655,7 +754,6 @@
       spriteIndex++;
     }
     if (!characterElement) {
-      console.log("the element you try to modify the source of, does not exist");
       return;
     }
     characterElement.src = `${spriteBase}/${spriteIndex}.${extension}`;
@@ -675,6 +773,9 @@
         newExecutionTimeStamp
       )
     );
+  };
+  var initAnimation = (animationId) => {
+    ANIMATION_RUNNING_VALUES[animationId] = 0;
   };
   var initAllAnimations = () => {
     ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
@@ -718,14 +819,13 @@
     }
     if (transformed) {
       laserdAudio.play();
+      laserdAudio.currentTime = 0;
     } else {
       swordAudio.play();
       swordAudio.currentTime = 0;
     }
     if (transformed) {
-      ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     } else {
-      ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
     }
     launchSwordSlash();
     launchAnimationAndDeclareItLaunched(
@@ -788,16 +888,13 @@
     moveEnemy(enemy, 0, Date.now());
   };
   var moveEnemy = (enemy, throttleNum = 0, previousTimeStamp) => {
-    if (ANIMATION_RUNNING_VALUES[8 /* opponent_run */] !== 1) {
-      return;
-    }
     const currentTimeStamp = Date.now();
     const diff = currentTimeStamp - previousTimeStamp;
     if (throttleNum < THROTTLE_NUMS[10 /* opponent_move */]) {
       throttleNum++;
-      return requestAnimationFrame(
-        () => moveEnemy(enemy, throttleNum, currentTimeStamp)
-      );
+      return requestAnimationFrame(() => {
+        moveEnemy(enemy, throttleNum, currentTimeStamp);
+      });
     }
     throttleNum = 0;
     enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff * (hardMode ? 0.33 : 1)}px`;
@@ -911,7 +1008,6 @@
   var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
     setTimeout(() => {
-      ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
       enemy.element.remove();
       if (!preTransformed) {
         triggerOpponentsApparition();
@@ -925,7 +1021,6 @@
   };
   var destroyEnemyAndLaunchNewOne = (enemy) => {
     destroyEnemy(enemy);
-    ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
   };
   var hurtHero = () => {
     if (!heroIsAlive) {
@@ -936,8 +1031,6 @@
     updateTransformationProgressBarDisplay();
     heroHurt = true;
     checkForHerosDeath();
-    hurtAudio.play();
-    hurtAudio.currentTime = 0;
     updateLifePointsDisplay();
     launchHeroHurtAnimation();
     displayMalus("Malus! You were hurt!");
@@ -1140,8 +1233,6 @@
     swordAudio.volume = 0;
     bombAudio.volume = 0;
     epicAudio.pause();
-    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     if (transformedAlready) {
       electricityAudio.volume = 0.7;
       transformationScreamAudio.volume = 0.1;
@@ -1196,7 +1287,6 @@
             transformationScreamAudio.play();
             setTimeout(() => transformedEpicAudio.play(), 1e3);
             electricityAudio.volume = 0.2;
-            ANIMATION_RUNNING_VALUES[16 /* transformation_pre_run */] = 0;
             transformed = true;
             preTransformed = false;
             runAudio.volume = 0.7;
@@ -1222,7 +1312,6 @@
   };
   var clearAllOponentsAndTimeouts = () => {
     ennemiesOnScreen.forEach((enemy, index) => {
-      ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
       enemy.element.remove();
       ennemiesOnScreen.splice(index, 1);
     });
@@ -1364,7 +1453,6 @@
     epicAudio.play();
     gameLaunched = true;
     launchRun();
-    triggerOpponentsApparition();
   };
   var defineCurrentSubject = (subject) => {
     currentSubject = subject;
