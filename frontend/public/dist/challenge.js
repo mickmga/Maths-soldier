@@ -57,7 +57,7 @@
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
-  var rewardStreak = 15;
+  var rewardStreak = 19;
   var hardMode = false;
   var TRANSFORMATION_THRESHOLD = hardMode ? 1e8 : 20;
   var preTransformed = false;
@@ -653,6 +653,15 @@
         APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].request_queue.unshift(
           new AnimationRequest(animationId, animationRequestCallback)
         );
+        if (animationId === 11 /* opponent_death */) {
+          console.log(
+            "ok, there are already is an animation. I need to break it. Here >"
+          );
+          console.log("the animation>");
+          console.log(
+            APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation
+          );
+        }
         return;
       }
       APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation = animationId;
@@ -721,32 +730,21 @@
         );
       }
     }
-    if (lastExecutionTimeStamp) {
-      const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
-      if (diff < 35) {
-        return requestAnimationFrame(
-          () => launchCharacterAnimation(
-            characterElement,
-            throttleNum,
-            extension,
-            spriteBase,
-            spriteIndex,
-            max,
-            min,
-            loop,
-            animationId,
-            () => {
-            },
-            lastExecutionTimeStamp
-          )
-        );
-      }
-    }
     throttleNum = 0;
     if (spriteIndex === max) {
       if (loop === false) {
         ANIMATION_RUNNING_VALUES[animationId] = 0;
-        if (endOfAnimationCallback) endOfAnimationCallback();
+        const elementAssociatedWithThisAnimation2 = getAppIdByAnimationId(animationId);
+        if (elementAssociatedWithThisAnimation2) {
+          if (APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation2].current_animation !== animationId) {
+            console.log("there was an error, an animation should not run");
+            return;
+          }
+          APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation2].current_animation = null;
+        }
+        if (endOfAnimationCallback) {
+          endOfAnimationCallback();
+        }
         return;
       }
       spriteIndex = min;
@@ -810,7 +808,6 @@
     setTimeout(() => {
       epicAudio.play();
     }, 4e3);
-    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
     launchHeroRunAnimation();
   };
   var launchAttack = () => {
@@ -823,9 +820,6 @@
     } else {
       swordAudio.play();
       swordAudio.currentTime = 0;
-    }
-    if (transformed) {
-    } else {
     }
     launchSwordSlash();
     launchAnimationAndDeclareItLaunched(
@@ -1030,6 +1024,7 @@
     rewardStreak = 0;
     updateTransformationProgressBarDisplay();
     heroHurt = true;
+    lifePoints.value--;
     checkForHerosDeath();
     updateLifePointsDisplay();
     launchHeroHurtAnimation();
@@ -1374,7 +1369,6 @@
       false,
       transformed ? 18 /* transformation_hurt */ : 3 /* hurt */
     );
-    initHeroAnimations();
     stopCamera();
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
@@ -1453,6 +1447,7 @@
     epicAudio.play();
     gameLaunched = true;
     launchRun();
+    triggerOpponentsApparition();
   };
   var defineCurrentSubject = (subject) => {
     currentSubject = subject;

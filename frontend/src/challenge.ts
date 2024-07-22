@@ -79,7 +79,7 @@ let transformedAlready = false;
 const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
-let rewardStreak = 15;
+let rewardStreak = 19;
 
 let hardMode: boolean | null = false;
 
@@ -905,6 +905,17 @@ export const launchAnimationAndDeclareItLaunched = (
       ].request_queue.unshift(
         new AnimationRequest(animationId, animationRequestCallback)
       );
+
+      if (animationId === ANIMATION_ID.opponent_death) {
+        console.log(
+          "ok, there are already is an animation. I need to break it. Here >"
+        );
+        console.log("the animation>");
+        console.log(
+          APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation]
+            .current_animation
+        );
+      }
       return;
     }
 
@@ -1016,7 +1027,25 @@ const launchCharacterAnimation = (
   if (spriteIndex === max) {
     if (loop === false) {
       ANIMATION_RUNNING_VALUES[animationId] = 0;
-      if (endOfAnimationCallback) endOfAnimationCallback();
+      const elementAssociatedWithThisAnimation =
+        getAppIdByAnimationId(animationId);
+
+      if (elementAssociatedWithThisAnimation) {
+        if (
+          APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation]
+            .current_animation !== animationId
+        ) {
+          console.log("there was an error, an animation should not run");
+          return;
+        }
+
+        APP_ELEMENTS_ANIMATION_QUEUE[
+          elementAssociatedWithThisAnimation
+        ].current_animation = null;
+      }
+      if (endOfAnimationCallback) {
+        endOfAnimationCallback();
+      }
       return;
     }
 
@@ -1092,8 +1121,6 @@ const turnHeroTransformationOff = () => {
     epicAudio.play();
   }, 4000);
 
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
-
   launchHeroRunAnimation();
 };
 
@@ -1108,12 +1135,6 @@ const launchAttack = () => {
     swordAudio.play();
     swordAudio.currentTime = 0;
   }
-  if (transformed) {
-    // ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
-  } else {
-    //  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
-  }
-
   launchSwordSlash();
 
   launchAnimationAndDeclareItLaunched(
@@ -1429,7 +1450,7 @@ const hurtHero = () => {
   updateTransformationProgressBarDisplay();
 
   heroHurt = true;
-  //lifepoints.value--;
+  lifePoints.value--;
   checkForHerosDeath();
 
   //  hurtAudio.play();
@@ -1997,8 +2018,6 @@ const launchHeroHurtAnimation = () => {
     transformed ? ANIMATION_ID.transformation_hurt : ANIMATION_ID.hurt
   );
 
-  initHeroAnimations();
-
   stopCamera();
 
   clearTimeoutAndLaunchNewOne(
@@ -2096,7 +2115,7 @@ const launchGame = () => {
   epicAudio.play();
   gameLaunched = true;
   launchRun();
-  // triggerOpponentsApparition();
+  triggerOpponentsApparition();
 };
 
 const defineCurrentSubject = (subject: Subject) => {
