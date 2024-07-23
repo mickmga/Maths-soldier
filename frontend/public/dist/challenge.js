@@ -17,6 +17,7 @@
   var scoreMalusDetail = document.getElementById("score_malus_detail");
   var scoreRewardContainer = document.getElementById("score_reward_container");
   var scoreRewardDetail = document.getElementById("score_reward_detail");
+  var ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS = 100;
   var runAudio = document.getElementById("run_audio");
   var swordAudio = document.getElementById("sword_audio");
   var laserdAudio = document.getElementById("laser_audio");
@@ -711,7 +712,7 @@
     const newExecutionTimeStamp = Date.now();
     if (animationId === 1 /* run */ && lastExecutionTimeStamp) {
       const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
-      if (diff < 100) {
+      if (diff < ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS) {
         return requestAnimationFrame(
           () => launchCharacterAnimation(
             characterElement,

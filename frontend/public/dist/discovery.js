@@ -272,5 +272,9 @@
       9 /* obelisk_idle */
     );
   };
+  document.addEventListener("fetch", (event) => {
+    console.log("fetching >");
+    console.log(event);
+  });
 })();
 //# sourceMappingURL=discovery.js.map

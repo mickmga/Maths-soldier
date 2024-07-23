@@ -24,6 +24,8 @@ const scoreRewardContainer = document.getElementById("score_reward_container")!;
 
 const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
+const ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS = 100;
+
 const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
 const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
 const laserdAudio = document.getElementById("laser_audio")! as HTMLAudioElement;
@@ -1003,7 +1005,7 @@ const launchCharacterAnimation = (
   if (animationId === ANIMATION_ID.run && lastExecutionTimeStamp) {
     const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
 
-    if (diff < 100) {
+    if (diff < ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS) {
       return requestAnimationFrame(() =>
         launchCharacterAnimation(
           characterElement,

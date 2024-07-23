@@ -474,3 +474,8 @@ const launchObeliskAnimation = () => {
     ANIMATION_ID.obelisk_idle
   );
 };
+
+document.addEventListener("fetch", (event: Event) => {
+  console.log("fetching >");
+  console.log(event);
+});
