@@ -63,7 +63,7 @@
   var TRANSFORMATION_THRESHOLD = hardMode ? 1e8 : 20;
   var preTransformed = false;
   var gameFinished = false;
-  var timeStoped = false;
+  var runStopped = false;
   var score = 0;
   var heroHurt = false;
   var heroIsAlive = true;
@@ -414,9 +414,6 @@
   };
   var triggerOpponentsApparition = () => {
     const newAnswer = getNextAnswer();
-    if (!newAnswer) {
-      console.log(newAnswer);
-    }
     enemiesComingTimeout = setTimeout(
       () => {
         if (newAnswer && newAnswer !== "done") {
@@ -584,7 +581,7 @@
   };
   var timeManipulationToggle = () => {
     if (!gameLaunched) return;
-    if (timeStoped) {
+    if (runStopped) {
       resumeRun();
     } else {
       stopRun();
@@ -903,8 +900,11 @@
         moveEnemy(enemy, throttleNum, currentTimeStamp);
       });
     }
+    let hardEnemyMoveRatio = hardEnemyRunning ? 1.5 : 1;
     throttleNum = 0;
-    enemy.element.style.left = `${enemy.element.getBoundingClientRect().left - diff * (hardMode ? 0.33 : 1)}px`;
+    enemy.element.style.left = `${Math.round(
+      enemy.element.getBoundingClientRect().left - diff * (hardMode ? 0.33 * hardEnemyMoveRatio : 1)
+    )}px`;
     requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
   };
   var transformIfRequired = () => {
@@ -1014,6 +1014,7 @@
   };
   var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
+    hardEnemyRunning = false;
     setTimeout(() => {
       enemy.element.remove();
       if (!preTransformed) {
@@ -1054,10 +1055,15 @@
     heroIsAlive = false;
     launchDeathAnimation();
   };
+  var hardEnemyRunning = false;
   var detectCollision = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
+      if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width > enemyOnScreen.element.getBoundingClientRect().left - window.innerWidth * 0.35 && enemyOnScreen.collideable) {
+        hardEnemyRunning = true;
+      }
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width > enemyOnScreen.element.getBoundingClientRect().left && enemyOnScreen.collideable) {
         enemyOnScreen.collideable = false;
+        hardEnemyRunning = false;
         if (!invisible || enemyOnScreen.answer.good) {
           hurtHero();
         } else if (invisible && !enemyOnScreen.answer.good) {
@@ -1109,11 +1115,13 @@
     );
   };
   var launchRun = () => {
-    if (timeStoped) {
+    if (runStopped) {
       return;
     }
-    startCamera();
-    moveCamera(13 /* camera_left_to_right */, 0, Date.now());
+    if (ANIMATION_RUNNING_VALUES[13 /* camera_left_to_right */] === 0) {
+      startCamera();
+      moveCamera(13 /* camera_left_to_right */, 0, Date.now());
+    }
     launchHeroRunAnimation();
   };
   var heroInitialTop = heroContainer.getBoundingClientRect().top;
@@ -1143,6 +1151,7 @@
       launchDeathAnimation();
     }
     if (event.key === "s") {
+      if (runStopped) return;
       stopRun();
     }
   });
@@ -1156,7 +1165,7 @@
   };
   var stopRun = () => {
     runAudio.volume = 0;
-    timeStoped = true;
+    runStopped = true;
     if (enemiesComingTimeout) {
       clearTimeout(enemiesComingTimeout);
     }
@@ -1187,7 +1196,7 @@
     }
   };
   var resumeRun = () => {
-    timeStoped = false;
+    runStopped = false;
     launchRun();
     ennemiesOnScreen.forEach((enemy) => {
       launchOpponent(enemy);
@@ -1223,7 +1232,7 @@
   };
   window.launchInvisibilityToggle = launchInvisibilityToggle;
   var launchTransformation = () => {
-    if (timeStoped || hardMode) {
+    if (runStopped || hardMode) {
       return;
     }
     runAudio.volume = 0;
@@ -1372,7 +1381,9 @@
       false,
       transformed ? 19 /* transformation_hurt */ : 3 /* hurt */
     );
-    stopCamera();
+    if (!hardMode) {
+      stopCamera();
+    }
     clearTimeoutAndLaunchNewOne(
       0 /* HERO */,
       setTimeout(() => {

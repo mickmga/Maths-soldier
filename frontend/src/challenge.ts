@@ -91,7 +91,7 @@ let preTransformed = false;
 
 let gameFinished = false;
 
-let timeStoped = false;
+let runStopped = false;
 
 let score = 0;
 
@@ -561,10 +561,6 @@ const buildAndLaunchEnemy = (answer: Answer) => {
 const triggerOpponentsApparition = () => {
   const newAnswer = getNextAnswer();
 
-  if (!newAnswer) {
-    console.log(newAnswer);
-  }
-
   enemiesComingTimeout = setTimeout(
     () => {
       if (newAnswer && newAnswer !== "done") {
@@ -770,7 +766,7 @@ const getAppIdByAnimationId = (
 
 const timeManipulationToggle = () => {
   if (!gameLaunched) return;
-  if (timeStoped) {
+  if (runStopped) {
     resumeRun();
   } else {
     stopRun();
@@ -1287,11 +1283,14 @@ const moveEnemy = (
     });
   }
 
+  let hardEnemyMoveRatio = hardEnemyRunning ? 1.5 : 1;
+
   throttleNum = 0;
 
-  enemy.element.style.left = `${
-    enemy.element.getBoundingClientRect().left - diff * (hardMode ? 0.33 : 1)
-  }px`;
+  enemy.element.style.left = `${Math.round(
+    enemy.element.getBoundingClientRect().left -
+      diff * (hardMode ? 0.33 * hardEnemyMoveRatio : 1)
+  )}px`;
 
   requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
 };
@@ -1435,6 +1434,7 @@ const killEnemy = (enemy: Enemy) => {
 
 const destroyEnemy = (enemy: Enemy) => {
   clearAndHideAnswerDataContainer();
+  hardEnemyRunning = false;
 
   setTimeout(() => {
     enemy.element.remove();
@@ -1489,8 +1489,20 @@ const killHero = () => {
   launchDeathAnimation();
 };
 
+let hardEnemyRunning = false;
+
 const detectCollision = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
+    if (
+      heroContainer.getBoundingClientRect().left +
+        heroContainer.getBoundingClientRect().width >
+        enemyOnScreen.element.getBoundingClientRect().left -
+          window.innerWidth * 0.35 &&
+      enemyOnScreen.collideable
+    ) {
+      hardEnemyRunning = true;
+    }
+
     if (
       heroContainer.getBoundingClientRect().left +
         heroContainer.getBoundingClientRect().width >
@@ -1498,6 +1510,8 @@ const detectCollision = () => {
       enemyOnScreen.collideable
     ) {
       enemyOnScreen.collideable = false;
+
+      hardEnemyRunning = false;
 
       if (!invisible || enemyOnScreen.answer.good) {
         hurtHero();
@@ -1614,12 +1628,15 @@ const launchHeroRunAnimation = () => {
 };
 
 const launchRun = () => {
-  if (timeStoped) {
+  if (runStopped) {
     return;
   }
 
-  startCamera();
-  moveCamera(ANIMATION_ID.camera_left_to_right, 0, Date.now());
+  if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0) {
+    startCamera();
+    moveCamera(ANIMATION_ID.camera_left_to_right, 0, Date.now());
+  }
+
   launchHeroRunAnimation();
 };
 
@@ -1708,6 +1725,7 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "s") {
+    if (runStopped) return;
     stopRun();
   }
 });
@@ -1725,7 +1743,7 @@ const clearGameTimeouts = () => {
 const stopRun = () => {
   runAudio.volume = 0;
 
-  timeStoped = true;
+  runStopped = true;
 
   if (enemiesComingTimeout) {
     clearTimeout(enemiesComingTimeout);
@@ -1771,7 +1789,7 @@ const interruptAnimation = (animation: ANIMATION_ID) => {
 const stopTime = () => {
   runAudio.volume = 0;
 
-  timeStoped = true;
+  runStopped = true;
 
   clearGameTimeouts();
 
@@ -1801,7 +1819,7 @@ const stopTime = () => {
 */
 
 const resumeRun = () => {
-  timeStoped = false;
+  runStopped = false;
 
   launchRun();
   ennemiesOnScreen.forEach((enemy) => {
@@ -1856,7 +1874,7 @@ const launchInvisibilityToggle = () => {
 window.launchInvisibilityToggle = launchInvisibilityToggle;
 
 const launchTransformation = () => {
-  if (timeStoped || hardMode) {
+  if (runStopped || hardMode) {
     return;
   }
   runAudio.volume = 0;
@@ -2061,7 +2079,9 @@ const launchHeroHurtAnimation = () => {
     transformed ? ANIMATION_ID.transformation_hurt : ANIMATION_ID.hurt
   );
 
-  stopCamera();
+  if (!hardMode) {
+    stopCamera();
+  }
 
   clearTimeoutAndLaunchNewOne(
     TimeoutId.HERO,

@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "sources": ["../../src/load.ts"],
-  "sourcesContent": ["if (\"serviceWorker\" in navigator) {\r\n  window.addEventListener(\"load\", () => {\r\n    navigator.serviceWorker\r\n      .register(\"/service-worker.js\")\r\n      .then((registration) => {\r\n        console.log(\r\n          \"The service worker registration successful with scope: \",\r\n          registration.scope\r\n        );\r\n      })\r\n      .catch((err) => {\r\n        console.log(\"ServiceWorker registration failed: \", err);\r\n      });\r\n  });\r\n}\r\n"],
-  "mappings": ";;;AAAA,MAAI,mBAAmB,WAAW;AAChC,WAAO,iBAAiB,QAAQ,MAAM;AACpC,gBAAU,cACP,SAAS,oBAAoB,EAC7B,KAAK,CAAC,iBAAiB;AACtB,gBAAQ;AAAA,UACN;AAAA,UACA,aAAa;AAAA,QACf;AAAA,MACF,CAAC,EACA,MAAM,CAAC,QAAQ;AACd,gBAAQ,IAAI,uCAAuC,GAAG;AAAA,MACxD,CAAC;AAAA,IACL,CAAC;AAAA,EACH;",
+  "sources": [],
+  "sourcesContent": [],
+  "mappings": "",
   "names": []
 }
