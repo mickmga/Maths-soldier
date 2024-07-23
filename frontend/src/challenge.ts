@@ -413,7 +413,8 @@ const getNextAnswer = () => {
   const randVal = Math.random() > 0.5;
 
   if (!currentSubject) {
-    return;
+    console.log("there is no subject");
+    defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
   }
 
   const getAndRemoveSubject: any = (index: number, list: Array<any>) => {
@@ -434,24 +435,24 @@ const getNextAnswer = () => {
   };
 
   if (randVal) {
-    return currentSubject.good.length
+    return currentSubject?.good.length
       ? getAndRemoveSubject(
           Math.round(Math.random() * (currentSubject.good.length - 1)),
           currentSubject.good
         )
-      : currentSubject.bad.length
+      : currentSubject?.bad.length
       ? getAndRemoveSubject(
           Math.round(Math.random() * (currentSubject.bad.length - 1)),
           currentSubject.bad
         )
       : "done";
   } else {
-    return currentSubject.bad.length
+    return currentSubject?.bad.length
       ? getAndRemoveSubject(
           Math.round(Math.random() * (currentSubject.bad.length - 1)),
           currentSubject.bad
         )
-      : currentSubject.good.length
+      : currentSubject?.good.length
       ? getAndRemoveSubject(
           Math.round(Math.random() * (currentSubject.good.length - 1)),
           currentSubject.good
@@ -561,7 +562,6 @@ const triggerOpponentsApparition = () => {
   const newAnswer = getNextAnswer();
 
   if (!newAnswer) {
-    alert("no new answer");
     console.log(newAnswer);
   }
 
@@ -629,6 +629,7 @@ export enum ANIMATION_ID {
   hurt,
   death,
   idle,
+  stop,
   stop_time,
   cancel_stop_time,
   opponent_run,
@@ -654,6 +655,7 @@ export const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.hurt]: 0,
   [ANIMATION_ID.idle]: 0,
   [ANIMATION_ID.stop_time]: 0,
+  [ANIMATION_ID.stop]: 0,
   [ANIMATION_ID.cancel_stop_time]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.opponent_attack]: 0,
@@ -678,6 +680,7 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.hurt]: 0,
   [ANIMATION_ID.idle]: 20,
   [ANIMATION_ID.stop_time]: 5,
+  [ANIMATION_ID.stop]: 0,
   [ANIMATION_ID.cancel_stop_time]: 5,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_attack]: 0,
@@ -731,6 +734,7 @@ const APP_ELEMENTS_ANIMATION_QUEUE: AppElementsAnimationQueue = {
       ANIMATION_ID.attack,
       ANIMATION_ID.hurt,
       ANIMATION_ID.death,
+      ANIMATION_ID.stop,
       ANIMATION_ID.stop_time,
       ANIMATION_ID.transformation_hurt,
       ANIMATION_ID.transformation_pre_run,
@@ -765,11 +769,11 @@ const getAppIdByAnimationId = (
 };
 
 const timeManipulationToggle = () => {
-  if (!gameLaunched || !hardMode) return;
+  if (!gameLaunched) return;
   if (timeStoped) {
-    cancelStopTimeSpell();
+    resumeRun();
   } else {
-    stopTime();
+    stopRun();
   }
 };
 
@@ -870,9 +874,6 @@ export const launchAnimationAndDeclareItLaunched = (
     return;
   }
 
-  if (animationId === ANIMATION_ID.opponent_run) {
-    console.log("running ok");
-  }
   ANIMATION_RUNNING_VALUES[animationId]++;
 
   const animationCallback = () => {
@@ -1271,7 +1272,6 @@ const moveEnemy = (
   throttleNum = 0,
   previousTimeStamp: number
 ): any => {
-  console.log("moving");
   if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] !== 1) {
     return;
   }
@@ -1678,8 +1678,14 @@ const launchFly = (jumpingForward = true) => {
   requestAnimationFrame(() => launchFly(jumpingForward));
 };
 document.addEventListener("keydown", (event) => {
-  if (event.key === "d" && !gameLaunched) {
-    launchGame();
+  if (event.key === "d") {
+    if (!gameLaunched) {
+      console.log("launching run");
+      launchGame();
+    } else if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] === 0) {
+      console.log("resuming run");
+      resumeRun();
+    }
   }
 
   if (!gameLaunched || preTransformed || heroHurt) {
@@ -1702,7 +1708,7 @@ document.addEventListener("keydown", (event) => {
   }
 
   if (event.key === "s") {
-    timeManipulationToggle();
+    stopRun();
   }
 });
 
@@ -1716,6 +1722,52 @@ const clearGameTimeouts = () => {
   GAME_TIMEOUTS[TimeoutId.ENEMY] = [];
 };
 
+const stopRun = () => {
+  runAudio.volume = 0;
+
+  timeStoped = true;
+
+  if (enemiesComingTimeout) {
+    clearTimeout(enemiesComingTimeout);
+  }
+
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
+
+  interruptAnimation(ANIMATION_ID.camera_left_to_right);
+
+  const stopCallback = () => {
+    heroImage.src = "assets/challenge/characters/hero/walk/1.png";
+  };
+  addAnimationCallbackToQueue(ANIMATION_ID.stop, stopCallback);
+};
+
+const addAnimationCallbackToQueue = (
+  animation: ANIMATION_ID,
+  callBack: () => void
+) => {
+  const appElementId = getAppIdByAnimationId(animation);
+  if (!appElementId) {
+    return;
+  }
+  APP_ELEMENTS_ANIMATION_QUEUE[appElementId].request_queue.unshift(
+    new AnimationRequest(animation, callBack)
+  );
+};
+
+const interruptAnimation = (animation: ANIMATION_ID) => {
+  ANIMATION_RUNNING_VALUES[animation] = 0;
+
+  const appElementId = getAppIdByAnimationId(animation);
+  if (!appElementId) {
+    return;
+  }
+
+  if (!APP_ELEMENTS_ANIMATION_QUEUE[appElementId].current_animation === null) {
+    APP_ELEMENTS_ANIMATION_QUEUE[appElementId].current_animation = null;
+  }
+};
+
+/*
 const stopTime = () => {
   runAudio.volume = 0;
 
@@ -1746,35 +1798,19 @@ const stopTime = () => {
   );
 };
 
-const cancelStopTimeSpell = () => {
+*/
+
+const resumeRun = () => {
   timeStoped = false;
 
-  launchAnimationAndDeclareItLaunched(
-    heroImage,
-    0,
-    "png",
-    "assets/challenge/characters/hero/cancel_stop_time",
-    1,
-    4,
-    1,
-    false,
-    ANIMATION_ID.cancel_stop_time
-  );
+  launchRun();
+  ennemiesOnScreen.forEach((enemy) => {
+    launchOpponent(enemy);
+  });
 
-  clearTimeoutAndLaunchNewOne(
-    TimeoutId.HERO,
-    setTimeout(() => {
-      initAllAnimations();
-      launchRun();
-      ennemiesOnScreen.forEach((enemy) => {
-        launchOpponent(enemy);
-      });
-
-      if (!ennemiesOnScreen.length) {
-        triggerOpponentsApparition();
-      }
-    }, 1000)
-  );
+  if (!ennemiesOnScreen.length) {
+    triggerOpponentsApparition();
+  }
 };
 
 const checkForOpponentsClearance = () => {
@@ -1820,7 +1856,7 @@ const launchInvisibilityToggle = () => {
 window.launchInvisibilityToggle = launchInvisibilityToggle;
 
 const launchTransformation = () => {
-  if (timeStoped) {
+  if (timeStoped || hardMode) {
     return;
   }
   runAudio.volume = 0;
