@@ -413,6 +413,10 @@
   };
   var triggerOpponentsApparition = () => {
     const newAnswer = getNextAnswer();
+    if (!newAnswer) {
+      alert("no new answer");
+      console.log(newAnswer);
+    }
     enemiesComingTimeout = setTimeout(
       () => {
         if (newAnswer && newAnswer !== "done") {
@@ -601,6 +605,9 @@
   var launchAnimationAndDeclareItLaunched = (characterElement, throttleNum, extension, spriteBase, spriteIndex, max, min, loop, animationId, endOfAnimationCallback) => {
     if (ANIMATION_RUNNING_VALUES[animationId] >= 1) {
       return;
+    }
+    if (animationId === 8 /* opponent_run */) {
+      console.log("running ok");
     }
     ANIMATION_RUNNING_VALUES[animationId]++;
     const animationCallback = () => {
@@ -856,9 +863,14 @@
       true,
       8 /* opponent_run */
     );
+    ANIMATION_RUNNING_VALUES[10 /* opponent_move */]++;
     moveEnemy(enemy, 0, Date.now());
   };
   var moveEnemy = (enemy, throttleNum = 0, previousTimeStamp) => {
+    console.log("moving");
+    if (ANIMATION_RUNNING_VALUES[10 /* opponent_move */] !== 1) {
+      return;
+    }
     const currentTimeStamp = Date.now();
     const diff = currentTimeStamp - previousTimeStamp;
     if (throttleNum < THROTTLE_NUMS[10 /* opponent_move */]) {
@@ -987,6 +999,7 @@
     ennemiesOnScreen.forEach((enemyOnScreen, index) => {
       if (enemy === enemyOnScreen) {
         ennemiesOnScreen.splice(index, 1);
+        ANIMATION_RUNNING_VALUES[10 /* opponent_move */] = 0;
       }
     });
   };
@@ -1118,22 +1131,10 @@
     if (enemiesComingTimeout) {
       clearTimeout(enemiesComingTimeout);
     }
-    ANIMATION_RUNNING_VALUES[0 /* attack */] = 0;
-    ANIMATION_RUNNING_VALUES[1 /* run */] = 0;
-    ANIMATION_RUNNING_VALUES[4 /* death */] = 0;
-    ANIMATION_RUNNING_VALUES[3 /* hurt */] = 0;
-    ANIMATION_RUNNING_VALUES[5 /* idle */] = 0;
     ANIMATION_RUNNING_VALUES[8 /* opponent_run */] = 0;
-    ANIMATION_RUNNING_VALUES[11 /* opponent_death */] = 0;
+    APP_ELEMENTS_ANIMATION_QUEUE.enemy.current_animation = null;
     ANIMATION_RUNNING_VALUES[10 /* opponent_move */] = 0;
     ANIMATION_RUNNING_VALUES[12 /* camera_left_to_right */] = 0;
-    ANIMATION_RUNNING_VALUES[13 /* camera_right_to_left */] = 0;
-    ANIMATION_RUNNING_VALUES[14 /* character_left_to_right_move */] = 0;
-    ANIMATION_RUNNING_VALUES[16 /* transformation_pre_run */] = 0;
-    ANIMATION_RUNNING_VALUES[17 /* transformation_run */] = 0;
-    ANIMATION_RUNNING_VALUES[18 /* transformation_hurt */] = 0;
-    ANIMATION_RUNNING_VALUES[19 /* boss_idle */] = 0;
-    ANIMATION_RUNNING_VALUES[20 /* boss_attack */] = 0;
     launchAnimationAndDeclareItLaunched(
       heroImage,
       0,
@@ -1164,7 +1165,9 @@
       setTimeout(() => {
         initAllAnimations();
         launchRun();
-        ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+        ennemiesOnScreen.forEach((enemy) => {
+          launchOpponent(enemy);
+        });
         if (!ennemiesOnScreen.length) {
           triggerOpponentsApparition();
         }
@@ -1301,6 +1304,7 @@
       return;
     }
     ANIMATION_RUNNING_VALUES[15 /* hero_sword_slash */]++;
+    console.log("slash!");
     swordSlashImg.style.display = "flex";
     setTimeout(() => {
       swordSlashImg.style.display = "none";

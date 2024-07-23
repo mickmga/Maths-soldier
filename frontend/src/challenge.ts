@@ -560,6 +560,11 @@ const buildAndLaunchEnemy = (answer: Answer) => {
 const triggerOpponentsApparition = () => {
   const newAnswer = getNextAnswer();
 
+  if (!newAnswer) {
+    alert("no new answer");
+    console.log(newAnswer);
+  }
+
   enemiesComingTimeout = setTimeout(
     () => {
       if (newAnswer && newAnswer !== "done") {
@@ -863,6 +868,10 @@ export const launchAnimationAndDeclareItLaunched = (
 ) => {
   if (ANIMATION_RUNNING_VALUES[animationId] >= 1) {
     return;
+  }
+
+  if (animationId === ANIMATION_ID.opponent_run) {
+    console.log("running ok");
   }
   ANIMATION_RUNNING_VALUES[animationId]++;
 
@@ -1220,6 +1229,8 @@ const launchOpponent = (enemy: Enemy) => {
     ANIMATION_ID.opponent_run
   );
 
+  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move]++;
+
   moveEnemy(enemy, 0, Date.now());
 };
 
@@ -1253,10 +1264,6 @@ const launchEnemyAttack = (enemy: Enemy) => {
       );
     }
   );
-
-  () => {
-    ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run];
-  };
 };
 
 const moveEnemy = (
@@ -1264,6 +1271,11 @@ const moveEnemy = (
   throttleNum = 0,
   previousTimeStamp: number
 ): any => {
+  console.log("moving");
+  if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] !== 1) {
+    return;
+  }
+
   const currentTimeStamp = Date.now();
 
   const diff = currentTimeStamp - previousTimeStamp;
@@ -1434,6 +1446,7 @@ const destroyEnemy = (enemy: Enemy) => {
   ennemiesOnScreen.forEach((enemyOnScreen, index) => {
     if (enemy === enemyOnScreen) {
       ennemiesOnScreen.splice(index, 1);
+      ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
     }
   });
 };
@@ -1714,22 +1727,11 @@ const stopTime = () => {
     clearTimeout(enemiesComingTimeout);
   }
 
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.attack] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.death] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.hurt] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.idle] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_death] = 0;
+  APP_ELEMENTS_ANIMATION_QUEUE.enemy.current_animation = null;
+
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_right_to_left] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.character_left_to_right_move] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_hurt] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.boss_idle] = 0;
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.boss_attack] = 0;
 
   launchAnimationAndDeclareItLaunched(
     heroImage,
@@ -1764,7 +1766,9 @@ const cancelStopTimeSpell = () => {
     setTimeout(() => {
       initAllAnimations();
       launchRun();
-      ennemiesOnScreen.forEach((enemy) => launchOpponent(enemy));
+      ennemiesOnScreen.forEach((enemy) => {
+        launchOpponent(enemy);
+      });
 
       if (!ennemiesOnScreen.length) {
         triggerOpponentsApparition();
@@ -1962,6 +1966,7 @@ const launchSwordSlash = () => {
     return;
   }
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.hero_sword_slash]++;
+  console.log("slash!");
 
   swordSlashImg.style.display = "flex";
 
