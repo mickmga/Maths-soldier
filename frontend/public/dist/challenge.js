@@ -425,7 +425,7 @@
       Math.random() > 0.5 ? 500 : 1e3
     );
   };
-  var backgroundSrc = "assets/palace/maps/castle/castle.gif";
+  var backgroundSrc = null;
   var launchEndOfChallenge = () => {
     gameFinished = true;
     document.getElementById("endOfGameInterface").style.display = "flex";
@@ -1412,6 +1412,7 @@
   window.onload = () => {
     setupListeners();
     launchHardModeToggle();
+    backgroundSrc = `assets/palace/maps/castle/${hardMode ? "castleback.webp" : "castle.gif"}`;
     MAPS.push(createMapBlock(0));
     MAPS.push(createMapBlock(100));
     createGameAccordingToMode();

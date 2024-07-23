@@ -573,7 +573,7 @@ const triggerOpponentsApparition = () => {
   );
 };
 
-let backgroundSrc = "assets/palace/maps/castle/castle.gif";
+let backgroundSrc: string | null = null;
 
 const launchEndOfChallenge = () => {
   gameFinished = true;
@@ -2115,6 +2115,9 @@ const initHeroAnimations = () => {
 window.onload = () => {
   setupListeners();
   launchHardModeToggle();
+  backgroundSrc = `assets/palace/maps/castle/${
+    hardMode ? "castleback.webp" : "castle.gif"
+  }`;
   MAPS.push(createMapBlock(0));
   MAPS.push(createMapBlock(100));
   createGameAccordingToMode();
