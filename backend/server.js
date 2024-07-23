@@ -93,8 +93,7 @@ app.get("/icons", (req, res) => {
     path: "/v4/icons",
     method: "GET",
     headers: {
-      Authorization:
-        "Bearer X0vjEUN6KRlxbp2DoUkyHeM0VOmxY91rA6BbU5j3Xu6wDodwS0McmilLPBWDUcJ1",
+      Authorization: "",
       accept: "application/json",
     },
   };
