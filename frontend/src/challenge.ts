@@ -1224,7 +1224,7 @@ const launchOpponent = (enemy: Enemy) => {
       ? "assets/challenge/characters/enemies/hard"
       : "assets/challenge/characters/enemies/black_spirit/run",
     1,
-    hardMode ? 6 : 4,
+    hardMode ? 16 : 4,
     1,
     true,
     ANIMATION_ID.opponent_run

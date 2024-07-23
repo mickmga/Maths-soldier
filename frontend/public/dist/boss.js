@@ -858,7 +858,7 @@
       "png",
       hardMode ? "assets/challenge/characters/enemies/hard" : "assets/challenge/characters/enemies/black_spirit/run",
       1,
-      hardMode ? 6 : 4,
+      hardMode ? 16 : 4,
       1,
       true,
       9 /* opponent_run */

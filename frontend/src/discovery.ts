@@ -66,7 +66,7 @@ const launchGolemIdleAnimation = () => {
 
 const launchTutorialTalk = () => {
   if (converstationWithBardStarted) {
-    window.location.href = `${process.env.URL_BASE}/challenge`;
+    window.location.href = `http://localhost:3001/challenge`;
     return;
   }
   converstationWithBardStarted = true;
@@ -103,7 +103,7 @@ const createMapPalaceBlock = (left: number) => {
     const obeliskContainer = document.createElement("div");
     obeliskContainer.id = "obeliskContainer";
     obeliskContainer.onclick = () =>
-      (window.location.href = `${process.env.URL_BASE}/page`);
+      (window.location.href = `http://localhost:3001/page`);
 
     const obeliskLightning = document.createElement("img");
     obeliskLightning.src = "assets/challenge/items/lightning/1.png";
