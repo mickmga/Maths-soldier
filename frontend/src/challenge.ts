@@ -1,9 +1,7 @@
 export {};
 
 const goBackToMountain = (event: Event) => {
-  window.location.href = `${process.env.URL_BASE}/discovery${
-    hardMode ? "?started=true" : ""
-  }`;
+  window.location.href = `/discovery${!hardMode ? "?started=true" : ""}`;
 };
 
 const getUrlParameter = (name: string): string | null => {
@@ -286,8 +284,8 @@ const STATS = {
       "les statistique inférentielles décrivent les caractéristiques d'un ensemble de données",
       false
     ),
-    new Answer("Un ensemble de données ne peut avoir qu'un modes", false),
-    new Answer("Un ensemble de données ne peut pas avoir 0 modes", false),
+    new Answer("Un ensemble de données ne peut avoir qu'un mode", false),
+    new Answer("Un ensemble de données ne peut pas avoir 0 mode", false),
   ],
 };
 
@@ -2171,7 +2169,7 @@ const launchDeathAnimation = () => {
       () =>
         (window.location.href = hardMode
           ? "http://localhost:3001/dead_hard"
-          : "`http://localhost:3001/dead"),
+          : "http://localhost:3001/dead"),
       1000
     );
   };

@@ -2,7 +2,7 @@
 (() => {
   // src/challenge.ts
   var goBackToMountain = (event) => {
-    window.location.href = `${process.env.URL_BASE}/discovery${hardMode ? "?started=true" : ""}`;
+    window.location.href = `/discovery${!hardMode ? "?started=true" : ""}`;
   };
   var getUrlParameter = (name) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -194,8 +194,8 @@
         "les statistique inf\xE9rentielles d\xE9crivent les caract\xE9ristiques d'un ensemble de donn\xE9es",
         false
       ),
-      new Answer("Un ensemble de donn\xE9es ne peut avoir qu'un modes", false),
-      new Answer("Un ensemble de donn\xE9es ne peut pas avoir 0 modes", false)
+      new Answer("Un ensemble de donn\xE9es ne peut avoir qu'un mode", false),
+      new Answer("Un ensemble de donn\xE9es ne peut pas avoir 0 mode", false)
     ]
   };
   var VECTORS = {
@@ -1424,7 +1424,7 @@
       );
       clearGameTimeouts();
       setTimeout(
-        () => window.location.href = hardMode ? "http://localhost:3001/dead_hard" : "`http://localhost:3001/dead",
+        () => window.location.href = hardMode ? "http://localhost:3001/dead_hard" : "http://localhost:3001/dead",
         1e3
       );
     };
