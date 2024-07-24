@@ -22,6 +22,7 @@
   var scoreRewardContainer = document.getElementById("score_reward_container");
   var scoreRewardDetail = document.getElementById("score_reward_detail");
   var ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS = 100;
+  var heroInTheRedZone = false;
   var enemyViewPoint = document.getElementsByClassName(
     "enemyViewPoint"
   )[0];
@@ -417,6 +418,10 @@
       return;
     }
     document.getElementsByTagName("body")[0].append();
+    if (hardMode) {
+      enemyViewPoint.style.left = "120vw";
+      enemyViewPoint.style.display = "flex";
+    }
     const enemy = new Enemy(enemyElement, answer);
     ennemiesOnScreen.push(enemy);
     return enemy;
@@ -697,6 +702,11 @@
     if (elementAssociatedWithThisAnimation) {
       if (APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation !== animationId) {
         console.log("there was an error, an animation should not run");
+        console.log("current an >" + animationId);
+        console.log("registered =>");
+        console.log(
+          APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].current_animation
+        );
         return;
       }
       const requestQueue = APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation].request_queue;
@@ -892,9 +902,9 @@
       enemy.element.firstChild,
       0,
       "png",
-      hardMode ? "assets/challenge/characters/enemies/hard/attack" : "assets/challenge/characters/enemies/black_spirit/run",
+      hardMode ? "assets/challenge/characters/enemies/hard/idle" : "assets/challenge/characters/enemies/black_spirit/run",
       1,
-      hardMode ? 30 : 4,
+      hardMode ? 16 : 4,
       1,
       true,
       10 /* opponent_run */
@@ -1041,7 +1051,7 @@
   };
   var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
-    hardEnemyRunning = false;
+    heroInTheRedZone = false;
     setTimeout(() => {
       enemy.element.remove();
       if (!preTransformed) {
@@ -1052,9 +1062,6 @@
       if (enemy === enemyOnScreen) {
         ennemiesOnScreen.splice(index, 1);
         ANIMATION_RUNNING_VALUES[12 /* opponent_move */] = 0;
-        if (hardMode) {
-          enemyViewPoint.style.left = "120vw";
-        }
       }
     });
   };
@@ -1085,10 +1092,8 @@
     heroIsAlive = false;
     launchDeathAnimation();
   };
-  var hardEnemyRunning = false;
   var viewPointOnScreen = false;
   var enemyViewPointThresholdCrossed = false;
-  var hardModeAttackOn = false;
   var detectCollision = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemyOnScreen) : enemyOnScreen.element.getBoundingClientRect().left;
@@ -1096,61 +1101,14 @@
         viewPointOnScreen = true;
         enemyViewPoint.style.display = "flex";
       }
-      if (hardModeAttackOn && hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width) {
-        hardEnemyRunning = true;
-        console.log("IT WORKS, GOOD view point >");
-        console.log(enemyViewPoint.getBoundingClientRect().left);
-        console.log(" so >");
-        console.log(
-          hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left < Math.round(
-            heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
-          )
-        );
-        console.log(" IT WORKS, GOOD inverse >");
-        console.log(
-          hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left > Math.round(
-            heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
-          )
-        );
-        launchAnimationAndDeclareItLaunched(
-          enemyOnScreen.element.firstChild,
-          0,
-          "png",
-          "assets/challenge/characters/enemies/hard/attack",
-          1,
-          30,
-          1,
-          true,
-          11 /* opponent_attack */
-        );
-      } else {
-        console.log(
-          heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
-        );
-        console.log(", view point >");
-        console.log(enemyViewPoint.getBoundingClientRect().left);
-        console.log(" so >");
-        console.log(
-          hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left < Math.round(
-            heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
-          )
-        );
-        console.log("inverse >");
-        console.log(
-          hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left > Math.round(
-            heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
-          )
-        );
+      if (hardMode && !heroInTheRedZone && enemyViewPoint.getBoundingClientRect().left + enemyViewPoint.getBoundingClientRect().width < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width) {
+        heroInTheRedZone = true;
       }
       if (hardMode && !enemyViewPointThresholdCrossed && enemyLeft < window.innerWidth) {
         enemyViewPointThresholdCrossed = true;
       }
-      if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width > enemyLeft - window.innerWidth * 0.35 && enemyOnScreen.collideable) {
-        hardEnemyRunning = true;
-      }
       if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width > enemyLeft && enemyOnScreen.collideable) {
         enemyOnScreen.collideable = false;
-        hardEnemyRunning = false;
         if (!invisible || enemyOnScreen.answer.good) {
           hurtHero();
         } else if (invisible && !enemyOnScreen.answer.good) {
@@ -1249,6 +1207,9 @@
     GAME_TIMEOUTS[1 /* ENEMY */] = [];
   };
   var stopRun = () => {
+    if (heroInTheRedZone) {
+      return;
+    }
     runAudio.volume = 0;
     runStopped = true;
     if (enemiesComingTimeout) {
@@ -1284,7 +1245,8 @@
     runStopped = false;
     launchRun();
     ennemiesOnScreen.forEach((enemy) => {
-      launchOpponent(enemy);
+      ANIMATION_RUNNING_VALUES[12 /* opponent_move */]++;
+      moveEnemy(enemy, 0, Date.now());
     });
     if (!ennemiesOnScreen.length) {
       triggerOpponentsApparition();
@@ -1292,7 +1254,7 @@
   };
   var checkForOpponentsClearance = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
-      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemyOnScreen) : heroContainer.getBoundingClientRect().left;
+      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemyOnScreen) : enemyOnScreen.element.getBoundingClientRect().left;
       if (enemyLeft < 0 - window.innerWidth * 0.25) {
         clearEnemy(enemyOnScreen);
       }
@@ -1429,6 +1391,8 @@
   var launchDeathAnimation = () => {
     initHeroAnimations();
     ANIMATION_RUNNING_VALUES[14 /* camera_left_to_right */] = 0;
+    APP_ELEMENTS_ANIMATION_QUEUE.hero.current_animation = null;
+    APP_ELEMENTS_ANIMATION_QUEUE.hero.request_queue = [];
     const killHero2 = () => {
       launchAnimationAndDeclareItLaunched(
         heroImage,

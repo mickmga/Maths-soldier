@@ -31,6 +31,8 @@ const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
 const ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS = 100;
 
+let heroInTheRedZone = false;
+
 const enemyViewPoint = document.getElementsByClassName(
   "enemyViewPoint"
 )[0]! as HTMLElement;
@@ -559,6 +561,11 @@ const buildEnemy = (answer: Answer) => {
 
   document.getElementsByTagName("body")[0].append();
 
+  if (hardMode) {
+    enemyViewPoint.style.left = "120vw";
+    enemyViewPoint.style.display = "flex";
+  }
+
   const enemy = new Enemy(enemyElement, answer);
 
   ennemiesOnScreen.push(enemy);
@@ -1006,6 +1013,12 @@ const launchCharacterAnimation = (
         .current_animation !== animationId
     ) {
       console.log("there was an error, an animation should not run");
+      console.log("current an >" + animationId);
+      console.log("registered =>");
+      console.log(
+        APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation]
+          .current_animation
+      );
       return;
     }
 
@@ -1260,10 +1273,10 @@ const launchOpponent = (enemy: Enemy) => {
     0,
     "png",
     hardMode
-      ? "assets/challenge/characters/enemies/hard/attack"
+      ? "assets/challenge/characters/enemies/hard/idle"
       : "assets/challenge/characters/enemies/black_spirit/run",
     1,
-    hardMode ? 30 : 4,
+    hardMode ? 16 : 4,
     1,
     true,
     ANIMATION_ID.opponent_run
@@ -1466,7 +1479,7 @@ const clearEnemy = (enemy: Enemy) => {
 
 const destroyEnemy = (enemy: Enemy) => {
   clearAndHideAnswerDataContainer();
-  hardEnemyRunning = false;
+  heroInTheRedZone = false;
 
   setTimeout(() => {
     enemy.element.remove();
@@ -1479,10 +1492,6 @@ const destroyEnemy = (enemy: Enemy) => {
     if (enemy === enemyOnScreen) {
       ennemiesOnScreen.splice(index, 1);
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
-
-      if (hardMode) {
-        enemyViewPoint.style.left = "120vw";
-      }
     }
   });
 };
@@ -1525,8 +1534,6 @@ const killHero = () => {
   launchDeathAnimation();
 };
 
-let hardEnemyRunning = false;
-
 let viewPointOnScreen = false;
 let enemyViewPointThresholdCrossed = false;
 
@@ -1544,74 +1551,14 @@ const detectCollision = () => {
     }
 
     if (
-      hardModeAttackOn &&
       hardMode &&
-      !hardEnemyRunning &&
-      enemyViewPoint.getBoundingClientRect().left <
+      !heroInTheRedZone &&
+      enemyViewPoint.getBoundingClientRect().left +
+        enemyViewPoint.getBoundingClientRect().width <
         heroContainer.getBoundingClientRect().left +
           heroContainer.getBoundingClientRect().width
     ) {
-      hardEnemyRunning = true;
-      console.log("IT WORKS, GOOD view point >");
-      console.log(enemyViewPoint.getBoundingClientRect().left);
-      console.log(" so >");
-      console.log(
-        hardMode &&
-          !hardEnemyRunning &&
-          enemyViewPoint.getBoundingClientRect().left <
-            Math.round(
-              heroContainer.getBoundingClientRect().left +
-                heroContainer.getBoundingClientRect().width
-            )
-      );
-      console.log(" IT WORKS, GOOD inverse >");
-      console.log(
-        hardMode &&
-          !hardEnemyRunning &&
-          enemyViewPoint.getBoundingClientRect().left >
-            Math.round(
-              heroContainer.getBoundingClientRect().left +
-                heroContainer.getBoundingClientRect().width
-            )
-      );
-      launchAnimationAndDeclareItLaunched(
-        enemyOnScreen.element.firstChild as HTMLImageElement,
-        0,
-        "png",
-        "assets/challenge/characters/enemies/hard/attack",
-        1,
-        30,
-        1,
-        true,
-        ANIMATION_ID.opponent_attack
-      );
-    } else {
-      console.log(
-        heroContainer.getBoundingClientRect().left +
-          heroContainer.getBoundingClientRect().width
-      );
-      console.log(", view point >");
-      console.log(enemyViewPoint.getBoundingClientRect().left);
-      console.log(" so >");
-      console.log(
-        hardMode &&
-          !hardEnemyRunning &&
-          enemyViewPoint.getBoundingClientRect().left <
-            Math.round(
-              heroContainer.getBoundingClientRect().left +
-                heroContainer.getBoundingClientRect().width
-            )
-      );
-      console.log("inverse >");
-      console.log(
-        hardMode &&
-          !hardEnemyRunning &&
-          enemyViewPoint.getBoundingClientRect().left >
-            Math.round(
-              heroContainer.getBoundingClientRect().left +
-                heroContainer.getBoundingClientRect().width
-            )
-      );
+      heroInTheRedZone = true;
     }
 
     if (
@@ -1625,21 +1572,10 @@ const detectCollision = () => {
     if (
       heroContainer.getBoundingClientRect().left +
         heroContainer.getBoundingClientRect().width >
-        enemyLeft - window.innerWidth * 0.35 &&
-      enemyOnScreen.collideable
-    ) {
-      hardEnemyRunning = true;
-    }
-
-    if (
-      heroContainer.getBoundingClientRect().left +
-        heroContainer.getBoundingClientRect().width >
         enemyLeft &&
       enemyOnScreen.collideable
     ) {
       enemyOnScreen.collideable = false;
-
-      hardEnemyRunning = false;
 
       if (!invisible || enemyOnScreen.answer.good) {
         hurtHero();
@@ -1867,6 +1803,9 @@ const clearGameTimeouts = () => {
 };
 
 const stopRun = () => {
+  if (heroInTheRedZone) {
+    return;
+  }
   runAudio.volume = 0;
 
   runStopped = true;
@@ -1949,7 +1888,9 @@ const resumeRun = () => {
 
   launchRun();
   ennemiesOnScreen.forEach((enemy) => {
-    launchOpponent(enemy);
+    ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move]++;
+
+    moveEnemy(enemy, 0, Date.now());
   });
 
   if (!ennemiesOnScreen.length) {
@@ -1961,7 +1902,7 @@ const checkForOpponentsClearance = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
     const enemyLeft = hardMode
       ? getHardModeEnemyRealLeft(enemyOnScreen)
-      : heroContainer.getBoundingClientRect().left;
+      : enemyOnScreen.element.getBoundingClientRect().left;
 
     if (enemyLeft < 0 - window.innerWidth * 0.25) {
       clearEnemy(enemyOnScreen);
@@ -2153,6 +2094,11 @@ const launchSwordSlash = () => {
 const launchDeathAnimation = () => {
   initHeroAnimations();
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] = 0;
+
+  //DIRTY
+
+  APP_ELEMENTS_ANIMATION_QUEUE.hero.current_animation = null;
+  APP_ELEMENTS_ANIMATION_QUEUE.hero.request_queue = [];
 
   const killHero = () => {
     launchAnimationAndDeclareItLaunched(
