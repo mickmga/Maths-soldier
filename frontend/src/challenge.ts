@@ -1,7 +1,9 @@
 export {};
 
 const goBackToMountain = (event: Event) => {
-  window.location.href = `${process.env.URL_BASE}/discovery?started=true`;
+  window.location.href = `${process.env.URL_BASE}/discovery${
+    hardMode ? "?started=true" : ""
+  }`;
 };
 
 const getUrlParameter = (name: string): string | null => {
@@ -133,7 +135,7 @@ let transformedAlready = false;
 const REWARD_TIMEOUT_DURATION = 1000;
 const KILLED_ENEMY_REWARD = 30;
 
-let rewardStreak = 19;
+let rewardStreak = 15;
 
 let hardMode: boolean | null = false;
 
@@ -625,7 +627,6 @@ const buildAndLaunchEnemy = (answer: Answer) => {
 
 const triggerOpponentsApparition = () => {
   const newAnswer = getNextAnswer();
-
   enemiesComingTimeout = setTimeout(
     () => {
       if (newAnswer && newAnswer !== "done") {
@@ -1253,7 +1254,7 @@ const launchAttack = () => {
 
   const enemyCanBeHit = (enemy: Enemy) => {
     const enemyLeft = hardMode
-      ? getHardModeEnemyRealLeft(enemy) * 1.3
+      ? getHardModeEnemyRealLeft(enemy) * 1.2
       : enemy.element.getBoundingClientRect().left;
     return (
       enemyLeft >
@@ -1308,6 +1309,8 @@ const clearTimeoutAndLaunchNewOne = (
 
 const launchOpponent = (enemy: Enemy) => {
   APP_ELEMENTS_ANIMATION_QUEUE.enemy.current_animation = null;
+  interruptAnimation(ANIMATION_ID.opponent_run);
+
   launchAnimationAndDeclareItLaunched(
     enemy.element.firstChild as HTMLImageElement,
     0,
@@ -1406,7 +1409,7 @@ const updateScoreDisplay = () => {
 const killWrongEnemy = (enemy: Enemy) => {
   scoreMalusContainer.style.display = "flex";
 
-  //lifepoints.value--;
+  lifePoints.value--;
   checkForHerosDeath();
 
   updateLifePointsDisplay();
@@ -1866,6 +1869,7 @@ const stopRun = () => {
 
   if (enemiesComingTimeout) {
     clearTimeout(enemiesComingTimeout);
+    enemiesComingTimeout = null;
   }
 
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
@@ -1996,8 +2000,6 @@ const launchTransformation = () => {
   swordAudio.volume = 0;
   bombAudio.volume = 0;
   epicAudio.pause();
-  //ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] = 0;
-  //ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_run] = 0;
 
   if (transformedAlready) {
     electricityAudio.volume = 0.7;
@@ -2035,11 +2037,9 @@ const launchTransformation = () => {
 
   document.getElementById("transformation_background")!.style.display = "flex";
 
-  heroImage.src = "assets/challenge/characters/hero/walk/1.png";
-
   preTransformed = true;
 
-  clearAllOponentsAndTimeouts();
+  clearEnemiesInstantly();
 
   bassAudio.play();
 
@@ -2078,8 +2078,6 @@ const launchTransformation = () => {
 
           electricityAudio.volume = 0.2;
 
-          //   ANIMATION_RUNNING_VALUES[ANIMATION_ID.transformation_pre_run] = 0;
-
           transformed = true;
 
           preTransformed = false;
@@ -2109,11 +2107,11 @@ const launchTransformation = () => {
   );
 };
 
-const clearAllOponentsAndTimeouts = () => {
+const clearEnemiesInstantly = () => {
   ennemiesOnScreen.forEach((enemy, index) => {
-    // ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
     enemy.element.remove();
     ennemiesOnScreen.splice(index, 1);
+    interruptAnimation(ANIMATION_ID.opponent_move);
   });
 };
 
@@ -2170,7 +2168,10 @@ const launchDeathAnimation = () => {
     clearGameTimeouts();
 
     setTimeout(
-      () => (window.location.href = `http://localhost:3001/dead`),
+      () =>
+        (window.location.href = hardMode
+          ? "http://localhost:3001/dead_hard"
+          : "`http://localhost:3001/dead"),
       1000
     );
   };

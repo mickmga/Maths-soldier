@@ -2,7 +2,7 @@
 (() => {
   // src/challenge.ts
   var goBackToMountain = (event) => {
-    window.location.href = `${process.env.URL_BASE}/discovery?started=true`;
+    window.location.href = `${process.env.URL_BASE}/discovery${hardMode ? "?started=true" : ""}`;
   };
   var getUrlParameter = (name) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -97,7 +97,7 @@
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
-  var rewardStreak = 19;
+  var rewardStreak = 15;
   var hardMode = false;
   var TRANSFORMATION_THRESHOLD = hardMode ? 1e8 : 20;
   var preTransformed = false;
@@ -862,7 +862,7 @@
       0 /* attack */
     );
     const enemyCanBeHit = (enemy) => {
-      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemy) * 1.3 : enemy.element.getBoundingClientRect().left;
+      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemy) * 1.2 : enemy.element.getBoundingClientRect().left;
       return enemyLeft > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemyLeft < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + swordReach;
     };
     ennemiesOnScreen.forEach((enemy) => {
@@ -898,6 +898,7 @@
   };
   var launchOpponent = (enemy) => {
     APP_ELEMENTS_ANIMATION_QUEUE.enemy.current_animation = null;
+    interruptAnimation(10 /* opponent_run */);
     launchAnimationAndDeclareItLaunched(
       enemy.element.firstChild,
       0,
@@ -968,6 +969,7 @@
   };
   var killWrongEnemy = (enemy) => {
     scoreMalusContainer.style.display = "flex";
+    lifePoints.value--;
     checkForHerosDeath();
     updateLifePointsDisplay();
     rewardStreak = 0;
@@ -1228,6 +1230,7 @@
     runStopped = true;
     if (enemiesComingTimeout) {
       clearTimeout(enemiesComingTimeout);
+      enemiesComingTimeout = null;
     }
     ANIMATION_RUNNING_VALUES[12 /* opponent_move */] = 0;
     interruptAnimation(14 /* camera_left_to_right */);
@@ -1323,9 +1326,8 @@
       return;
     }
     document.getElementById("transformation_background").style.display = "flex";
-    heroImage.src = "assets/challenge/characters/hero/walk/1.png";
     preTransformed = true;
-    clearAllOponentsAndTimeouts();
+    clearEnemiesInstantly();
     bassAudio.play();
     setTimeout(() => electricityAudio.play(), 200);
     clearTimeoutAndLaunchNewOne(
@@ -1376,10 +1378,11 @@
       }, 500)
     );
   };
-  var clearAllOponentsAndTimeouts = () => {
+  var clearEnemiesInstantly = () => {
     ennemiesOnScreen.forEach((enemy, index) => {
       enemy.element.remove();
       ennemiesOnScreen.splice(index, 1);
+      interruptAnimation(12 /* opponent_move */);
     });
   };
   var lightUpAnswerDataContainer = () => {
@@ -1421,7 +1424,7 @@
       );
       clearGameTimeouts();
       setTimeout(
-        () => window.location.href = `http://localhost:3001/dead`,
+        () => window.location.href = hardMode ? "http://localhost:3001/dead_hard" : "`http://localhost:3001/dead",
         1e3
       );
     };
