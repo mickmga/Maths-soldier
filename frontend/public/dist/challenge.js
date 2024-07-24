@@ -26,6 +26,33 @@
   var enemyViewPoint = document.getElementsByClassName(
     "enemyViewPoint"
   )[0];
+  var enemyViewPointLogo = document.getElementById(
+    "enemyViewPointLogo"
+  );
+  var enemyViewPointTile1 = document.getElementById(
+    "enemyViewPointTile1"
+  );
+  var enemyViewPointTile2 = document.getElementById(
+    "enemyViewPointTile2"
+  );
+  var enemyViewPointTile3 = document.getElementById(
+    "enemyViewPointTile3"
+  );
+  var enemyViewPointTile4 = document.getElementById(
+    "enemyViewPointTile4"
+  );
+  var viewPointTiles = [
+    enemyViewPointTile1,
+    enemyViewPointTile2,
+    enemyViewPointTile3,
+    enemyViewPointTile4
+  ];
+  var updateEnemyViewPointDisplay = () => {
+    viewPointTiles.forEach(
+      (tile) => tile.style.background = heroInTheRedZone ? "rgba(204, 40, 40, 0.514)" : "rgba(40, 108, 204, 0.514)"
+    );
+    enemyViewPointLogo.src = `assets/challenge/millescaneous/${heroInTheRedZone ? "careful" : "vision"}.png`;
+  };
   var runAudio = document.getElementById("run_audio");
   var swordAudio = document.getElementById("sword_audio");
   var laserdAudio = document.getElementById("laser_audio");
@@ -737,7 +764,7 @@
       );
     }
     const newExecutionTimeStamp = Date.now();
-    if (animationId === 1 /* run */ && lastExecutionTimeStamp) {
+    if ((animationId === 1 /* run */ || animationId === 11 /* opponent_attack */) && lastExecutionTimeStamp) {
       const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
       if (diff < ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS) {
         return requestAnimationFrame(
@@ -765,7 +792,6 @@
         const elementAssociatedWithThisAnimation2 = getAppIdByAnimationId(animationId);
         if (elementAssociatedWithThisAnimation2) {
           if (APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation2].current_animation !== animationId) {
-            console.log("there was an error, an animation should not run");
             return;
           }
           APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation2].current_animation = null;
@@ -1047,11 +1073,13 @@
   };
   var clearEnemy = (enemy) => {
     interruptAnimation(10 /* opponent_run */);
+    interruptAnimation(11 /* opponent_attack */);
     destroyEnemy(enemy);
   };
   var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
     heroInTheRedZone = false;
+    updateEnemyViewPointDisplay();
     setTimeout(() => {
       enemy.element.remove();
       if (!preTransformed) {
@@ -1061,7 +1089,7 @@
     ennemiesOnScreen.forEach((enemyOnScreen, index) => {
       if (enemy === enemyOnScreen) {
         ennemiesOnScreen.splice(index, 1);
-        ANIMATION_RUNNING_VALUES[12 /* opponent_move */] = 0;
+        interruptAnimation(12 /* opponent_move */);
       }
     });
   };
@@ -1103,6 +1131,18 @@
       }
       if (hardMode && !heroInTheRedZone && enemyViewPoint.getBoundingClientRect().left + enemyViewPoint.getBoundingClientRect().width < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width) {
         heroInTheRedZone = true;
+        updateEnemyViewPointDisplay();
+        launchAnimationAndDeclareItLaunched(
+          enemyOnScreen.element.firstChild,
+          0,
+          "png",
+          "assets/challenge/characters/enemies/hard/attack",
+          1,
+          30,
+          1,
+          true,
+          11 /* opponent_attack */
+        );
       }
       if (hardMode && !enemyViewPointThresholdCrossed && enemyLeft < window.innerWidth) {
         enemyViewPointThresholdCrossed = true;

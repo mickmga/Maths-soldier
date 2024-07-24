@@ -37,6 +37,43 @@ const enemyViewPoint = document.getElementsByClassName(
   "enemyViewPoint"
 )[0]! as HTMLElement;
 
+const enemyViewPointLogo = document.getElementById(
+  "enemyViewPointLogo"
+)! as HTMLImageElement;
+const enemyViewPointTile1 = document.getElementById(
+  "enemyViewPointTile1"
+)! as HTMLElement;
+
+const enemyViewPointTile2 = document.getElementById(
+  "enemyViewPointTile2"
+)! as HTMLElement;
+const enemyViewPointTile3 = document.getElementById(
+  "enemyViewPointTile3"
+)! as HTMLElement;
+const enemyViewPointTile4 = document.getElementById(
+  "enemyViewPointTile4"
+)! as HTMLElement;
+
+const viewPointTiles = [
+  enemyViewPointTile1,
+  enemyViewPointTile2,
+  enemyViewPointTile3,
+  enemyViewPointTile4,
+];
+
+const updateEnemyViewPointDisplay = () => {
+  viewPointTiles.forEach(
+    (tile) =>
+      (tile.style.background = heroInTheRedZone
+        ? "rgba(204, 40, 40, 0.514)"
+        : "rgba(40, 108, 204, 0.514)")
+  );
+
+  enemyViewPointLogo.src = `assets/challenge/millescaneous/${
+    heroInTheRedZone ? "careful" : "vision"
+  }.png`;
+};
+
 const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
 const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
 const laserdAudio = document.getElementById("laser_audio")! as HTMLAudioElement;
@@ -1060,7 +1097,11 @@ const launchCharacterAnimation = (
 
   const newExecutionTimeStamp = Date.now();
 
-  if (animationId === ANIMATION_ID.run && lastExecutionTimeStamp) {
+  if (
+    (animationId === ANIMATION_ID.run ||
+      animationId === ANIMATION_ID.opponent_attack) &&
+    lastExecutionTimeStamp
+  ) {
     const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
 
     if (diff < ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS) {
@@ -1095,7 +1136,6 @@ const launchCharacterAnimation = (
           APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation]
             .current_animation !== animationId
         ) {
-          console.log("there was an error, an animation should not run");
           return;
         }
 
@@ -1473,6 +1513,7 @@ const getHardModeEnemyRealLeft = (enemy: Enemy) => {
 
 const clearEnemy = (enemy: Enemy) => {
   interruptAnimation(ANIMATION_ID.opponent_run);
+  interruptAnimation(ANIMATION_ID.opponent_attack);
 
   destroyEnemy(enemy);
 };
@@ -1480,6 +1521,7 @@ const clearEnemy = (enemy: Enemy) => {
 const destroyEnemy = (enemy: Enemy) => {
   clearAndHideAnswerDataContainer();
   heroInTheRedZone = false;
+  updateEnemyViewPointDisplay();
 
   setTimeout(() => {
     enemy.element.remove();
@@ -1491,7 +1533,7 @@ const destroyEnemy = (enemy: Enemy) => {
   ennemiesOnScreen.forEach((enemyOnScreen, index) => {
     if (enemy === enemyOnScreen) {
       ennemiesOnScreen.splice(index, 1);
-      ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
+      interruptAnimation(ANIMATION_ID.opponent_move);
     }
   });
 };
@@ -1559,6 +1601,18 @@ const detectCollision = () => {
           heroContainer.getBoundingClientRect().width
     ) {
       heroInTheRedZone = true;
+      updateEnemyViewPointDisplay();
+      launchAnimationAndDeclareItLaunched(
+        enemyOnScreen.element.firstChild as HTMLImageElement,
+        0,
+        "png",
+        "assets/challenge/characters/enemies/hard/attack",
+        1,
+        30,
+        1,
+        true,
+        ANIMATION_ID.opponent_attack
+      );
     }
 
     if (
