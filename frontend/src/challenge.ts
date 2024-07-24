@@ -26,6 +26,10 @@ const scoreRewardDetail = document.getElementById("score_reward_detail")!;
 
 const ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS = 100;
 
+const enemyViewPoint = document.getElementsByClassName(
+  "enemyViewPoint"
+)[0]! as HTMLElement;
+
 const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
 const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
 const laserdAudio = document.getElementById("laser_audio")! as HTMLAudioElement;
@@ -512,9 +516,17 @@ const updateLifePointsDisplay = () => {
   }
 };
 
+const setHeroClass = () => {
+  heroContainer.classList.add(
+    hardMode ? "hero_container_hard" : "hero_container_easy"
+  );
+};
+
 const buildEnemyElement = () => {
   const newOpponentContainer = document.createElement("div");
-  newOpponentContainer.classList.add("enemy_container");
+  newOpponentContainer.classList.add(
+    hardMode ? "hard_enemy_container" : "enemy_container"
+  );
   const newEnnemyImg = document.createElement("img") as HTMLImageElement;
   newEnnemyImg.src = hardMode
     ? "assets/challenge/characters/enemies/hard/1.png"
@@ -628,6 +640,7 @@ export enum ANIMATION_ID {
   stop,
   stop_time,
   cancel_stop_time,
+  opponent_idle,
   opponent_run,
   opponent_attack,
   opponent_move,
@@ -653,6 +666,7 @@ export const ANIMATION_RUNNING_VALUES = {
   [ANIMATION_ID.stop_time]: 0,
   [ANIMATION_ID.stop]: 0,
   [ANIMATION_ID.cancel_stop_time]: 0,
+  [ANIMATION_ID.opponent_idle]: 0,
   [ANIMATION_ID.opponent_run]: 0,
   [ANIMATION_ID.opponent_attack]: 0,
   [ANIMATION_ID.opponent_death]: 0,
@@ -678,6 +692,7 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.stop_time]: 5,
   [ANIMATION_ID.stop]: 0,
   [ANIMATION_ID.cancel_stop_time]: 5,
+  [ANIMATION_ID.opponent_idle]: 5,
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_attack]: 0,
   [ANIMATION_ID.opponent_death]: 0,
@@ -698,6 +713,31 @@ const APP_IDS = {
   enemy: "enemy_container",
 };
 
+const SPRITE_SHEET_SPACE_FROM_LEFT = {
+  [ANIMATION_ID.attack]: 0,
+  [ANIMATION_ID.run]: 0,
+  [ANIMATION_ID.walk]: 0,
+  [ANIMATION_ID.death]: 0,
+  [ANIMATION_ID.hurt]: 0,
+  [ANIMATION_ID.idle]: hardMode ? 0.3 : 0,
+  [ANIMATION_ID.stop_time]: 0,
+  [ANIMATION_ID.stop]: 0,
+  [ANIMATION_ID.cancel_stop_time]: 0,
+  [ANIMATION_ID.opponent_idle]: 0,
+  [ANIMATION_ID.opponent_run]: 0,
+  [ANIMATION_ID.opponent_attack]: 0,
+  [ANIMATION_ID.opponent_death]: 0,
+  [ANIMATION_ID.opponent_move]: 0,
+  [ANIMATION_ID.camera_left_to_right]: 0,
+  [ANIMATION_ID.camera_right_to_left]: 0,
+  [ANIMATION_ID.character_left_to_right_move]: 0,
+  [ANIMATION_ID.hero_sword_slash]: 0,
+  [ANIMATION_ID.transformation_pre_run]: 0,
+  [ANIMATION_ID.transformation_run]: 0,
+  [ANIMATION_ID.transformation_hurt]: 0,
+  [ANIMATION_ID.boss_idle]: 0,
+  [ANIMATION_ID.boss_attack]: 0,
+};
 class AnimationRequest {
   animation: ANIMATION_ID;
   callBack: () => void;
@@ -914,16 +954,6 @@ export const launchAnimationAndDeclareItLaunched = (
         new AnimationRequest(animationId, animationRequestCallback)
       );
 
-      if (animationId === ANIMATION_ID.opponent_death) {
-        console.log(
-          "ok, there are already is an animation. I need to break it. Here >"
-        );
-        console.log("the animation>");
-        console.log(
-          APP_ELEMENTS_ANIMATION_QUEUE[elementAssociatedWithThisAnimation]
-            .current_animation
-        );
-      }
       return;
     }
 
@@ -1133,7 +1163,7 @@ const turnHeroTransformationOff = () => {
 };
 
 const launchAttack = () => {
-  if (invisible || !heroIsAlive) {
+  if (invisible || !heroIsAlive || runStopped) {
     return;
   }
   if (transformed) {
@@ -1160,11 +1190,14 @@ const launchAttack = () => {
   );
 
   const enemyCanBeHit = (enemy: Enemy) => {
+    const enemyLeft = hardMode
+      ? getHardModeEnemyRealLeft(enemy)
+      : enemy.element.getBoundingClientRect().left;
     return (
-      enemy.element.getBoundingClientRect().left >
+      enemyLeft >
         heroContainer.getBoundingClientRect().left +
           heroContainer.getBoundingClientRect().width &&
-      enemy.element.getBoundingClientRect().left <
+      enemyLeft <
         heroContainer.getBoundingClientRect().left +
           heroContainer.getBoundingClientRect().width +
           swordReach
@@ -1217,8 +1250,8 @@ const launchOpponent = (enemy: Enemy) => {
     0,
     "png",
     hardMode
-      ? "assets/challenge/characters/enemies/hard"
-      : "assets/challenge/characters/enemies/black_spirit/run",
+      ? "assets/challenge/characters/enemies/hard/idle"
+      : "assets/challenge/characters/enemies/black_spirit/idle",
     1,
     hardMode ? 16 : 4,
     1,
@@ -1283,7 +1316,7 @@ const moveEnemy = (
     });
   }
 
-  let hardEnemyMoveRatio = hardEnemyRunning ? 1.5 : 1;
+  let hardEnemyMoveRatio = 1;
 
   throttleNum = 0;
 
@@ -1291,6 +1324,12 @@ const moveEnemy = (
     enemy.element.getBoundingClientRect().left -
       diff * (hardMode ? 0.33 * hardEnemyMoveRatio : 1)
   )}px`;
+
+  if (hardMode) {
+    enemyViewPoint.style.left = `${Math.round(
+      enemyViewPoint.getBoundingClientRect().left - diff * (hardMode ? 0.33 : 1)
+    )}px`;
+  }
 
   requestAnimationFrame(() => moveEnemy(enemy, throttleNum, currentTimeStamp));
 };
@@ -1432,6 +1471,15 @@ const killEnemy = (enemy: Enemy) => {
   destroyEnemyAndLaunchNewOne(enemy);
 };
 
+const getHardModeEnemyRealLeft = (enemy: Enemy) => {
+  const enemyImg = enemy.element as HTMLImageElement;
+
+  return (
+    enemyImg.getBoundingClientRect().left +
+    enemyImg.getBoundingClientRect().width * 0.3
+  );
+};
+
 const destroyEnemy = (enemy: Enemy) => {
   clearAndHideAnswerDataContainer();
   hardEnemyRunning = false;
@@ -1447,6 +1495,9 @@ const destroyEnemy = (enemy: Enemy) => {
     if (enemy === enemyOnScreen) {
       ennemiesOnScreen.splice(index, 1);
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
+      if (hardMode) {
+        enemyViewPoint.style.left = "120vw";
+      }
     }
   });
 };
@@ -1491,13 +1542,80 @@ const killHero = () => {
 
 let hardEnemyRunning = false;
 
+let viewPointOnScreen = false;
+let enemyViewPointThresholdCrossed = false;
+
 const detectCollision = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
+    const enemyLeft = hardMode
+      ? getHardModeEnemyRealLeft(enemyOnScreen)
+      : enemyOnScreen.element.getBoundingClientRect().left;
+
+    if (hardMode && !viewPointOnScreen && enemyLeft < window.innerWidth) {
+      viewPointOnScreen = true;
+      enemyViewPoint.style.display = "flex";
+    }
+
+    if (
+      hardMode &&
+      !hardEnemyRunning &&
+      enemyLeft <
+        heroContainer.getBoundingClientRect().left +
+          heroContainer.getBoundingClientRect().width
+    ) {
+      hardEnemyRunning = true;
+      launchAnimationAndDeclareItLaunched(
+        enemyOnScreen.element.firstChild as HTMLImageElement,
+        0,
+        "png",
+        "assets/challenge/characters/enemies/hard/attack",
+        1,
+        30,
+        1,
+        true,
+        ANIMATION_ID.opponent_attack
+      );
+    } else {
+      console.log(
+        heroContainer.getBoundingClientRect().left +
+          heroContainer.getBoundingClientRect().width
+      );
+      console.log(", view point >");
+      console.log(enemyViewPoint.getBoundingClientRect().left);
+      console.log(" so >");
+      console.log(
+        hardMode &&
+          !hardEnemyRunning &&
+          enemyViewPoint.getBoundingClientRect().left <
+            Math.round(
+              heroContainer.getBoundingClientRect().left +
+                heroContainer.getBoundingClientRect().width
+            )
+      );
+      console.log("inverse >");
+      console.log(
+        hardMode &&
+          !hardEnemyRunning &&
+          enemyViewPoint.getBoundingClientRect().left >
+            Math.round(
+              heroContainer.getBoundingClientRect().left +
+                heroContainer.getBoundingClientRect().width
+            )
+      );
+    }
+
+    if (
+      hardMode &&
+      !enemyViewPointThresholdCrossed &&
+      enemyLeft < window.innerWidth
+    ) {
+      enemyViewPointThresholdCrossed = true;
+    }
+
     if (
       heroContainer.getBoundingClientRect().left +
         heroContainer.getBoundingClientRect().width >
-        enemyOnScreen.element.getBoundingClientRect().left -
-          window.innerWidth * 0.35 &&
+        enemyLeft - window.innerWidth * 0.35 &&
       enemyOnScreen.collideable
     ) {
       hardEnemyRunning = true;
@@ -1506,7 +1624,7 @@ const detectCollision = () => {
     if (
       heroContainer.getBoundingClientRect().left +
         heroContainer.getBoundingClientRect().width >
-        enemyOnScreen.element.getBoundingClientRect().left &&
+        enemyLeft &&
       enemyOnScreen.collideable
     ) {
       enemyOnScreen.collideable = false;
@@ -2115,6 +2233,7 @@ const initHeroAnimations = () => {
 window.onload = () => {
   setupListeners();
   launchHardModeToggle();
+  setHeroClass();
   backgroundSrc = `assets/palace/maps/castle/${
     hardMode ? "castleback.webp" : "castle.gif"
   }`;
@@ -2178,7 +2297,7 @@ const defineSwordReach = () => {
 
 const launchGame = () => {
   runAudio.play();
-  epicAudio.play();
+  //epicAudio.play();
   gameLaunched = true;
   launchRun();
   triggerOpponentsApparition();
