@@ -7,6 +7,7 @@
     "snow_steps_audio"
   );
   var windowAudio = document.getElementById("wind_audio");
+  var gameCover = document.getElementById("game_cover");
   windowAudio.volume = 0.7;
   stepsInSwow.volume = 0.7;
   stepsInSwow.playbackRate = 1.2;
@@ -208,6 +209,13 @@
   document.addEventListener(
     "keydown",
     (event) => {
+      if (!launchedGame) {
+        startGame();
+        return;
+      }
+      if (event.key === "m") {
+        windowAudio.play();
+      }
       if (event.key === "d" && ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */] === 0) {
         ANIMATION_RUNNING_VALUES[4 /* camera_left_to_right */]++;
         if (!isAnimating) {
@@ -232,7 +240,19 @@
       stepsInSwow.pause();
     }
   });
+  var launchedGame = false;
+  var startGame = () => {
+    if (launchedGame) {
+      return;
+    }
+    launchedGame = true;
+    windowAudio.play();
+    gameCover.style.display = "none";
+  };
   window.onload = () => {
+    if (getUrlParameter("started")) {
+      startGame();
+    }
     MAPS.push(createMapPalaceBlock(0));
     MAPS.push(createMapPalaceBlock(window.innerWidth));
     MAPS.push(createMapPalaceBlock(window.innerWidth * 2));
@@ -272,9 +292,9 @@
       9 /* obelisk_idle */
     );
   };
-  document.addEventListener("fetch", (event) => {
-    console.log("fetching >");
-    console.log(event);
-  });
+  var getUrlParameter = (name) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  };
 })();
 //# sourceMappingURL=discovery.js.map

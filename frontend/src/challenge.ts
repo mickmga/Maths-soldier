@@ -1,7 +1,12 @@
 export {};
 
 const goBackToMountain = (event: Event) => {
-  window.location.href = `${process.env.URL_BASE}/discovery`;
+  window.location.href = `${process.env.URL_BASE}/discovery?started=true`;
+};
+
+const getUrlParameter = (name: string): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
 };
 
 const MAPS: HTMLElement[] = [];
@@ -33,8 +38,13 @@ const enemyViewPoint = document.getElementsByClassName(
 const runAudio = document.getElementById("run_audio")! as HTMLAudioElement;
 const swordAudio = document.getElementById("sword_audio")! as HTMLAudioElement;
 const laserdAudio = document.getElementById("laser_audio")! as HTMLAudioElement;
-const epicAudio = document.getElementById("epic_audio")! as HTMLAudioElement;
+let epicAudio = document.getElementById(
+  getUrlParameter("mode") === "hard" ? "hard_epic_audio" : "epic_audio"
+)! as HTMLAudioElement;
 const bassAudio = document.getElementById("bass_audio")! as HTMLAudioElement;
+const fireBackgroundAudio = document.getElementById(
+  "fire_background_audio"
+)! as HTMLAudioElement;
 const electricityAudio = document.getElementById(
   "electricity_audio"
 )! as HTMLAudioElement;
@@ -62,7 +72,6 @@ const bombAudio = document.getElementById("bomb_audio")! as HTMLAudioElement;
 
 swordAudio.volume = 0.65;
 bombAudio.volume = 0.12;
-epicAudio.volume = 0.22;
 electricityAudio.volume = 0.7;
 transformationScreamAudio.volume = 0.25;
 hurtAudio.volume = 0.025;
@@ -529,7 +538,7 @@ const buildEnemyElement = () => {
   );
   const newEnnemyImg = document.createElement("img") as HTMLImageElement;
   newEnnemyImg.src = hardMode
-    ? "assets/challenge/characters/enemies/hard/1.png"
+    ? "assets/challenge/characters/enemies/hard/attack/1.png"
     : "assets/challenge/characters/enemies/black_spirit/run/1.png";
 
   newOpponentContainer.append(newEnnemyImg);
@@ -805,7 +814,7 @@ const getAppIdByAnimationId = (
 };
 
 const timeManipulationToggle = () => {
-  if (!gameLaunched) return;
+  if (!gameLaunched || window.innerWidth > 1000) return;
   if (runStopped) {
     resumeRun();
   } else {
@@ -817,7 +826,7 @@ const createMapBlock = (left: number) => {
   const block = document.createElement("div");
   block.classList.add("mapBlock");
   const backgroundImage = document.createElement("img");
-  backgroundImage.src = backgroundSrc;
+  backgroundImage.src = backgroundSrc ? backgroundSrc : "";
   block.append(backgroundImage);
   block.style.position = "fixed";
   block.style.left = `${left}px`;
@@ -1191,7 +1200,7 @@ const launchAttack = () => {
 
   const enemyCanBeHit = (enemy: Enemy) => {
     const enemyLeft = hardMode
-      ? getHardModeEnemyRealLeft(enemy)
+      ? getHardModeEnemyRealLeft(enemy) * 1.3
       : enemy.element.getBoundingClientRect().left;
     return (
       enemyLeft >
@@ -1245,15 +1254,16 @@ const clearTimeoutAndLaunchNewOne = (
 };
 
 const launchOpponent = (enemy: Enemy) => {
+  APP_ELEMENTS_ANIMATION_QUEUE.enemy.current_animation = null;
   launchAnimationAndDeclareItLaunched(
     enemy.element.firstChild as HTMLImageElement,
     0,
     "png",
     hardMode
-      ? "assets/challenge/characters/enemies/hard/idle"
-      : "assets/challenge/characters/enemies/black_spirit/idle",
+      ? "assets/challenge/characters/enemies/hard/attack"
+      : "assets/challenge/characters/enemies/black_spirit/run",
     1,
-    hardMode ? 16 : 4,
+    hardMode ? 30 : 4,
     1,
     true,
     ANIMATION_ID.opponent_run
@@ -1262,38 +1272,6 @@ const launchOpponent = (enemy: Enemy) => {
   ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move]++;
 
   moveEnemy(enemy, 0, Date.now());
-};
-
-const launchEnemyAttack = (enemy: Enemy) => {
-  ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_run] = 0;
-
-  launchAnimationAndDeclareItLaunched(
-    enemy.element.firstChild as HTMLImageElement,
-    0,
-    "png",
-    "assets/challenge/characters/enemies/black_spirit/attack",
-    1,
-    8,
-    1,
-    false,
-    ANIMATION_ID.opponent_attack,
-    () => {
-      ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_attack] = 0;
-
-      launchAnimationAndDeclareItLaunched(
-        enemy.element.firstChild as HTMLImageElement,
-        0,
-        "png",
-        "assets/challenge/characters/enemies/black_spirit/run",
-        1,
-        4,
-        1,
-        false,
-        ANIMATION_ID.opponent_run,
-        () => {}
-      );
-    }
-  );
 };
 
 const moveEnemy = (
@@ -1480,6 +1458,12 @@ const getHardModeEnemyRealLeft = (enemy: Enemy) => {
   );
 };
 
+const clearEnemy = (enemy: Enemy) => {
+  interruptAnimation(ANIMATION_ID.opponent_run);
+
+  destroyEnemy(enemy);
+};
+
 const destroyEnemy = (enemy: Enemy) => {
   clearAndHideAnswerDataContainer();
   hardEnemyRunning = false;
@@ -1495,6 +1479,7 @@ const destroyEnemy = (enemy: Enemy) => {
     if (enemy === enemyOnScreen) {
       ennemiesOnScreen.splice(index, 1);
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.opponent_move] = 0;
+
       if (hardMode) {
         enemyViewPoint.style.left = "120vw";
       }
@@ -1545,6 +1530,8 @@ let hardEnemyRunning = false;
 let viewPointOnScreen = false;
 let enemyViewPointThresholdCrossed = false;
 
+let hardModeAttackOn = false;
+
 const detectCollision = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
     const enemyLeft = hardMode
@@ -1557,13 +1544,36 @@ const detectCollision = () => {
     }
 
     if (
+      hardModeAttackOn &&
       hardMode &&
       !hardEnemyRunning &&
-      enemyLeft <
+      enemyViewPoint.getBoundingClientRect().left <
         heroContainer.getBoundingClientRect().left +
           heroContainer.getBoundingClientRect().width
     ) {
       hardEnemyRunning = true;
+      console.log("IT WORKS, GOOD view point >");
+      console.log(enemyViewPoint.getBoundingClientRect().left);
+      console.log(" so >");
+      console.log(
+        hardMode &&
+          !hardEnemyRunning &&
+          enemyViewPoint.getBoundingClientRect().left <
+            Math.round(
+              heroContainer.getBoundingClientRect().left +
+                heroContainer.getBoundingClientRect().width
+            )
+      );
+      console.log(" IT WORKS, GOOD inverse >");
+      console.log(
+        hardMode &&
+          !hardEnemyRunning &&
+          enemyViewPoint.getBoundingClientRect().left >
+            Math.round(
+              heroContainer.getBoundingClientRect().left +
+                heroContainer.getBoundingClientRect().width
+            )
+      );
       launchAnimationAndDeclareItLaunched(
         enemyOnScreen.element.firstChild as HTMLImageElement,
         0,
@@ -1815,10 +1825,8 @@ const launchFly = (jumpingForward = true) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "d") {
     if (!gameLaunched) {
-      console.log("launching run");
       launchGame();
     } else if (ANIMATION_RUNNING_VALUES[ANIMATION_ID.run] === 0) {
-      console.log("resuming run");
       resumeRun();
     }
   }
@@ -1842,7 +1850,7 @@ document.addEventListener("keydown", (event) => {
     launchDeathAnimation();
   }
 
-  if (event.key === "s") {
+  if (event.key === "s" && hardMode) {
     if (runStopped) return;
     stopRun();
   }
@@ -1951,18 +1959,12 @@ const resumeRun = () => {
 
 const checkForOpponentsClearance = () => {
   ennemiesOnScreen.forEach((enemyOnScreen) => {
-    if (
-      heroContainer.getBoundingClientRect().left +
-        heroContainer.getBoundingClientRect().width +
-        window.innerWidth * 0.05 >
-      enemyOnScreen.element.getBoundingClientRect().left
-    ) {
-    }
-    if (
-      enemyOnScreen.element.getBoundingClientRect().left <
-      0 - window.innerWidth * 0.2
-    ) {
-      destroyEnemyAndLaunchNewOne(enemyOnScreen);
+    const enemyLeft = hardMode
+      ? getHardModeEnemyRealLeft(enemyOnScreen)
+      : heroContainer.getBoundingClientRect().left;
+
+    if (enemyLeft < 0 - window.innerWidth * 0.25) {
+      clearEnemy(enemyOnScreen);
     }
   });
 
@@ -2248,6 +2250,11 @@ window.onload = () => {
   defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
   defineSwordReach();
   updateTransformationProgressBarDisplay();
+  if (hardMode) {
+    epicAudio.play();
+  } else {
+    fireBackgroundAudio.play();
+  }
 };
 
 const setupListeners = () => {
@@ -2265,6 +2272,11 @@ const createGameAccordingToMode = () => {
     return;
   }
   progressBar.style.display = "flex";
+  epicAudio = document.getElementById(
+    hardMode ? "hard_epic_audio" : "epic_audio"
+  )! as HTMLAudioElement;
+
+  epicAudio.volume = hardMode ? 1 : 0.22;
 };
 
 const launchHardModeToggle = () => {
@@ -2297,7 +2309,9 @@ const defineSwordReach = () => {
 
 const launchGame = () => {
   runAudio.play();
-  //epicAudio.play();
+  if (!hardMode) {
+    epicAudio.play();
+  }
   gameLaunched = true;
   launchRun();
   triggerOpponentsApparition();
@@ -2312,9 +2326,4 @@ const killAllAudios = () => {
   runAudio.pause();
   epicAudio.pause();
   transformedEpicAudio.pause();
-};
-
-const getUrlParameter = (name: string): string | null => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(name);
 };

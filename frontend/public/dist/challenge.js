@@ -2,7 +2,11 @@
 (() => {
   // src/challenge.ts
   var goBackToMountain = (event) => {
-    window.location.href = `${process.env.URL_BASE}/discovery`;
+    window.location.href = `${process.env.URL_BASE}/discovery?started=true`;
+  };
+  var getUrlParameter = (name) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
   };
   var MAPS = [];
   var heroContainer = document.getElementById("hero_container");
@@ -24,8 +28,13 @@
   var runAudio = document.getElementById("run_audio");
   var swordAudio = document.getElementById("sword_audio");
   var laserdAudio = document.getElementById("laser_audio");
-  var epicAudio = document.getElementById("epic_audio");
+  var epicAudio = document.getElementById(
+    getUrlParameter("mode") === "hard" ? "hard_epic_audio" : "epic_audio"
+  );
   var bassAudio = document.getElementById("bass_audio");
+  var fireBackgroundAudio = document.getElementById(
+    "fire_background_audio"
+  );
   var electricityAudio = document.getElementById(
     "electricity_audio"
   );
@@ -47,7 +56,6 @@
   var bombAudio = document.getElementById("bomb_audio");
   swordAudio.volume = 0.65;
   bombAudio.volume = 0.12;
-  epicAudio.volume = 0.22;
   electricityAudio.volume = 0.7;
   transformationScreamAudio.volume = 0.25;
   hurtAudio.volume = 0.025;
@@ -398,7 +406,7 @@
       hardMode ? "hard_enemy_container" : "enemy_container"
     );
     const newEnnemyImg = document.createElement("img");
-    newEnnemyImg.src = hardMode ? "assets/challenge/characters/enemies/hard/1.png" : "assets/challenge/characters/enemies/black_spirit/run/1.png";
+    newEnnemyImg.src = hardMode ? "assets/challenge/characters/enemies/hard/attack/1.png" : "assets/challenge/characters/enemies/black_spirit/run/1.png";
     newOpponentContainer.append(newEnnemyImg);
     document.getElementsByTagName("body")[0].append(newOpponentContainer);
     return newOpponentContainer;
@@ -593,7 +601,7 @@
     return false;
   };
   var timeManipulationToggle = () => {
-    if (!gameLaunched) return;
+    if (!gameLaunched || window.innerWidth > 1e3) return;
     if (runStopped) {
       resumeRun();
     } else {
@@ -604,7 +612,7 @@
     const block = document.createElement("div");
     block.classList.add("mapBlock");
     const backgroundImage = document.createElement("img");
-    backgroundImage.src = backgroundSrc;
+    backgroundImage.src = backgroundSrc ? backgroundSrc : "";
     block.append(backgroundImage);
     block.style.position = "fixed";
     block.style.left = `${left}px`;
@@ -719,7 +727,7 @@
       );
     }
     const newExecutionTimeStamp = Date.now();
-    if ((animationId === 1 /* run */ || animationId === 11 /* opponent_attack */) && lastExecutionTimeStamp) {
+    if (animationId === 1 /* run */ && lastExecutionTimeStamp) {
       const diff = newExecutionTimeStamp - lastExecutionTimeStamp;
       if (diff < ANIMTION_HERO_RUN_DURATION_BETWEEN_FRAMES_IN_MS) {
         return requestAnimationFrame(
@@ -844,7 +852,7 @@
       0 /* attack */
     );
     const enemyCanBeHit = (enemy) => {
-      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemy) : enemy.element.getBoundingClientRect().left;
+      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemy) * 1.3 : enemy.element.getBoundingClientRect().left;
       return enemyLeft > heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width && enemyLeft < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + swordReach;
     };
     ennemiesOnScreen.forEach((enemy) => {
@@ -879,11 +887,12 @@
     GAME_TIMEOUTS[timeoutId] = [timeout];
   };
   var launchOpponent = (enemy) => {
+    APP_ELEMENTS_ANIMATION_QUEUE.enemy.current_animation = null;
     launchAnimationAndDeclareItLaunched(
       enemy.element.firstChild,
       0,
       "png",
-      hardMode ? "assets/challenge/characters/enemies/hard/attack" : "assets/challenge/characters/enemies/black_spirit/idle",
+      hardMode ? "assets/challenge/characters/enemies/hard/attack" : "assets/challenge/characters/enemies/black_spirit/run",
       1,
       hardMode ? 30 : 4,
       1,
@@ -1026,6 +1035,10 @@
     const enemyImg = enemy.element;
     return enemyImg.getBoundingClientRect().left + enemyImg.getBoundingClientRect().width * 0.3;
   };
+  var clearEnemy = (enemy) => {
+    interruptAnimation(10 /* opponent_run */);
+    destroyEnemy(enemy);
+  };
   var destroyEnemy = (enemy) => {
     clearAndHideAnswerDataContainer();
     hardEnemyRunning = false;
@@ -1075,6 +1088,7 @@
   var hardEnemyRunning = false;
   var viewPointOnScreen = false;
   var enemyViewPointThresholdCrossed = false;
+  var hardModeAttackOn = false;
   var detectCollision = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
       const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemyOnScreen) : enemyOnScreen.element.getBoundingClientRect().left;
@@ -1082,8 +1096,22 @@
         viewPointOnScreen = true;
         enemyViewPoint.style.display = "flex";
       }
-      if (hardMode && !hardEnemyRunning && enemyLeft < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width) {
+      if (hardModeAttackOn && hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left < heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width) {
         hardEnemyRunning = true;
+        console.log("IT WORKS, GOOD view point >");
+        console.log(enemyViewPoint.getBoundingClientRect().left);
+        console.log(" so >");
+        console.log(
+          hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left < Math.round(
+            heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
+          )
+        );
+        console.log(" IT WORKS, GOOD inverse >");
+        console.log(
+          hardMode && !hardEnemyRunning && enemyViewPoint.getBoundingClientRect().left > Math.round(
+            heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width
+          )
+        );
         launchAnimationAndDeclareItLaunched(
           enemyOnScreen.element.firstChild,
           0,
@@ -1187,10 +1215,8 @@
   document.addEventListener("keydown", (event) => {
     if (event.key === "d") {
       if (!gameLaunched) {
-        console.log("launching run");
         launchGame();
       } else if (ANIMATION_RUNNING_VALUES[1 /* run */] === 0) {
-        console.log("resuming run");
         resumeRun();
       }
     }
@@ -1209,7 +1235,7 @@
     if (event.key === "y") {
       launchDeathAnimation();
     }
-    if (event.key === "s") {
+    if (event.key === "s" && hardMode) {
       if (runStopped) return;
       stopRun();
     }
@@ -1266,10 +1292,9 @@
   };
   var checkForOpponentsClearance = () => {
     ennemiesOnScreen.forEach((enemyOnScreen) => {
-      if (heroContainer.getBoundingClientRect().left + heroContainer.getBoundingClientRect().width + window.innerWidth * 0.05 > enemyOnScreen.element.getBoundingClientRect().left) {
-      }
-      if (enemyOnScreen.element.getBoundingClientRect().left < 0 - window.innerWidth * 0.2) {
-        destroyEnemyAndLaunchNewOne(enemyOnScreen);
+      const enemyLeft = hardMode ? getHardModeEnemyRealLeft(enemyOnScreen) : heroContainer.getBoundingClientRect().left;
+      if (enemyLeft < 0 - window.innerWidth * 0.25) {
+        clearEnemy(enemyOnScreen);
       }
     });
     requestAnimationFrame(checkForOpponentsClearance);
@@ -1484,6 +1509,11 @@
     defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
     defineSwordReach();
     updateTransformationProgressBarDisplay();
+    if (hardMode) {
+      epicAudio.play();
+    } else {
+      fireBackgroundAudio.play();
+    }
   };
   var setupListeners = () => {
     var _a, _b;
@@ -1495,6 +1525,10 @@
       return;
     }
     progressBar.style.display = "flex";
+    epicAudio = document.getElementById(
+      hardMode ? "hard_epic_audio" : "epic_audio"
+    );
+    epicAudio.volume = hardMode ? 1 : 0.22;
   };
   var launchHardModeToggle = () => {
     const modeParameter = getUrlParameter("mode");
@@ -1519,6 +1553,9 @@
   };
   var launchGame = () => {
     runAudio.play();
+    if (!hardMode) {
+      epicAudio.play();
+    }
     gameLaunched = true;
     launchRun();
     triggerOpponentsApparition();
@@ -1531,10 +1568,6 @@
     runAudio.pause();
     epicAudio.pause();
     transformedEpicAudio.pause();
-  };
-  var getUrlParameter = (name) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
   };
 })();
 //# sourceMappingURL=challenge.js.map

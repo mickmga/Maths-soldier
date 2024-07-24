@@ -6,6 +6,8 @@ const stepsInSwow = document.getElementById(
 )! as HTMLAudioElement;
 const windowAudio = document.getElementById("wind_audio")! as HTMLAudioElement;
 
+const gameCover = document.getElementById("game_cover")!;
+
 windowAudio.volume = 0.7;
 stepsInSwow.volume = 0.7;
 stepsInSwow.playbackRate = 1.2;
@@ -393,6 +395,13 @@ document.addEventListener(
   "keydown",
 
   (event) => {
+    if (!launchedGame) {
+      startGame();
+      return;
+    }
+    if (event.key === "m") {
+      windowAudio.play();
+    }
     if (
       event.key === "d" &&
       ANIMATION_RUNNING_VALUES[ANIMATION_ID.camera_left_to_right] === 0
@@ -427,7 +436,22 @@ document.addEventListener("keyup", (event) => {
   }
 });
 
+let launchedGame = false;
+
+const startGame = () => {
+  if (launchedGame) {
+    return;
+  }
+  launchedGame = true;
+  windowAudio.play();
+  gameCover.style.display = "none";
+};
+
 window.onload = () => {
+  if (getUrlParameter("started")) {
+    startGame();
+  }
+
   MAPS.push(createMapPalaceBlock(0));
   MAPS.push(createMapPalaceBlock(window.innerWidth));
   MAPS.push(createMapPalaceBlock(window.innerWidth * 2));
@@ -475,7 +499,7 @@ const launchObeliskAnimation = () => {
   );
 };
 
-document.addEventListener("fetch", (event: Event) => {
-  console.log("fetching >");
-  console.log(event);
-});
+const getUrlParameter = (name: string): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+};
