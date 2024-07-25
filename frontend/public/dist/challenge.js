@@ -2,7 +2,7 @@
 (() => {
   // src/challenge.ts
   var goBackToMountain = (event) => {
-    window.location.href = `/discovery${!hardMode ? "?started=true" : ""}`;
+    window.location.href = `/discovery${hardMode ? "?started=true" : ""}`;
   };
   var getUrlParameter = (name) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -242,48 +242,48 @@
   var MATHS_ARITHMETIC = {
     title: "Arithmetic",
     good: [
-      new Answer("8/4=2", true),
-      new Answer("3X6=18", true),
-      new Answer("12x4=48", true),
-      new Answer("8/2=4", true),
-      new Answer("4X2.5=10", true),
-      new Answer("5-3=2", true),
-      new Answer("6/3=2", true),
-      new Answer("15/5=3", true),
-      new Answer("8X3=24", true),
-      new Answer("3-2.5=1.5", true),
-      new Answer("2X8=16", true),
-      new Answer("17-10=7", true),
-      new Answer("16/8=2", true),
-      new Answer("6/2=3", true),
-      new Answer("2X2X2=8", true),
-      new Answer("8X2X2=32", true),
-      new Answer("6x4=24", true),
-      new Answer("10/2=5", true),
       new Answer("2+3=5", true),
-      new Answer("7-5=2", true)
+      new Answer("1+1=2", true),
+      new Answer("3+2=5", true),
+      new Answer("4+3=7", true),
+      new Answer("2+2=4", true),
+      new Answer("5+3=8", true),
+      new Answer("6+1=7", true),
+      new Answer("3+4=7", true),
+      new Answer("1+4=5", true),
+      new Answer("2+5=7", true),
+      new Answer("4+4=8", true),
+      new Answer("3+3=6", true),
+      new Answer("1+5=6", true),
+      new Answer("5+2=7", true),
+      new Answer("2+4=6", true),
+      new Answer("3+5=8", true),
+      new Answer("1+6=7", true),
+      new Answer("4+2=6", true),
+      new Answer("5+1=6", true),
+      new Answer("2+3=5", true)
     ],
     bad: [
-      new Answer("2X2.5=3", false),
-      new Answer("3-1.75=2.25", false),
-      new Answer("2x6=15", false),
-      new Answer("8/3=3", false),
-      new Answer("3X2.5=5", false),
-      new Answer("5-3=3", false),
-      new Answer("6/3=3", false),
-      new Answer("1x3=4", false),
-      new Answer("8/4=3", false),
-      new Answer("3-2=2", false),
-      new Answer("3X4=18", false),
-      new Answer("15-2=12", false),
-      new Answer("2x12.5=24", false),
-      new Answer("6/2=4", false),
-      new Answer("4X2=10", false),
-      new Answer("6/2=2", false),
-      new Answer("3x4=15", false),
-      new Answer("15/5=2X2.5", false),
-      new Answer("2X3.5=6.5", false),
-      new Answer("7-1.5=4.5", false)
+      new Answer("2+3=6", false),
+      new Answer("1+1=3", false),
+      new Answer("3+2=6", false),
+      new Answer("4+3=6", false),
+      new Answer("2+2=5", false),
+      new Answer("5+3=9", false),
+      new Answer("6+1=8", false),
+      new Answer("3+4=8", false),
+      new Answer("1+4=6", false),
+      new Answer("2+5=8", false),
+      new Answer("4+4=9", false),
+      new Answer("3+3=7", false),
+      new Answer("1+5=7", false),
+      new Answer("5+2=8", false),
+      new Answer("2+4=7", false),
+      new Answer("3+5=9", false),
+      new Answer("1+6=8", false),
+      new Answer("4+2=7", false),
+      new Answer("5+1=7", false),
+      new Answer("2+3=4", false)
     ]
   };
   var MATHS_MEDIUM = {

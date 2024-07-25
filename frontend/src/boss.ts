@@ -76,6 +76,7 @@ const launchCharacterAnimation = (
 };
 
 const launcHeroIdle = () => {
+  alert("iddle");
   launchAnimationAndDeclareItLaunched(
     heroImage,
     0,
