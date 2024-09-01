@@ -239,6 +239,69 @@
       )
     ]
   };
+  var charlotte_memories = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(27/07) j'ai \xE9t\xE9 au march\xE9", true),
+      new Answer("(27/07) ,  mon oncle m'a d\xE9pos\xE9 en voiture", true),
+      new Answer("(samedi 27/07) j'ai souhait\xE9 bon anniversaire \xE0 Michael", true),
+      new Answer("(samedi 27/07) Je suis sorti me faire coiffer", true),
+      new Answer("(samedi 27/07) Je suis sorti \xE0 une r\xE9union", true),
+      new Answer("(samedi 27/07) Je suis rentr\xE9e \xE0 3h du matin", true),
+      new Answer("(samedi 27/07) J'ai bu un peu de champagne", true),
+      new Answer("(samedi 27/07) j'ai mang\xE9 un peu d'ekoki/poisson", true),
+      new Answer(
+        "(samedi 27/07) J'\xE9tais habill\xE9e en pantalon bleu/blanc, sac bleu",
+        true
+      ),
+      new Answer("(27/07) Mon oncle m'a d\xE9pos\xE9e en voiture", true)
+    ],
+    bad: [
+      new Answer("(27/07) Je suis all\xE9 au restaurant chez Julie", false),
+      new Answer("(samedi 27/07) Maxime est venu \xE0 la maison", false),
+      new Answer("(samedi 27/07) Je suis all\xE9 voir ma soeur ", false),
+      new Answer("(samedi 27/07) J'ai regard\xE9 un reportage sur Poutine", false),
+      new Answer("(samedi 27/07) j'ai mang\xE9 des myrtilles", false),
+      new Answer("(samedi 27/07) J'ai bu du whisky avec du coca", false),
+      new Answer(
+        "(samedi 27/07) Des ouvriers sont venus changer les vitres",
+        false
+      )
+    ]
+  };
+  var Mike_memory = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer("(26/07) Tu as pris un caf\xE9 dans une tasse blanche", true),
+      new Answer("(26/07) Tu as flipp\xE9 sur ta peau oendant des heures", true),
+      new Answer("(26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer("(26/07) Tu t'es fait retirer les fils la veille", true),
+      new Answer("(26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(26/07) Tu as pris un th\xE9", false),
+      new Answer("(26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(26/07) Tu as bu du whisky", false),
+      new Answer("(26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9", false),
+      new Answer("(26/07) Tu as appel\xE9 max", false),
+      new Answer("(26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer("(26/07) Tu t'es fait retirer les fils il y'a 2 jours", false)
+    ]
+  };
   var MATHS_ARITHMETIC = {
     title: "Arithmetic",
     good: [
@@ -551,7 +614,7 @@
     [10 /* opponent_run */]: 5,
     [11 /* opponent_attack */]: 0,
     [13 /* opponent_death */]: 0,
-    [12 /* opponent_move */]: 0,
+    [12 /* opponent_move */]: 1,
     [14 /* camera_left_to_right */]: 0,
     [15 /* camera_right_to_left */]: 5,
     [17 /* hero_sword_slash */]: 0,
@@ -606,8 +669,13 @@
     }
     return false;
   };
+  var fullScreen = false;
   var timeManipulationToggle = () => {
-    if (!gameLaunched || window.innerWidth > 1e3) return;
+    if (!fullScreen) {
+      document.getElementsByTagName("body")[0].requestFullscreen();
+      fullScreen = true;
+    }
+    if (!gameLaunched || window.innerWidth > 1e3 || !hardMode) return;
     if (runStopped) {
       resumeRun();
     } else {

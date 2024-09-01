@@ -3191,7 +3191,7 @@ Take a look at the reducer(s) handling this action type: ${action.type}.
     }, 300);
   });
   var fetchIcons = (query) => {
-    fetch(`http://localhost:3000/iconfinder?query=${query}`).then((response) => response.json()).then((data) => {
+    fetch(`http://192.168.1.124:3000/iconfinder?query=${query}`).then((response) => response.json()).then((data) => {
       displaySearchResults(data.icons);
     }).catch((error) => {
       console.error("Error fetching icons:", error);

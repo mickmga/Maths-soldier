@@ -885,7 +885,7 @@ searchInput.addEventListener("input", () => {
 });
 
 const fetchIcons = (query: string): void => {
-  fetch(`http://localhost:3000/iconfinder?query=${query}`)
+  fetch(`http://192.168.1.124:3000/iconfinder?query=${query}`)
     .then((response) => response.json())
     .then((data: { icons: Icon[] }) => {
       displaySearchResults(data.icons);

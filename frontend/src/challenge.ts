@@ -332,6 +332,71 @@ const VECTORS = {
   ],
 };
 
+const charlotte_memories = {
+  title: "Arithmetic",
+  good: [
+    new Answer("(27/07) j'ai été au marché", true),
+    new Answer("(27/07) ,  mon oncle m'a déposé en voiture", true),
+    new Answer("(samedi 27/07) j'ai souhaité bon anniversaire à Michael", true),
+    new Answer("(samedi 27/07) Je suis sorti me faire coiffer", true),
+    new Answer("(samedi 27/07) Je suis sorti à une réunion", true),
+    new Answer("(samedi 27/07) Je suis rentrée à 3h du matin", true),
+    new Answer("(samedi 27/07) J'ai bu un peu de champagne", true),
+    new Answer("(samedi 27/07) j'ai mangé un peu d'ekoki/poisson", true),
+    new Answer(
+      "(samedi 27/07) J'étais habillée en pantalon bleu/blanc, sac bleu",
+      true
+    ),
+    new Answer("(27/07) Mon oncle m'a déposée en voiture", true),
+  ],
+  bad: [
+    new Answer("(27/07) Je suis allé au restaurant chez Julie", false),
+    new Answer("(samedi 27/07) Maxime est venu à la maison", false),
+    new Answer("(samedi 27/07) Je suis allé voir ma soeur ", false),
+    new Answer("(samedi 27/07) J'ai regardé un reportage sur Poutine", false),
+    new Answer("(samedi 27/07) j'ai mangé des myrtilles", false),
+    new Answer("(samedi 27/07) J'ai bu du whisky avec du coca", false),
+    new Answer(
+      "(samedi 27/07) Des ouvriers sont venus changer les vitres",
+      false
+    ),
+  ],
+};
+
+const Mike_memory = {
+  title: "Arithmetic",
+  good: [
+    new Answer(
+      "(26/07) Tu as regardé une interview de l'adjoint de Pierre Sage",
+      true
+    ),
+    new Answer("(26/07) Tu as pris un café dans une tasse blanche", true),
+    new Answer("(26/07) Tu as flippé sur ta peau oendant des heures", true),
+    new Answer("(26/07) Tu as trouvé une bouteille de spray", true),
+    new Answer("(26/07) Tu as changé tes draps", true),
+    new Answer("(26/07) Tu as nettoyé le sol de la cuisine", true),
+    new Answer(
+      "(26/07) Tu as regardé une interview de l'adjoint de Pierre Sage",
+      true
+    ),
+    new Answer("(26/07) Tu t'es fait retirer les fils la veille", true),
+    new Answer("(26/07) Tu as lu un mail d'AMELI", true),
+  ],
+  bad: [
+    new Answer(
+      "(26/07) Tu as regardé une interview de l'adjoint de Pierre Sage",
+      false
+    ),
+    new Answer("(26/07) Tu as pris un thé", false),
+    new Answer("(26/07) Tu as mangé mcdo", false),
+    new Answer("(26/07) Tu as bu du whisky", false),
+    new Answer("(26/07) Tu as regardé l'interview de Moussa Niakhaté", false),
+    new Answer("(26/07) Tu as appelé max", false),
+    new Answer("(26/07) Tu n'es pas allé sur twitter", false),
+    new Answer("(26/07) Tu t'es fait retirer les fils il y'a 2 jours", false),
+  ],
+};
+
 const MATHS_ARITHMETIC = {
   title: "Arithmetic",
   good: [
@@ -748,7 +813,7 @@ export const THROTTLE_NUMS = {
   [ANIMATION_ID.opponent_run]: 5,
   [ANIMATION_ID.opponent_attack]: 0,
   [ANIMATION_ID.opponent_death]: 0,
-  [ANIMATION_ID.opponent_move]: 0,
+  [ANIMATION_ID.opponent_move]: 1,
   [ANIMATION_ID.camera_left_to_right]: 0,
   [ANIMATION_ID.camera_right_to_left]: 5,
   [ANIMATION_ID.hero_sword_slash]: 0,
@@ -856,8 +921,15 @@ const getAppIdByAnimationId = (
   return false;
 };
 
+let fullScreen = false;
+
 const timeManipulationToggle = () => {
-  if (!gameLaunched || window.innerWidth > 1000) return;
+  if (!fullScreen) {
+    document.getElementsByTagName("body")[0].requestFullscreen();
+    fullScreen = true;
+  }
+  if (!gameLaunched || window.innerWidth > 1000 || !hardMode) return;
+
   if (runStopped) {
     resumeRun();
   } else {

@@ -1,6 +1,6 @@
 "use strict";
 (() => {
-  // src/challenge.ts
+  // src/challenge_guardians.ts
   var goBackToMountain = (event) => {
     window.location.href = `/discovery${hardMode ? "?started=true" : ""}`;
   };
@@ -97,7 +97,7 @@
   var transformedAlready = false;
   var REWARD_TIMEOUT_DURATION = 1e3;
   var KILLED_ENEMY_REWARD = 30;
-  var rewardStreak = 15;
+  var rewardStreak = 1;
   var hardMode = false;
   var TRANSFORMATION_THRESHOLD = hardMode ? 1e8 : 20;
   var preTransformed = false;
@@ -239,7 +239,7 @@
       )
     ]
   };
-  var charlotte_memories = {
+  var MATHS_ARITHMETIC = {
     title: "Arithmetic",
     good: [
       new Answer("(27/07) j'ai \xE9t\xE9 au march\xE9", true),
@@ -269,84 +269,542 @@
       )
     ]
   };
-  var Mike_memory = {
+  var Mike_memory_2607 = {
     title: "Arithmetic",
     good: [
       new Answer(
-        "(26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
         true
       ),
-      new Answer("(26/07) Tu as pris un caf\xE9 dans une tasse blanche", true),
-      new Answer("(26/07) Tu as flipp\xE9 sur ta peau oendant des heures", true),
-      new Answer("(26/07) Tu as trouv\xE9 une bouteille de spray", true),
-      new Answer("(26/07) Tu as chang\xE9 tes draps", true),
-      new Answer("(26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
       new Answer(
-        "(26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
         true
       ),
-      new Answer("(26/07) Tu t'es fait retirer les fils la veille", true),
-      new Answer("(26/07) Tu as lu un mail d'AMELI", true)
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
     ],
     bad: [
       new Answer(
-        "(26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
         false
       ),
-      new Answer("(26/07) Tu as pris un th\xE9", false),
-      new Answer("(26/07) Tu as mang\xE9 mcdo", false),
-      new Answer("(26/07) Tu as bu du whisky", false),
-      new Answer("(26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9", false),
-      new Answer("(26/07) Tu as appel\xE9 max", false),
-      new Answer("(26/07) Tu n'es pas all\xE9 sur twitter", false),
-      new Answer("(26/07) Tu t'es fait retirer les fils il y'a 2 jours", false)
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
     ]
   };
-  var MATHS_ARITHMETIC = {
+  var Mike_memory_2707 = {
     title: "Arithmetic",
     good: [
-      new Answer("2+3=5", true),
-      new Answer("1+1=2", true),
-      new Answer("3+2=5", true),
-      new Answer("4+3=7", true),
-      new Answer("2+2=4", true),
-      new Answer("5+3=8", true),
-      new Answer("6+1=7", true),
-      new Answer("3+4=7", true),
-      new Answer("1+4=5", true),
-      new Answer("2+5=7", true),
-      new Answer("4+4=8", true),
-      new Answer("3+3=6", true),
-      new Answer("1+5=6", true),
-      new Answer("5+2=7", true),
-      new Answer("2+4=6", true),
-      new Answer("3+5=8", true),
-      new Answer("1+6=7", true),
-      new Answer("4+2=6", true),
-      new Answer("5+1=6", true),
-      new Answer("2+3=5", true)
+      new Answer("(Samedi 27/07) C'\xE9tait mon anniversaire", true),
+      new Answer(
+        "(Samedi 27/07) La pote de charlotte m'a dit que je devais lui offrir \xE0 boire",
+        true
+      ),
+      new Answer("(Samedi 27/07) Lor\xE8ne m'a envoy\xE9 un message", true),
+      new Answer("(Samedi 27/07) J'ai regard\xE9 France Guin\xE9e", true),
+      new Answer(
+        "(Samedi 27/07) J'ai regard\xE9 France Guin\xE9e, la Guin\xE9e s'est vu refuser un but hors jeu",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) J'ai regard\xE9 France Guin\xE9e, la Guin\xE9e s'est vu refuser un but hors jeu apr\xE8s avoir c\xE9l\xE9brer",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) J'ai branch\xE9 mon c\xE2ble hdmi \xE0 la t\xE9l\xE9 avec",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) J'ai branch\xE9 mon c\xE2ble hdmi \xE0 la t\xE9l\xE9 et ai mis le chargeur en dessous de la tv",
+        true
+      ),
+      new Answer("(Samedi 27/07) Math\xE9o m'a appel\xE9", true),
+      new Answer(
+        "(Samedi 27/07) Math\xE9o m'a appel\xE9, m'a dit qu'il vivait chez maman maintenant",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) Math\xE9o m'a appel\xE9, m'a dit qu'il avait quitt\xE9 Lisa",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) Math\xE9o m'a appel\xE9, m'a dit qu'il avait quitt\xE9 Lisa, et qu'il ne vivait plus avec elle depuis quelques jours ",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) Maman m'a envoy\xE9 un message sur messenger et a dit, on fetera les annivs l\xE0 bas",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) Maman m'a envoy\xE9 un message sur messenger et a dit, on fetera les annivs l\xE0 bas, c'est pr\xE9vu",
+        true
+      ),
+      new Answer(
+        "(Samedi 27/07) Maman m'a envoy\xE9 un message sur messenger et a dit, on fetera les annivs l\xE0 bas, c'est pr\xE9vu",
+        true
+      )
     ],
     bad: [
-      new Answer("2+3=6", false),
-      new Answer("1+1=3", false),
-      new Answer("3+2=6", false),
-      new Answer("4+3=6", false),
-      new Answer("2+2=5", false),
-      new Answer("5+3=9", false),
-      new Answer("6+1=8", false),
-      new Answer("3+4=8", false),
-      new Answer("1+4=6", false),
-      new Answer("2+5=8", false),
-      new Answer("4+4=9", false),
-      new Answer("3+3=7", false),
-      new Answer("1+5=7", false),
-      new Answer("5+2=8", false),
-      new Answer("2+4=7", false),
-      new Answer("3+5=9", false),
-      new Answer("1+6=8", false),
-      new Answer("4+2=7", false),
-      new Answer("5+1=7", false),
-      new Answer("2+3=4", false)
+      new Answer("(Samedi 27/07) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Samedi 27/07) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Samedi 27/07) Tu as fait des tractions", false),
+      new Answer("(Samedi 27/07) Tu as bu du th\xE9", false),
+      new Answer("(Samedi 27/07) Tu as appel\xE9 max", false),
+      new Answer("(Samedi 27/07) Tu as jou\xE9 \xE0 skyrim", false),
+      new Answer(
+        "(Samedi 27/07) Tu t'es fait retirer les fils il y'a 3 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2807 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Dimanche 28/07) C'\xE9tait le lendemain de mon anniversaire",
+        true
+      ),
+      new Answer(
+        "(Dimanche 28/07) Reveil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer("(Dimanche 28/07) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Dimanche 28/07) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Dimanche 28/07) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Dimanche 28/07) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_2907 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Lundi 29/07) C'\xE9tait le lendemain de mon anniversaire", true),
+      new Answer(
+        "(Lundi 29/07) Reveil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer("(Lundi 28/07) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Lundi 29/07) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Lundi 29/07) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Lundi 29/07) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_3007 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Mardi 30/07) C'\xE9tait le lendemain de mon anniversaire", true),
+      new Answer(
+        "(Mardi 30/07) Reveil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer("(Mardi 30/07) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Mardi 30/07) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Mardi 30/07) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Mardi 30/07) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_3107 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Mercredi 31/07) C'\xE9tait le lendemain de mon anniversaire",
+        true
+      ),
+      new Answer(
+        "(Mercredi 31/07) Reveil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer("(Mercredi 31/07) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Mercredi 31/07) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Mercredi 31/07) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Mercredi 31/07) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_0108 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Jeudi 01/08) C'\xE9tait le lendemain de mon anniversaire", true),
+      new Answer(
+        "(Jeudi 01/08) R\xE9veil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer("(Jeudi 01/08) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Jeudi 01/08) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Jeudi 01/08) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Jeudi 01/08) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_0208 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Semaine 29/07 - 04/08 => Vendredi 02/08) Je suis all\xE9 voir hilligot",
+        true
+      ),
+      new Answer(
+        "(Semaine 29/07 - 04/08 => Vendredi 02/08) Reveil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer(
+        "(Semaine 29/07 - 04/08 => Vendredi 02/08) Au bout de ma life",
+        true
+      )
+    ],
+    bad: [
+      new Answer(
+        "(Semaine 29/07 - 04/08 => Vendredi 02/08) Tu as regard\xE9 un combat de Cyril Gane",
+        false
+      ),
+      new Answer(
+        "(Semaine 29/07 - 04/08 => Vendredi 02/08) Tu as mang\xE9 des choux fleurs",
+        false
+      ),
+      new Answer(
+        "(Semaine 29/07 - 04/08 => Vendredi 02/08) Tu as fait des tractions",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0308 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Samedi 03/08) C'\xE9tait le lendemain de mon anniversaire", true),
+      new Answer(
+        "(Samedi 03/08) Reveil horrible, infection. Des boutons horribles apparaissent.",
+        true
+      ),
+      new Answer("(Samedi 03/08) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Samedi 03/08) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Samedi 03/08) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Samedi 03/08) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_0408 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Dimanche 04/08) ", true),
+      new Answer("(Dimanche 04/08) J'oublie d'appeler Papi et Mamie", true),
+      new Answer("(Dimanche 04/08) Au bout de ma life", true)
+    ],
+    bad: [
+      new Answer("(Dimanche 04/08) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Samedi 04/08) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Samedi 04/08) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_05_08 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Lundi 05/08) Je regarde une vid\xE9o de Aur\xE9lien Duarte en Thailande.",
+        true
+      ),
+      new Answer(
+        "(Lundi 05/08) Je regarde le ping pong feminin. 8emes de finale contre la thailande",
+        true
+      ),
+      new Answer(
+        "(Lundi 05/08) Je regarde le ping pong feminin. 8emes de finale contre la thailande. La france perdait 2 sets \xE0 1",
+        true
+      ),
+      new Answer(
+        "(Lundi 05/08) Je regarde le ping pong feminin. 8emes de finale contre la thailande. La france perdait 2 sets \xE0 1, sur le match en double et a perdu 3-1",
+        true
+      ),
+      new Answer(
+        "(Lundi 05/08) Alice Damato remporte l'\xE9preuve de gym et pas Simone Biles, qui est tomb\xE9e.",
+        true
+      ),
+      new Answer(
+        "(Lundi 05/08) On a regard\xE9s le match france/egypte, la france gagne 2/1 avec 1 but de mateta dans le temps r\xE9glementaire, et un but en prolong ",
+        true
+      ),
+      new Answer(
+        "(Lundi 05/08) Cl\xE9ment Ducos a gagn\xE9 l'\xE9preuve de qualif de 400m haies et dit 'personne me fait peur monsieur' ",
+        true
+      )
+    ],
+    bad: [
+      new Answer("(Lundi 05/08) Tu as regard\xE9 un combat de Cyril Gane", false),
+      new Answer("(Lundi 05/08) Tu as mang\xE9 des choux fleurs", false),
+      new Answer("(Lundi 05/08) Tu as fait des tractions", false)
+    ]
+  };
+  var Mike_memory_06_08 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Mardi 06/08) On a mang\xE9 steak/pates", true),
+      new Answer("(Mardi 06/08) Math\xE9o \xE9tait sur tik tok'", true),
+      new Answer("(Mardi 06/08) On a regard\xE9 le film pokemon avec Micka", true),
+      new Answer("(Mardi 06/08) Math\xE9o a fait du v\xE9lo", true),
+      new Answer("(Mardi 06/08) Math\xE9o a fait du m\xE9nage au travail", true),
+      new Answer("(Mardi 06/08) On a regard\xE9s france/Canada en basket", true),
+      new Answer(
+        "(Mardi 06/08) J'ai montr\xE9 \xE0 Micka une vid\xE9o de L\xE9on Marchand qui met un vent \xE0 une petite",
+        true
+      ),
+      new Answer("(Mardi 06/08) J'ai bu une demi cannette de coca", true),
+      new Answer("(Mardi 06/08) On a boug\xE9 la table du salon", true)
+    ],
+    bad: [
+      new Answer("(Mardi 06/08) Leon marchand a nag\xE9", true),
+      new Answer(
+        "(Mardi 06/08) On a regard\xE9 le match de handball france/allemagne",
+        false
+      ),
+      new Answer("(Mardi 06/08) J'ai mang\xE9 burger king", false),
+      new Answer("(Mardi 06/08) Maman m'a appel\xE9", false),
+      new Answer(
+        "(Mardi 06/08) J'ai vu le match de l'\xE9quipe de france de foot",
+        false
+      ),
+      new Answer(
+        "(Mardi 06/08) Philippe est venu amener un colis \xE0 la maison",
+        false
+      )
+    ]
+  };
+  var Mike_memory_07_08 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Mercredi 07/08) La France a battu l'italie au Volley", true),
+      new Answer(
+        "(Mercredi 07/08) Cyrian Ravet a gagn\xE9 la medaille de Bronze au taekwondo",
+        true
+      ),
+      new Answer(
+        "(Mercredi 07/08) Sofiane et Aboudou ont perdu en perdus en boxe mais pris une argent et un bronze",
+        true
+      ),
+      new Answer(
+        "(Mercredi 07/08) Handball, la france perd contre l'allemagne en prenant 2 buts en quelques secondes",
+        true
+      ),
+      new Answer("(Mercredi 07/08) Lisa a appel\xE9 Math\xE9o", true),
+      new Answer(
+        "(Mercredi 07/08) Les etats unis \xE9taient men\xE9s pendant 3 quartants contre la serbie",
+        true
+      ),
+      new Answer("(Mercredi 07/08) Noah lyles a termin\xE9 3eme au 200m", true),
+      new Answer(
+        "(Mercredi 07/08) J'ai mang\xE9 une burata avec de la tomate le soir",
+        true
+      ),
+      new Answer(
+        "(Mercredi 07/08) On regardait allemagne/france en basket et suede/france en hand en meme temps",
+        true
+      ),
+      new Answer(
+        "(Mercredi 07/08) Mat parlait avec une go sur tinder, sa famille etait au hand",
+        true
+      ),
+      new Answer(
+        "(Mercredi 07/08) Au hand, la france etait men\xE9e de deux buts a quelques secondes de la fin",
+        true
+      )
+    ],
+    bad: [
+      new Answer("(Mercredi 07/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Mercredi 07/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Mercredi 07/08) J'ai mang\xE9 burger king", false),
+      new Answer("(Mercredi 07/08) Maman m'a appel\xE9", false),
+      new Answer(
+        "(Mercredi 07/08) J'ai vu le match de l'\xE9quipe de france de foot",
+        false
+      ),
+      new Answer(
+        "(Mardi 07/08) Philippe est venu amener un colis \xE0 la maison",
+        false
+      )
+    ]
+  };
+  var Mike_memory_08_08 = {
+    title: "Arithmetic",
+    good: [
+      new Answer("(Jeudi 08/08) On a mang\xE9 mcdo a midi", true),
+      new Answer("(Jeudi 08/08) On a regard\xE9 france/allemagne en basket", true),
+      new Answer(
+        "(Jeudi 08/08) On a regard\xE9 france/su\xE8de en volley feminin",
+        true
+      ),
+      new Answer("(Jeudi 08/08) Math\xE9o a fait le malin avec le coussin", true),
+      new Answer("(Jeudi 08/08) Lisa a appel\xE9 Math\xE9o", true),
+      new Answer(
+        "(Jeudi 08/08) Les etats unis \xE9taient men\xE9s pendant 3 quartants contre la serbie",
+        true
+      ),
+      new Answer("(Jeudi 08/08) Noah lyles a termin\xE9 3eme au 200m", true),
+      new Answer(
+        "(Jeudi 08/08) J'ai mang\xE9 une burata avec de la tomate le soir",
+        true
+      ),
+      new Answer(
+        "(Jeudi 08/08) On regardait allemagne/france en basket et suede/france en hand en meme temps",
+        true
+      ),
+      new Answer(
+        "(Jeudi 08/08) Mat parlait avec une go sur tinder, sa famille etait au hand",
+        true
+      ),
+      new Answer(
+        "(Jeudi 08/08) Au hand, la france etait men\xE9e de deux buts a quelques secondes de la fin",
+        true
+      )
+    ],
+    bad: [
+      new Answer("(Jeudi 08/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Jeudi 08/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Jeudi 08/08) J'ai mang\xE9 burger king", false),
+      new Answer("(Jeudi 08/08) Maman m'a appel\xE9", false),
+      new Answer(
+        "(Jeudi 08/08) J'ai vu le match de l'\xE9quipe de france de beach volley",
+        false
+      ),
+      new Answer("(Jeudi 08/08) J'ai bu un milkshake avec une paille", false),
+      new Answer("(Jeudi 08/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Jeudi 08/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Jeudi 08/08) Noah lyles a gagn\xE9 le 100m", false),
+      new Answer("(Jeudi 08/08) steph curry n'a mis qu'un 3 points", false),
+      new Answer("(Jeudi 08/08) Ducos a \xE9t\xE9 \xE9limin\xE9 en 400m haies ", false),
+      new Answer("(Jeudi 08/08) Ducos ne court pas le lendemain", false),
+      new Answer("(Jeudi 08/08) Wambanyama est suspendu", false),
+      new Answer("(Jeudi 08/08) J'ai bu du coca", false),
+      new Answer("(Jeudi 08/08) Je n'ai pas mang\xE9 de bonbons", false),
+      new Answer(
+        "(Jeudi 08/08) J'ai vu le match de l'ol contre berlin en replay",
+        false
+      ),
+      new Answer("(Jeudi 08/08) Je n'ai pas commenc\xE9 the last dance", false),
+      new Answer("(Jeudi 08/08) Papi et mamie m'ont appel\xE9s", false)
+    ]
+  };
+  var Mike_memory_09_08 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 09/08) J'ai mang\xE9 du fromage, avec de la tomate jaune et du jambon \xE0 midi",
+        true
+      ),
+      new Answer("(Vendredi 09/08) J'ai fini les glaces", true),
+      new Answer(
+        "(Vendredi 09/08) La france a perdue contre l espagne 5-3",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) Lacazette a \xE9t\xE9 remplac\xE9 peu de temps apr\xE8s la mi-temps",
+        true
+      ),
+      new Answer("(Vendredi 09/08) Lisa a appel\xE9 Math\xE9o", true),
+      new Answer(
+        "(Vendredi 09/08) Le lendemain, il y'a la petite finale serbie/allemagne en basket",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) J'ai mang\xE9 une mousse au chocolat avant de dormir",
+        true
+      ),
+      new Answer("(Vendredi 09/08) J'ai achet\xE9 Renekton", true),
+      new Answer(
+        "(Vendredi 09/08) J'ai r\xE9alis\xE9 que les nouveaux bots lol \xE9taient explos\xE9s",
+        true
+      ),
+      new Answer("(Vendredi 09/08) Ducos a perdu la finale du 400m haies", true),
+      new Answer(
+        "(Vendredi 09/08) J'ai appel\xE9 Ludovic vite fait, il regardait le match de l'edf dans un bar",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) J'ai mang\xE9 du steak, des pates et du fromage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) L'\xE9quipe de Ryan Zeze en relai a perdue",
+        true
+      )
+    ],
+    bad: [
+      new Answer("(Vendredi 09/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Vendredi 09/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Vendredi 09/08) J'ai mang\xE9 burger king", false),
+      new Answer("(Vendredi 09/08) Maman m'a appel\xE9", false),
+      new Answer(
+        "(Vendredi 09/08) J'ai vu le match de l'\xE9quipe de france de beach volley",
+        false
+      ),
+      new Answer("(Vendredi 09/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Vendredi 09/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Vendredi 09/08) Noah lyles a gagn\xE9 le 100m", false),
+      new Answer("(Vendredi 09/08) steph curry n'a mis qu'un 3 points", false),
+      new Answer("(Vendredi 09/08) Ducos a \xE9t\xE9 \xE9limin\xE9 en 400m haies ", false),
+      new Answer("(Vendredi 09/08) Ducos ne court pas le lendemain", false),
+      new Answer("(Vendredi 09/08) Wambanyama est suspendu", false),
+      new Answer("(Vendredi 09/08) J'ai bu du coca", false),
+      new Answer("(Vendredi 09/08) Je n'ai pas mang\xE9 de bonbons", false),
+      new Answer(
+        "(Vendredi 09/08) J'ai vu le match de l'ol contre berlin en replay",
+        false
+      ),
+      new Answer("(Vendredi 09/08) Je n'ai pas commenc\xE9 the last dance", false),
+      new Answer("(Vendredi 09/08) Papi et mamie m'ont appel\xE9s", false)
     ]
   };
   var MATHS_MEDIUM = {
@@ -431,7 +889,7 @@
     const randVal = Math.random() > 0.5;
     if (!currentSubject) {
       console.log("there is no subject");
-      defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
+      defineCurrentSubject(hardMode ? STATS : Mike_memory_09_08);
     }
     const getAndRemoveSubject = (index, list) => {
       let foundElement = null;
@@ -544,7 +1002,7 @@
     document.getElementById("endOfGameInterface").style.display = "flex";
     clearGameTimeouts();
     initAllAnimations();
-    heroImage.src = "assets/challenge/characters/hero/run/1.png";
+    heroImage.src = "assets/palace/characters/default_dragor/run/1.png";
     document.getElementById("transformation_background").style.display = "none";
     const grade = getChallengeGrade();
     const levelUpAudio = document.getElementById(
@@ -948,9 +1406,9 @@
       heroImage,
       0,
       "png",
-      `assets/challenge/characters/${transformed ? "transformed_hero" : "hero"}/attack`,
+      `assets/${transformed ? "challenge/characters/transformed_hero" : "palace/characters/default_dragor"}/attack`,
       1,
-      transformed ? 12 : 4,
+      transformed ? 12 : 6,
       1,
       false,
       0 /* attack */
@@ -1261,7 +1719,7 @@
       heroImage,
       0,
       "png",
-      `assets/challenge/characters/${transformed ? "transformed_hero" : "hero"}/run`,
+      `assets/${transformed ? "challenge/characters/transformed_hero" : "palace/characters/default_dragor"}/run`,
       1,
       transformed ? 6 : 8,
       1,
@@ -1581,7 +2039,7 @@
     detectCollision();
     checkForScreenUpdateFromLeftToRight(10);
     checkForOpponentsClearance();
-    defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
+    defineCurrentSubject(hardMode ? STATS : Mike_memory_09_08);
     defineSwordReach();
     updateTransformationProgressBarDisplay();
     if (hardMode) {
@@ -1645,4 +2103,4 @@
     transformedEpicAudio.pause();
   };
 })();
-//# sourceMappingURL=challenge.js.map
+//# sourceMappingURL=challenge_guardians.js.map
