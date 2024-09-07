@@ -217,116 +217,150 @@ type Subject = {
   bad: Array<Answer>;
 };
 
-const STATS = {
-  title: "statistics",
+const Charles_petzold_chap_10_Page_1 = {
+  title: "Charles_petzold_chap_10_Page_1",
   good: [
     new Answer(
-      "Etendue = Valeur maximale - Valeur minimale d'un jeu de donnée",
+      "(p.78) Aristotle thought that logic had something to do with truth",
+      true
+    ),
+    new Answer(
+      "(p.78) The collection of thought of Aristotle are called the Organon",
+      true
+    ),
+    new Answer(
+      "(p.78) To the ancient Greeks, logic was a means of analyzing language in the search for truth and thus was considered a form of philosophy",
+      true
+    ),
+    new Answer(
+      "(p.78) All men are mortal; Socrates is a man; Hence, Socrates is mortal is a famous syllogism of Socrate",
       true
     ),
 
     new Answer(
-      "Le mode est la valeur la plus fréquente dans un ensemble de données.",
+      "(p.78) Mathematicians have tried for years to mess up with Aristotle logic.",
       true
     ),
     new Answer(
-      "La variance mesure à quel point les données d'un ensemble sont dispersées par rapport à la moyenne.",
+      "(p.78) Gottfried Wilhelm Von Leibniz was born in 1648 and died in 1716",
       true
     ),
-    new Answer("L'écart type est la racine carrée de la variance", true),
+    new Answer("(p.78) George Boole was born in 1815", true),
+    new Answer("(p.78) George Boole father was a shoe maker", true),
     new Answer(
-      "Les statistiques descriptives sont une des deux catégories des statistiques",
+      "(p.78) Boole gave himself an education he should not have been able to have",
       true
     ),
+    new Answer("(p.78) Boole's early paper in mathematics was in 1849", true),
 
-    new Answer(
-      "Les statistiques Inférentielles sont une des deux catégories des statistiques",
-      true
-    ),
-    new Answer(
-      "Les statistiques descriptives résument ou décrivent les caractéristiques d'un ensemble de données",
-      true
-    ),
-
-    new Answer(
-      "Les statistiques inférentielles font des inférences et des prédictions sur une population à partir d'un échantillon de données",
-      true
-    ),
-    new Answer("Un ensemble de données peut avoir plusieurs modes", true),
-    new Answer("Un ensemble de données peut avoir 0 modes", true),
+    new Answer("(p.78) Charles Dogson created a famous syllogism", true),
   ],
   bad: [
-    new Answer("Etendue = la Valeur minimale d'un jeu de donnée", false),
+    new Answer("(p.78) Boole's early paper in mathematics was in 1857", false),
+    new Answer("(p.78) Von leibniz was born in 1950", false),
     new Answer(
-      "Le mode est la valeur la moins répendue dans un ensemble de données.",
+      "(p.78) The collections of thought of Aristotle are called an episton",
       false
     ),
     new Answer(
-      "La variance mesure le nombre de différence entre deux jeux de données",
+      "(p.78) There is no connection between Aristotle and the concept of syllogism",
       false
     ),
-    new Answer(
-      "L'écart type est l'écart entre le premier et le dernier élément d'un jeu de donnée ",
-      false
-    ),
-    new Answer(
-      "Les statistiques cumulatives sont une des deux catégories des statistiques",
-      false
-    ),
-
-    new Answer(
-      "Les statistiques proclamatives sont une des deux catégories des statistiques",
-      false
-    ),
-    new Answer("Les statistiques descriptives n'existent pas", false),
-
-    new Answer(
-      "les statistique inférentielles décrivent les caractéristiques d'un ensemble de données",
-      false
-    ),
-    new Answer("Un ensemble de données ne peut avoir qu'un mode", false),
-    new Answer("Un ensemble de données ne peut pas avoir 0 mode", false),
+    new Answer("(p.78) Charles Dogson never proposed any syllogism", false),
   ],
 };
 
-const VECTORS = {
-  title: "Additions",
+const Charles_petzold_chap_10_Page_2 = {
+  title: "Charles_petzold_chap_10_Page_2",
   good: [
-    new Answer("un vecteur est noté AB -> ou u ->", true),
     new Answer(
-      "La norme d'un vecteur, notée ||AB->|| est la longueur du vecteur AB -> autrement dit, la distance entre les points A et B.",
+      "(p.79) Augustus De Morgan worked on a mathematician definition of logic",
       true
     ),
     new Answer(
-      "Le point d'origine du vecteur AB -> (ici le point A) est le point de départ qui en caractérise le sens",
+      "'The Mathematical Analysis of Logic' is an Essay Towards a Calculus of Deductive Reasoning",
       true
     ),
     new Answer(
-      "Le point d'extrémité de AB -> est le point d'arrivée  (ici le point B) qui en caractérise le sens",
+      "(p.79) Bool's two books were published in 1847 and in 1854",
       true
     ),
-    new Answer("Le vecteur opposé du vecteur AB > est BA -> ou -AB -> ", true),
+    new Answer(
+      "(p.79) logic and probabilities were founded based on a bool's book",
+      true
+    ),
+    new Answer("(p.79) Bool died in 1864", true),
 
+    new Answer("(p.79) Bool died at 69", true),
     new Answer(
-      "lorsque deux points AB sont confondus, on dit que AB -> est un vecteur nul",
+      "(p.79) Bool's died of Pneumonia after hurrying into class",
+      true
+    ),
+    new Answer(
+      "(p.79) bool tried to mathematically define the functioning of the brain",
+      true
+    ),
+    new Answer(
+      "(p.79) Bool's desire to have a mathematical definition of the brain was naive",
+      true
+    ),
+    new Answer(
+      "(p.79) bool's algebra convert human spoken language, into arithmetic operations",
+      true
+    ),
+    new Answer(
+      "(p.79) for A = 3, B = 2 x A, C = B + 5,  D = 3 x C is equal to  3 x (B + 5)",
       true
     ),
   ],
   bad: [
+    new Answer("(p.79) Bool never published any book", false),
+    new Answer("(p.79) Bool only published one book", false),
+    new Answer("(p.79) Bool's first book was published in 1905", false),
     new Answer(
-      "Sens, et direction sont synonymes lorsqu'on parle de vecteurs",
+      "(p.79) Bool's first book was not called the mathematical analysis of logic",
+      false
+    ),
+    new Answer("(p.79) Bool died at 35", false),
+  ],
+};
+
+const Charles_petzold_chap_10_Page_80 = {
+  title: "Charles_petzold_chap_10_Page_2",
+  good: [
+    new Answer("(p.80) Addition and multiplication are commutative", true),
+    new Answer(
+      "(p.80) A x (B + C) = (A x B) + (A x C) is an example showing multiplication is distributive over addition",
+      true
+    ),
+    new Answer(
+      "(p.80) A difference between convential algebra and bool's algebra is that bool's algebra only deals with numbers. Bool's algebra refer to classes, not numbers",
+      true
+    ),
+    new Answer(
+      "(p.80) Boolean algebra abstracts algebra from numbers to classes, using symbols (like M, F) to represent groups (sets) of objects.",
+      true
+    ),
+    new Answer(
+      "(p.80) In conventional (numeric) algebra, the operators + and x are used to indicate addition and multiplication. In Boolean algebra, the same + and x symbols are used, but for different things.",
+      true
+    ),
+    new Answer(
+      "(p.80) The + symbol in Boolean algebra means a union of two classes. A union of two classes is everything in the first class combined with everything in the second class. For example, B + W represents the class of all cats that are either black or white.",
+      true
+    ),
+    new Answer("(p.80) Substractions and divisions are not cummutative", true),
+  ],
+  bad: [
+    new Answer("(p.80) Multiplications are not commutative", false),
+    new Answer("(p.80) Divisions are commutative", false),
+    new Answer("(p.80) Bool's algebra doesn't use classes", false),
+    new Answer(
+      "(p.80) B X A = A X B is not a demontration of commutativeness",
       false
     ),
     new Answer(
-      "Le point d'extremité est toujours égal au point d'arrivée d'un vecteur",
-      false
-    ),
-    new Answer(
-      "Le point d'extremité represente le point de départ du vecteur",
-      false
-    ),
-    new Answer(
-      "Un vecteur ne peut pas être nul, sinon ce n'est pas un vecteur",
+      "(p.80) A(B + C) = (A X B) + (A X C) is not representative of multiplication being distributive over addition",
       false
     ),
   ],
@@ -531,7 +565,11 @@ const getNextAnswer = () => {
 
   if (!currentSubject) {
     console.log("there is no subject");
-    defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
+    defineCurrentSubject(
+      hardMode
+        ? Charles_petzold_chap_10_Page_80
+        : Charles_petzold_chap_10_Page_80
+    );
   }
 
   const getAndRemoveSubject: any = (index: number, list: Array<any>) => {
@@ -2318,7 +2356,9 @@ window.onload = () => {
   detectCollision();
   checkForScreenUpdateFromLeftToRight(10);
   checkForOpponentsClearance();
-  defineCurrentSubject(hardMode ? STATS : MATHS_ARITHMETIC);
+  defineCurrentSubject(
+    hardMode ? Charles_petzold_chap_10_Page_80 : Charles_petzold_chap_10_Page_80
+  );
   defineSwordReach();
   updateTransformationProgressBarDisplay();
   if (hardMode) {

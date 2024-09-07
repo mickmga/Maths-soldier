@@ -269,6 +269,1781 @@
       )
     ]
   };
+  var Mike_memory_0107 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0207 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0307 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0407 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakaxmura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0507 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0607 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0707 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0807 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_0907 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1007 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1107 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1207 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1307 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1407 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1507 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1607 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1707 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1807 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_1907 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2007 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2107 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2207 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2307 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2407 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
+  var Mike_memory_2507 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie d'ouverture des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu tony parker dans la c\xE9r\xE9monie des JO",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as vu le show de aya nakamura durant la c\xE9r\xE9monie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as pris un caf\xE9 dans une tasse blanche",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as flipp\xE9 sur ta peau pendant des heures",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 la c\xE9r\xE9monie avec charlotte et son amie",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu as parl\xE9 de l'affaire JM trogneux \xE0 papa",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as dit \xE0 Papa '\xE7a me d\xE9go\xFBte' ", true),
+      new Answer("(Vendredi 26/07) Tu as trouv\xE9 une bouteille de spray", true),
+      new Answer("(Vendredi 26/07) Tu as chang\xE9 tes draps", true),
+      new Answer("(Vendredi 26/07) Tu as nettoy\xE9 le sol de la cuisine", true),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils la veille",
+        true
+      ),
+      new Answer("(Vendredi 26/07) Tu as lu un mail d'AMELI", true)
+    ],
+    bad: [
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 une interview de l'adjoint de Pierre Sage",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as pris un th\xE9", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 mcdo", false),
+      new Answer("(Vendredi 26/07) Tu as bu du whisky", false),
+      new Answer(
+        "(Vendredi 26/07) Tu as regard\xE9 l'interview de Moussa Niakhat\xE9",
+        false
+      ),
+      new Answer("(Vendredi 26/07) Tu as vu Snoop Dogg amener la flamme", false),
+      new Answer("(Vendredi 26/07) Tu as mang\xE9 des macaronies", false),
+      new Answer("(Vendredi 26/07) Tu as appel\xE9 max", false),
+      new Answer("(Vendredi 26/07) Tu n'es pas all\xE9 sur twitter", false),
+      new Answer(
+        "(Vendredi 26/07) Tu t'es fait retirer les fils il y'a 2 jours",
+        false
+      )
+    ]
+  };
   var Mike_memory_2607 = {
     title: "Arithmetic",
     good: [
@@ -738,6 +2513,76 @@
     ]
   };
   var Mike_memory_09_08 = {
+    title: "Arithmetic",
+    good: [
+      new Answer(
+        "(Vendredi 09/08) J'ai mang\xE9 du fromage, avec de la tomate jaune et du jambon \xE0 midi",
+        true
+      ),
+      new Answer("(Vendredi 09/08) J'ai fini les glaces", true),
+      new Answer(
+        "(Vendredi 09/08) La france a perdue contre l espagne 5-3",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) Lacazette a \xE9t\xE9 remplac\xE9 peu de temps apr\xE8s la mi-temps",
+        true
+      ),
+      new Answer("(Vendredi 09/08) Lisa a appel\xE9 Math\xE9o", true),
+      new Answer(
+        "(Vendredi 09/08) Le lendemain, il y'a la petite finale serbie/allemagne en basket",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) J'ai mang\xE9 une mousse au chocolat avant de dormir",
+        true
+      ),
+      new Answer("(Vendredi 09/08) J'ai achet\xE9 Renekton", true),
+      new Answer(
+        "(Vendredi 09/08) J'ai r\xE9alis\xE9 que les nouveaux bots lol \xE9taient explos\xE9s",
+        true
+      ),
+      new Answer("(Vendredi 09/08) Ducos a perdu la finale du 400m haies", true),
+      new Answer(
+        "(Vendredi 09/08) J'ai appel\xE9 Ludovic vite fait, il regardait le match de l'edf dans un bar",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) J'ai mang\xE9 du steak, des pates et du fromage",
+        true
+      ),
+      new Answer(
+        "(Vendredi 09/08) L'\xE9quipe de Ryan Zeze en relai a perdue",
+        true
+      )
+    ],
+    bad: [
+      new Answer("(Vendredi 09/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Vendredi 09/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Vendredi 09/08) J'ai mang\xE9 burger king", false),
+      new Answer("(Vendredi 09/08) Maman m'a appel\xE9", false),
+      new Answer(
+        "(Vendredi 09/08) J'ai vu le match de l'\xE9quipe de france de beach volley",
+        false
+      ),
+      new Answer("(Vendredi 09/08) Mat a \xE9teint le serveur", false),
+      new Answer("(Vendredi 09/08) Philippe est pass\xE9 checker la piscine", false),
+      new Answer("(Vendredi 09/08) Noah lyles a gagn\xE9 le 100m", false),
+      new Answer("(Vendredi 09/08) steph curry n'a mis qu'un 3 points", false),
+      new Answer("(Vendredi 09/08) Ducos a \xE9t\xE9 \xE9limin\xE9 en 400m haies ", false),
+      new Answer("(Vendredi 09/08) Ducos ne court pas le lendemain", false),
+      new Answer("(Vendredi 09/08) Wambanyama est suspendu", false),
+      new Answer("(Vendredi 09/08) J'ai bu du coca", false),
+      new Answer("(Vendredi 09/08) Je n'ai pas mang\xE9 de bonbons", false),
+      new Answer(
+        "(Vendredi 09/08) J'ai vu le match de l'ol contre berlin en replay",
+        false
+      ),
+      new Answer("(Vendredi 09/08) Je n'ai pas commenc\xE9 the last dance", false),
+      new Answer("(Vendredi 09/08) Papi et mamie m'ont appel\xE9s", false)
+    ]
+  };
+  var Mike_memory_10_08 = {
     title: "Arithmetic",
     good: [
       new Answer(
